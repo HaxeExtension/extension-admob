@@ -35,9 +35,9 @@ class AdMob {
 		#end
 
 	////////////////////////////////////////////////////////////////////////////	
-	private static var __showIntersitial:Void->Void = 
+	private static var __showInterstitial:Void->Void = 
 		#if android
-			openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showIntersitial", "()V");
+			openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showInterstitial", "()V");
 		#elseif ios
 			cpp.Lib.load("adMobEx","admobex_interstitial_show",0);
 		#else
@@ -61,19 +61,19 @@ class AdMob {
 		#end
 
 	////////////////////////////////////////////////////////////////////////////	
-	private static var lastTiempoIntersital:Int = -60*1000;
+	private static var lastTimeInterstitial:Int = -60*1000;
 	private static var displayCallsCounter:Int = 0;
 	
 	////////////////////////////////////////////////////////////////////////////	
 	////////////////////////////////////////////////////////////////////////////	
-	public static function showIntersitial(minInterval:Int=60, minCallsBeforeDisplay:Int=0) {
+	public static function showInterstitial(minInterval:Int=60, minCallsBeforeDisplay:Int=0) {
 		displayCallsCounter++;
-		if( (Lib.getTimer()-lastTiempoIntersital)<(minInterval*1000) ) return;
+		if( (Lib.getTimer()-lastTimeInterstitial)<(minInterval*1000) ) return;
 		if( minCallsBeforeDisplay > displayCallsCounter ) return;
 		displayCallsCounter = 0;
-		lastTiempoIntersital = Lib.getTimer();
+		lastTimeInterstitial = Lib.getTimer();
 		try{
-			__showIntersitial();
+			__showInterstitial();
 		}catch(e:Dynamic){
 			trace("ShowInterstitial Exception: "+e);
 		}

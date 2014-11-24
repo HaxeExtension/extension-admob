@@ -5,7 +5,7 @@ extern "C"{
     #import "GADBannerView.h"
 }
 
-@interface IntersitialListener : NSObject <GADInterstitialDelegate> {
+@interface InterstitialListener : NSObject <GADInterstitialDelegate> {
     @public
     GADInterstitial         *ad;
     NSString                *nsID;
@@ -20,7 +20,7 @@ extern "C"{
 
 @end
 
-@implementation IntersitialListener
+@implementation InterstitialListener
 
 - (id)initWithID:(const char*)ID {
     self = [super init];
@@ -82,7 +82,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error {
 namespace admobex {
 	
     static GADBannerView *bannerView;
-	static IntersitialListener *interstitial;
+	static InterstitialListener *interstitial;
     static bool bottom;
 
     static NSString *interstitialID;
@@ -113,7 +113,7 @@ namespace admobex {
 
         interstitialID = [[NSString alloc] initWithUTF8String:__InterstitialID];//
 		// INTERSTITIAL
-        interstitial = [[IntersitialListener alloc] initWithID:[interstitialID UTF8String]];
+        interstitial = [[InterstitialListener alloc] initWithID:[interstitialID UTF8String]];
         [interstitial load];
 	}
     
@@ -137,7 +137,7 @@ namespace admobex {
 
     void showInterstitial(){
         [interstitial show];
-        interstitial = [[IntersitialListener alloc] initWithID:[interstitialID UTF8String]];
+        interstitial = [[InterstitialListener alloc] initWithID:[interstitialID UTF8String]];
         [interstitial load];
     }
 

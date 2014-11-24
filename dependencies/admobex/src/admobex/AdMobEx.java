@@ -68,8 +68,8 @@ public class AdMobEx extends Extension {
 	}
 
 
-	public static void showIntersitial() {
-		Log.d("AdMobEx","Show Intersitial Begin");
+	public static void showInterstitial() {
+		Log.d("AdMobEx","Show Interstitial Begin");
 		if(loadingInterstitial) return;
 		if(failInterstitial){
 			mainActivity.runOnUiThread(new Runnable() {
@@ -77,13 +77,13 @@ public class AdMobEx extends Extension {
 			});	
 			return;
 		}
-		Log.d("AdMobEx","Show Intersitial Middle");
+		Log.d("AdMobEx","Show Interstitial Middle");
 
 		if(interstitialId=="") return;
 		mainActivity.runOnUiThread(new Runnable() {
 			public void run() {	if(getInstance().interstitial.isLoaded()) getInstance().interstitial.show();	}
 		});
-		Log.d("AdMobEx","Show Intersitial End");
+		Log.d("AdMobEx","Show Interstitial End");
 	}
 
 
