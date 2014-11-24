@@ -29,7 +29,7 @@ class MainClass {
 		AdMob.initAndroid("ca-app-pub-XXXXX123456","ca-app-pub-XXXXX123457", GravityMode.BOTTOM); // may also be GravityMode.TOP
 		AdMob.initIOS("ca-app-pub-XXXXX123458","ca-app-pub-XXXXX123459", GravityMode.BOTTOM); // may also be GravityMode.TOP
 
-		// NOTE: If your game allows screen rotation, you shoud call AdMob.onResize(); when rotation happens.
+		// NOTE: If your game allows screen rotation, you should call AdMob.onResize(); when rotation happens.
 	}
 	
 	function gameOver() {
@@ -37,7 +37,7 @@ class MainClass {
 		AdMob.showInterstitial(0);
 
 		/* NOTE:
-		showInterstitial function has two parameters you can use to controll how often you want to display the interstitial ad.
+		showInterstitial function has two parameters you can use to control how often you want to display the interstitial ad.
 
 		public static function showInterstitial(minInterval:Int=60, minCallsBeforeDisplay:Int=0);
 
