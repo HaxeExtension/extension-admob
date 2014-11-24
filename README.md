@@ -34,7 +34,6 @@ class MainClass {
 	
 	function gameOver() {
 		// some implementation
-
 		AdMob.showInterstitial(0);
 
 		/* NOTE:
@@ -52,20 +51,16 @@ class MainClass {
 		- To display an interstitial every 3 finished games call:
 		AdMob.showInterstitial(0,3);
 		- To display an interstitial every 3 finished games (but never before 120 secs since last display), call:
-		AdMob.showInterstitial(120,3);
-
-		/*
+		AdMob.showInterstitial(120,3); */
 	}
 	
 	function mainMenu() {
 		// some implementation
-		
 		AdMob.showBanner(); // this will show the AdMob banner.
 	}
 
 	function beginGame() {
 		// some implementation
-
 		AdMob.hideBanner(); // if you don't want the banner to be on screen while playing... call AdMob.hideBanner();
 	}
 	
