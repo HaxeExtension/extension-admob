@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension>
+	<section if="android">
+		<haxelib name="openfl-gps-lib" /> 
+		<dependency name="admobex" path="dependencies/admobex" /> 
+	</section>
+	<section if="ios">
+		<ndll name="admobex" />
+		<dependency name="ndll/iPhone/libGoogleAdMobAds.a" />
+		<ios linker-flags="-v -fobjc-arc -force_load $SRCROOT/$PRODUCT_NAME/lib/$ARCHS/libGoogleAdMobAds.a" />
+
+		<dependency name="AdSupport.framework" />
+		<dependency name="AudioToolbox.framework" />
+		<dependency name="AVFoundation.framework" />
+		<dependency name="CoreGraphics.framework" />
+		<dependency name="CoreTelephony.framework" />
+		<dependency name="EventKit.framework" />
+		<dependency name="EventKitUI.framework" />
+		<dependency name="MessageUI.framework" />
+		<dependency name="StoreKit.framework" />
+		<dependency name="SystemConfiguration.framework" />
+		
+	</section>
+</extension>
