@@ -3,7 +3,7 @@
         "url": "https://github.com/fbricker/admobex",
         "license": "LGPL",
         "contributors":["fbricker"],
-        "tags": ["ads","api","google admob","admob"],
+        "tags": ["ads","api","google","ad","monetization","admob"],
         "description": "Google AdMob / OpenFL extension for Android + iOS.",
         "version": "1.2.1",
         "releasenote": "First release. Works!"
