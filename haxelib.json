@@ -1,6 +1,6 @@
 {
         "name": "openfl-admob",
-        "url": "https://github.com/fbricker/admobex",
+        "url": "https://github.com/fbricker/openfl-admob",
         "license": "LGPL",
         "contributors":["fbricker"],
         "tags": ["ads","api","google","ad","monetization","admob"],
