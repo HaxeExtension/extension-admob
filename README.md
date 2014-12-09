@@ -75,12 +75,12 @@ To install this library, you can simply get the library from haxelib like this:
 haxelib install openfl-admob
 ```
 
-Also, you'll need to download the google-play-services_lib from your Android SDK Manager. To do that, you need to execute the android tool from:
+Also, you'll need to download the google-play-services_lib and android-support-v4 from your Android SDK Manager. To do that, you need to execute the android tool from:
 ```bash
 $ANDROID_SDK/tools/android
 ```
 
-Then select *Google Play Services* under the "Extras" section.
+Then select *Google Play Services* and *Android Support Library* under the "Extras" section.
 
 Once this is done, you just need to add this to your project.xml
 ```xml
