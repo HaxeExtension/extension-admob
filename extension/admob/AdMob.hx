@@ -1,6 +1,6 @@
 package extension.admob;
 
-import flash.Lib;
+import openfl.Lib;
 
 class AdMob {
 
