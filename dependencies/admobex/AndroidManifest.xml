@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.admobex">
 	<application android:debuggable="::DEBUG::">
-		<activity android:name="com.google.android.gms.ads.AdActivity"
+		<activity ::if (WIN_ORIENTATION=="portrait")::android:screenOrientation="portrait"::end::::if (WIN_ORIENTATION=="landscape")::android:screenOrientation="landscape"::end:: android:name="com.google.android.gms.ads.AdActivity"
 			android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
 		<meta-data android:name="com.google.android.gms.version"
 			android:value="@integer/google_play_services_version"/>

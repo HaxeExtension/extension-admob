@@ -8,6 +8,6 @@
         "dependencies": {
             "openfl-gps-lib": ""
         },
-        "version": "1.2.2",
-        "releasenote": "Change flash.Lib for openfl.Lib"
+        "version": "1.2.3",
+        "releasenote": "Add android:screenOrientation AndroidManifest.xml to avoid AdMob screen orientation issues."
 }
