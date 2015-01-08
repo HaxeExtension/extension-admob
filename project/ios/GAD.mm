@@ -93,6 +93,7 @@ namespace admobex {
         NSString *GADID = [[NSString alloc] initWithUTF8String:BannerID];
         NSString *GMODE = [[NSString alloc] initWithUTF8String:gravityMode];
 
+        // BANNER
         bottom=![GMODE isEqualToString:@"TOP"];
 
         if( [UIApplication sharedApplication].statusBarOrientation == UIInterfaceOrientationLandscapeLeft ||
@@ -109,26 +110,27 @@ namespace admobex {
         GADRequest *request = [GADRequest request];
 		request.testDevices = @[ GAD_SIMULATOR_ID ];
 		[bannerView loadRequest:request];
-
-
-        interstitialID = [[NSString alloc] initWithUTF8String:__InterstitialID];//
-		// INTERSTITIAL
-        interstitial = [[InterstitialListener alloc] initWithID:[interstitialID UTF8String]];
-        [interstitial load];
-	}
-    
-    void showBanner(){
-		[root.view addSubview:bannerView];
+        [root.view addSubview:bannerView];
+        bannerView.hidden=true;
         // THOSE THREE LINES ARE FOR SETTING THE BANNER BOTTOM ALIGNED
         if(bottom){
             CGRect frame = bannerView.frame;
             frame.origin.y = root.view.bounds.size.height - frame.size.height;
             bannerView.frame=frame;
         }
+
+        // INTERSTITIAL
+        interstitialID = [[NSString alloc] initWithUTF8String:__InterstitialID];
+        interstitial = [[InterstitialListener alloc] initWithID:[interstitialID UTF8String]];
+        [interstitial load];
+	}
+    
+    void showBanner(){
+        bannerView.hidden=false;
     }
     
     void hideBanner(){
-		[bannerView removeFromSuperview];
+        bannerView.hidden=true;
     }
     
 	void refreshBanner(){
