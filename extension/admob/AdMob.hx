@@ -4,6 +4,8 @@ import openfl.Lib;
 
 class AdMob {
 
+	private static var inicialized:Bool=false;
+
 	////////////////////////////////////////////////////////////////////////////	
 	private static var __init:String->String->String->Void = 
 		#if android
@@ -81,6 +83,8 @@ class AdMob {
 	
 	public static function initAndroid(bannerId:String, interstitialId:String, gravityMode:GravityMode){
 		#if android
+		if(inicialized) return;
+		inicialized = true;
 		try{
 			__init(bannerId,interstitialId,(gravityMode==GravityMode.TOP)?'TOP':'BOTTOM');
 		}catch(e:Dynamic){
@@ -91,6 +95,8 @@ class AdMob {
 	
 	public static function initIOS(bannerId:String, interstitialId:String, gravityMode:GravityMode){
 		#if ios
+		if(inicialized) return;
+		inicialized = true;
 		try{
 			__init(bannerId,interstitialId,(gravityMode==GravityMode.TOP)?'TOP':'BOTTOM');
 		}catch(e:Dynamic){
