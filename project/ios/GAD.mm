@@ -8,14 +8,9 @@ extern "C"{
 @interface InterstitialListener : NSObject <GADInterstitialDelegate> {
     @public
     GADInterstitial         *ad;
-    NSString                *nsID;
-    UIViewController        *root;
-    bool                    failed;
-    
 }
 
 - (id)initWithID:(const char*)ID;
-- (void)load;
 - (void)show;
 
 @end
@@ -24,65 +19,61 @@ extern "C"{
 
 - (id)initWithID:(const char*)ID {
     self = [super init];
-    if(self){
-        failed = false;
-        root = [[[UIApplication sharedApplication] keyWindow] rootViewController];
-        nsID = [[NSString alloc] initWithUTF8String:ID];
-    }
+    NSLog(@"AdMob Init");
+    if(!self) return nil;
+    ad = [[GADInterstitial alloc] init];
+    ad.delegate = self;
+    ad.adUnitID = [[NSString alloc] initWithUTF8String:ID];
+    GADRequest *request = [GADRequest request];
+    request.testDevices = @[ GAD_SIMULATOR_ID ];
+    //[ad loadRequest:request];
+    [ad performSelector:@selector(loadRequest:) withObject:request afterDelay:1];
     return self;
 }
 
-- (void)load{
-    ad = [[GADInterstitial alloc] init];
-    ad.adUnitID = nsID;
-    [ad setDelegate:self];
-    GADRequest *request = [GADRequest request];
-	request.testDevices = @[ GAD_SIMULATOR_ID ];
-    [ad loadRequest:request];
-}
-
 - (void)show{
-    if (ad.isReady){
-        [ad presentFromRootViewController:root];
-    } else if (failed){
-        [self load];
+    if (ad != nil && ad.isReady) {
+        [ad presentFromRootViewController:[[[UIApplication sharedApplication] keyWindow] rootViewController]];
     }
 }
 
-- (void)interstitial:(GADInterstitial *)interstitial
-didFailToReceiveAdWithError:(GADRequestError *)error {
-    failed = true;
+/// Called when an interstitial ad request succeeded.
+- (void)interstitialDidReceiveAd:(GADInterstitial *)ad {
+    NSLog(@"interstitialDidReceiveAd");
 }
 
-- (void)interstitialDidReceiveAd:(GADInterstitial *)interstitial{
-    failed = false;
+/// Called when an interstitial ad request failed.
+- (void)interstitial:(GADInterstitial *)ad didFailToReceiveAdWithError:(GADRequestError *)error {
+    NSLog(@"interstitialDidFailToReceiveAdWithError: %@", [error localizedDescription]);
 }
 
-- (void)interstitialWillPresentScreen:(GADInterstitial *)interstitial{
-    NSLog(@"will present");
+/// Called just before presenting an interstitial.
+- (void)interstitialWillPresentScreen:(GADInterstitial *)ad {
+    NSLog(@"interstitialWillPresentScreen");
 }
 
-- (void)interstitialWillDismissScreen:(GADInterstitial *)interstitial{
-    NSLog(@"will dismiss");
+/// Called before the interstitial is to be animated off the screen.
+- (void)interstitialWillDismissScreen:(GADInterstitial *)ad {
+    NSLog(@"interstitialWillDismissScreen");
 }
 
-- (void)interstitialDidDismissScreen:(GADInterstitial *)interstitial{
-    NSLog(@"did dismiss");
-	[self load];
+/// Called just after dismissing an interstitial and it has animated off the screen.
+- (void)interstitialDidDismissScreen:(GADInterstitial *)ad {
+    NSLog(@"interstitialDidDismissScreen");
 }
 
-- (void)interstitialWillLeaveApplication:(GADInterstitial *)interstitial{
-    NSLog(@"will leave application");
+/// Called just before the application will background or terminate because the user clicked on an
+/// ad that will launch another application (such as the App Store).
+- (void)interstitialWillLeaveApplication:(GADInterstitial *)ad {
+    NSLog(@"interstitialWillLeaveApplication");
 }
 
 @end
 
-
-
 namespace admobex {
 	
     static GADBannerView *bannerView;
-	static InterstitialListener *interstitial;
+	static InterstitialListener *interstitialListener;
     static bool bottom;
 
     static NSString *interstitialID;
@@ -121,9 +112,8 @@ namespace admobex {
 
         // INTERSTITIAL
         interstitialID = [[NSString alloc] initWithUTF8String:__InterstitialID];
-        interstitial = [[InterstitialListener alloc] initWithID:[interstitialID UTF8String]];
-        [interstitial load];
-	}
+        interstitialListener = [[InterstitialListener alloc] initWithID:[interstitialID UTF8String]];
+    }
     
     void showBanner(){
         bannerView.hidden=false;
@@ -138,9 +128,8 @@ namespace admobex {
 	}
 
     void showInterstitial(){
-        [interstitial show];
-        interstitial = [[InterstitialListener alloc] initWithID:[interstitialID UTF8String]];
-        [interstitial load];
+        if(interstitialListener!=nil) [interstitialListener show];
+        interstitialListener = [[InterstitialListener alloc] initWithID:[interstitialID UTF8String]];
     }
 
 }
