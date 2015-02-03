@@ -1,5 +1,4 @@
-openfl-admob
-=======
+#openfl-admob
 
 OpenFL extension for "Google AdMob" on iOS and Android.
 This extension allows you to easily integrate Google AdMob on your OpenFL (or HaxeFlixel) game / application.
