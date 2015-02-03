@@ -1,7 +1,7 @@
 {
         "name": "openfl-admob",
         "url": "https://github.com/fbricker/openfl-admob",
-        "license": "LGPL",
+        "license": "MIT",
         "contributors":["fbricker"],
         "tags": ["ads","api","google","ad","monetization","admob"],
         "description": "Google AdMob / OpenFL extension for Android + iOS.",
