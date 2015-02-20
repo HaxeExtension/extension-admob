@@ -1,8 +1,8 @@
 #include <AdMobEx.h>
 #import <UIKit/UIKit.h>
-#import "GADInterstitial.h"
+#import "GoogleMobileAds/GADInterstitial.h"
 extern "C"{
-    #import "GADBannerView.h"
+    #import "GoogleMobileAds/GADBannerView.h"
 }
 
 @interface InterstitialListener : NSObject <GADInterstitialDelegate> {
@@ -25,7 +25,7 @@ extern "C"{
     ad.delegate = self;
     ad.adUnitID = [[NSString alloc] initWithUTF8String:ID];
     GADRequest *request = [GADRequest request];
-    request.testDevices = @[ GAD_SIMULATOR_ID ];
+    //request.testDevices = @[ GAD_SIMULATOR_ID ];
     //[ad loadRequest:request];
     [ad performSelector:@selector(loadRequest:) withObject:request afterDelay:1];
     return self;
@@ -99,7 +99,7 @@ namespace admobex {
 		bannerView.rootViewController = root;
 
         GADRequest *request = [GADRequest request];
-		request.testDevices = @[ GAD_SIMULATOR_ID ];
+		//request.testDevices = @[ GAD_SIMULATOR_ID ];
 		[bannerView loadRequest:request];
         [root.view addSubview:bannerView];
         bannerView.hidden=true;

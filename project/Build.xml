@@ -4,7 +4,7 @@
 	
 	<files id="common">		
 		<compilerflag value="-Iinclude"/>
-		<compilerflag value="-Iios/include" />
+		<compilerflag value="-F../frameworks"/>
 		<file name="common/ExternalInterface.cpp"/>
 		<file name="ios/GAD.mm" />
 	</files>

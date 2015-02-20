@@ -6,9 +6,7 @@
 	</section>
 	<section if="ios">
 		<ndll name="admobex" />
-		<dependency name="ndll/iPhone/libGoogleAdMobAds.a" />
-		<ios linker-flags="-v -fobjc-arc -force_load $SRCROOT/$PRODUCT_NAME/lib/$ARCHS/libGoogleAdMobAds.a" />
-
+		<dependency path="frameworks/GoogleMobileAds.framework" />
 		<dependency name="AdSupport.framework" />
 		<dependency name="AudioToolbox.framework" />
 		<dependency name="AVFoundation.framework" />
