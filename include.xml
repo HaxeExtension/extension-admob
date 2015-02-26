@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension>
 	<section if="android">
-		<haxelib name="openfl-gps-lib" /> 
-		<dependency name="admobex" path="dependencies/admobex" /> 
+		<haxelib name="openfl-gps-lib" />
+		<dependency name="admobex" path="dependencies/admobex" />
+		<android permission="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
 	</section>
 	<section if="ios">
 		<ndll name="admobex" />
@@ -17,6 +18,5 @@
 		<dependency name="MessageUI.framework" />
 		<dependency name="StoreKit.framework" />
 		<dependency name="SystemConfiguration.framework" />
-		
 	</section>
 </extension>
