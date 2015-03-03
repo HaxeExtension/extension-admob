@@ -8,6 +8,6 @@
         "dependencies": {
             "openfl-gps-lib": ""
         },
-        "version": "1.3.3",
-        "releasenote": "Upgrade iOS framework to version 7.0"
+        "version": "1.3.4",
+        "releasenote": "Create the Java Object when calling init method (android fix)."
 }

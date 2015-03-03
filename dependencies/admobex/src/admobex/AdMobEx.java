@@ -65,6 +65,7 @@ public class AdMobEx extends Extension {
 		if(gravityMode.equals("TOP")){
 			AdMobEx.gravity=Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 		}
+		getInstance();
 	}
 
 
