@@ -21,9 +21,8 @@ extern "C"{
     self = [super init];
     NSLog(@"AdMob Init");
     if(!self) return nil;
-    ad = [[GADInterstitial alloc] init];
+    ad = [[GADInterstitial alloc] initWithAdUnitID:[NSString stringWithUTF8String:ID] ];
     ad.delegate = self;
-    ad.adUnitID = [[NSString alloc] initWithUTF8String:ID];
     GADRequest *request = [GADRequest request];
     //request.testDevices = @[ GAD_SIMULATOR_ID ];
     //[ad loadRequest:request];
@@ -111,7 +110,7 @@ namespace admobex {
         }
 
         // INTERSTITIAL
-        interstitialID = [[NSString alloc] initWithUTF8String:__InterstitialID];
+        interstitialID = [NSString stringWithUTF8String:__InterstitialID];
         interstitialListener = [[InterstitialListener alloc] initWithID:[interstitialID UTF8String]];
     }
     
