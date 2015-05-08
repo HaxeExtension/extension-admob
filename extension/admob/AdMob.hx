@@ -6,68 +6,23 @@ class AdMob {
 
 	private static var inicialized:Bool=false;
 
-	////////////////////////////////////////////////////////////////////////////	
-	private static var __init:String->String->String->Void = 
-		#if android
-			openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "init", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
-		#elseif ios
-			cpp.Lib.load("adMobEx","admobex_init",3);
-		#else
-			function(bannerId:String, interstitialId:String, gravityMode:String){};
-		#end
+	////////////////////////////////////////////////////////////////////////////
 
-	////////////////////////////////////////////////////////////////////////////	
-	private static var __showBanner:Void->Void = 
-		#if android
-			openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showBanner", "()V");
-		#elseif ios
-			cpp.Lib.load("adMobEx","admobex_banner_show",0);
-		#else
-			function(){};
-		#end
+	private static var __init:String->String->String->Void = function(bannerId:String, interstitialId:String, gravityMode:String){};
+	private static var __showBanner:Void->Void = function(){};
+	private static var __hideBanner:Void->Void = function(){};
+	private static var __showInterstitial:Void->Void = function(){};
+	private static var __onResize:Void->Void = function(){};
+	private static var __refresh:Void->Void = function(){};
 
-	////////////////////////////////////////////////////////////////////////////	
-	private static var __hideBanner:Void->Void = 
-		#if android
-			openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "hideBanner", "()V");
-		#elseif ios
-			cpp.Lib.load("adMobEx","admobex_banner_hide",0);
-		#else
-			function(){};
-		#end
+	////////////////////////////////////////////////////////////////////////////
 
-	////////////////////////////////////////////////////////////////////////////	
-	private static var __showInterstitial:Void->Void = 
-		#if android
-			openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showInterstitial", "()V");
-		#elseif ios
-			cpp.Lib.load("adMobEx","admobex_interstitial_show",0);
-		#else
-			function(){};
-		#end
-
-	////////////////////////////////////////////////////////////////////////////	
-	private static var __onResize:Void->Void = 
-		#if android
-			openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "onResize", "()V");
-		#else
-			function(){};
-		#end
-
-	////////////////////////////////////////////////////////////////////////////	
-	private static var __refresh:Void->Void = 
-		#if ios
-			cpp.Lib.load("adMobEx","admobex_banner_refresh",0);
-		#else
-			function(){};
-		#end
-
-	////////////////////////////////////////////////////////////////////////////	
 	private static var lastTimeInterstitial:Int = -60*1000;
 	private static var displayCallsCounter:Int = 0;
 	
-	////////////////////////////////////////////////////////////////////////////	
-	////////////////////////////////////////////////////////////////////////////	
+	////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
 	public static function showInterstitial(minInterval:Int=60, minCallsBeforeDisplay:Int=0) {
 		displayCallsCounter++;
 		if( (Lib.getTimer()-lastTimeInterstitial)<(minInterval*1000) ) return;
@@ -86,6 +41,13 @@ class AdMob {
 		if(inicialized) return;
 		inicialized = true;
 		try{
+			// JNI METHOD LINKING
+			__init = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "init", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+			__showBanner = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showBanner", "()V");
+			__hideBanner = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "hideBanner", "()V");
+			__showInterstitial = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showInterstitial", "()V");
+			__onResize = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "onResize", "()V");
+
 			__init(bannerId,interstitialId,(gravityMode==GravityMode.TOP)?'TOP':'BOTTOM');
 		}catch(e:Dynamic){
 			trace("Android INIT Exception: "+e);
@@ -98,6 +60,13 @@ class AdMob {
 		if(inicialized) return;
 		inicialized = true;
 		try{
+			// CPP METHOD LINKING
+			__init = cpp.Lib.load("adMobEx","admobex_init",3);
+			__showBanner = cpp.Lib.load("adMobEx","admobex_banner_show",0);
+			__hideBanner = cpp.Lib.load("adMobEx","admobex_banner_hide",0);
+			__showInterstitial = cpp.Lib.load("adMobEx","admobex_interstitial_show",0);
+			__refresh = cpp.Lib.load("adMobEx","admobex_banner_refresh",0);
+
 			__init(bannerId,interstitialId,(gravityMode==GravityMode.TOP)?'TOP':'BOTTOM');
 		}catch(e:Dynamic){
 			trace("iOS INIT Exception: "+e);
