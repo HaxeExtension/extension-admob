@@ -8,6 +8,6 @@
         "dependencies": {
             "openfl-gps-lib": ""
         },
-        "version": "1.3.4",
-        "releasenote": "Create the Java Object when calling init method (android fix)."
+        "version": "1.3.5",
+        "releasenote": "Upgrade iOS SDK + Fix JNI Exception on Android."
 }
