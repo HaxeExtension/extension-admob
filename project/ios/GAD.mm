@@ -10,22 +10,21 @@ extern "C"{
     GADInterstitial         *ad;
 }
 
-- (id)initWithID:(const char*)ID;
+- (id)initWithID:(NSString*)ID;
 - (void)show;
 
 @end
 
 @implementation InterstitialListener
 
-- (id)initWithID:(const char*)ID {
+- (id)initWithID:(NSString*)ID {
     self = [super init];
     NSLog(@"AdMob Init");
     if(!self) return nil;
-    ad = [[GADInterstitial alloc] initWithAdUnitID:[NSString stringWithUTF8String:ID] ];
+    ad = [[GADInterstitial alloc] initWithAdUnitID:ID];
     ad.delegate = self;
     GADRequest *request = [GADRequest request];
     request.testDevices = @[ kGADSimulatorID ];
-    //[ad loadRequest:request];
     [ad performSelector:@selector(loadRequest:) withObject:request afterDelay:1];
     return self;
 }
@@ -116,7 +115,7 @@ namespace admobex {
         }
 
         // INTERSTITIAL
-        interstitialListener = [[InterstitialListener alloc] initWithID:[interstitialID UTF8String]];
+        interstitialListener = [[InterstitialListener alloc] initWithID:interstitialID];
     }
     
     void showBanner(){
@@ -133,7 +132,7 @@ namespace admobex {
 
     void showInterstitial(){
         if(interstitialListener!=nil) [interstitialListener show];
-        interstitialListener = [[InterstitialListener alloc] initWithID:[interstitialID UTF8String]];
+        interstitialListener = [[InterstitialListener alloc] initWithID:interstitialID];
     }
 
 }

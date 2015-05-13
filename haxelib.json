@@ -8,6 +8,6 @@
         "dependencies": {
             "openfl-gps-lib": ""
         },
-        "version": "1.3.5",
-        "releasenote": "Upgrade iOS SDK + Fix JNI Exception on Android."
+        "version": "1.4.0",
+        "releasenote": "Add enableTestingAds() function + bug fix on iOS"
 }
