@@ -24,7 +24,7 @@ extern "C"{
     ad = [[GADInterstitial alloc] initWithAdUnitID:[NSString stringWithUTF8String:ID] ];
     ad.delegate = self;
     GADRequest *request = [GADRequest request];
-    //request.testDevices = @[ GAD_SIMULATOR_ID ];
+    request.testDevices = @[ kGADSimulatorID ];
     //[ad loadRequest:request];
     [ad performSelector:@selector(loadRequest:) withObject:request afterDelay:1];
     return self;
@@ -78,10 +78,16 @@ namespace admobex {
     static NSString *interstitialID;
 	UIViewController *root;
     
-	void init(const char *BannerID, const char *__InterstitialID, const char *gravityMode, bool testingAds){
+	void init(const char *__BannerID, const char *__InterstitialID, const char *gravityMode, bool testingAds){
 		root = [[[UIApplication sharedApplication] keyWindow] rootViewController];
-        NSString *GADID = [[NSString alloc] initWithUTF8String:BannerID];
-        NSString *GMODE = [[NSString alloc] initWithUTF8String:gravityMode];
+        NSString *GMODE = [NSString stringWithUTF8String:gravityMode];
+        NSString *bannerID = [NSString stringWithUTF8String:__BannerID];
+        interstitialID = [NSString stringWithUTF8String:__InterstitialID];
+
+        if(testingAds){
+            interstitialID = @"ca-app-pub-3940256099942544/4411468910"; // ADMOB GENERIC TESTING INTERSTITIAL
+            bannerID = @"ca-app-pub-3940256099942544/2934735716"; // ADMOB GENERIC TESTING BANNER
+        }
 
         // BANNER
         bottom=![GMODE isEqualToString:@"TOP"];
@@ -94,11 +100,11 @@ namespace admobex {
             bannerView = [[GADBannerView alloc] initWithAdSize:kGADAdSizeSmartBannerPortrait];
         }
 
-		bannerView.adUnitID = GADID;
+		bannerView.adUnitID = bannerID;
 		bannerView.rootViewController = root;
 
         GADRequest *request = [GADRequest request];
-		//request.testDevices = @[ GAD_SIMULATOR_ID ];
+		request.testDevices = @[ kGADSimulatorID ];
 		[bannerView loadRequest:request];
         [root.view addSubview:bannerView];
         bannerView.hidden=true;
@@ -110,7 +116,6 @@ namespace admobex {
         }
 
         // INTERSTITIAL
-        interstitialID = [NSString stringWithUTF8String:__InterstitialID];
         interstitialListener = [[InterstitialListener alloc] initWithID:[interstitialID UTF8String]];
     }
     
