@@ -21,7 +21,11 @@ import extension.admob.GravityMode;
 class MainClass {
 
 	function new() {
-		// first of all... call init with Android and iOS banner IDs in the main method.
+		// first of all, decide if you want to display testing ads by calling enableTestingAds() method.
+		// Note that if you decide to call enableTestingAds(), you must do that before calling INIT methods.
+		AdMob.enableTestingAds();
+
+		// then call init with Android and iOS banner IDs in the main method.
 		// parameters are (bannerId:String, interstitialId:String, gravityMode:GravityMode).
 		// if you don't have the bannerId and interstitialId, go to www.google.com/ads/admob to create them.
 

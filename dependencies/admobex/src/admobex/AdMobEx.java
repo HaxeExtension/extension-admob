@@ -19,6 +19,8 @@ import org.haxe.extension.Extension;
 import android.view.Gravity;
 import android.view.View;
 import android.util.Log;
+import android.provider.Settings.Secure;
+import java.security.MessageDigest;
 
 import com.google.android.gms.ads.*;
 
@@ -45,6 +47,7 @@ public class AdMobEx extends Extension {
 	private static String bannerId=null;
 
 	private static AdMobEx instance=null;
+	private static Boolean testingAds=false;
 	private static int gravity=Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,9 +62,10 @@ public class AdMobEx extends Extension {
 	}
 
 
-	public static void init(String bannerId, String interstitialId, String gravityMode){
+	public static void init(String bannerId, String interstitialId, String gravityMode, boolean testingAds){
 		AdMobEx.bannerId=bannerId;
 		AdMobEx.interstitialId=interstitialId;
+		AdMobEx.testingAds=testingAds;
 		if(gravityMode.equals("TOP")){
 			AdMobEx.gravity=Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 		}
@@ -139,9 +143,18 @@ public class AdMobEx extends Extension {
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private AdMobEx() {
-		adReq = new AdRequest.Builder()
-  						.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-    					.build();
+
+		AdRequest.Builder builder = new AdRequest.Builder();
+
+		if(testingAds){
+			String android_id = Secure.getString(mainActivity.getContentResolver(), Secure.ANDROID_ID);
+    	    String deviceId = md5(android_id).toUpperCase();
+			Log.d("AdMobEx","DEVICE ID: "+deviceId);
+			builder.addTestDevice(deviceId);
+		}
+		
+		builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+		adReq = builder.build();
 
 		if(bannerId!=""){
 			this.reinitBanner();
@@ -226,6 +239,18 @@ public class AdMobEx extends Extension {
 		loadingBanner=true;
 		banner.loadAd(adReq);
 		failBanner=false;
+	}
+
+	private static String md5(String s)  {
+		MessageDigest digest;
+		try  {
+		    digest = MessageDigest.getInstance("MD5");
+		    digest.update(s.getBytes(),0,s.length());
+		    return new java.math.BigInteger(1, digest.digest()).toString(16);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 }

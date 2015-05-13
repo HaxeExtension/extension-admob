@@ -78,7 +78,7 @@ namespace admobex {
     static NSString *interstitialID;
 	UIViewController *root;
     
-	void init(const char *BannerID, const char *__InterstitialID, const char *gravityMode){
+	void init(const char *BannerID, const char *__InterstitialID, const char *gravityMode, bool testingAds){
 		root = [[[UIApplication sharedApplication] keyWindow] rootViewController];
         NSString *GADID = [[NSString alloc] initWithUTF8String:BannerID];
         NSString *GMODE = [[NSString alloc] initWithUTF8String:gravityMode];

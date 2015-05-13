@@ -13,11 +13,11 @@
 using namespace admobex;
 
 
-static value admobex_init(value banner_id,value interstitial_id, value gravity_mode){
-	init(val_string(banner_id),val_string(interstitial_id), val_string(gravity_mode) );
+static value admobex_init(value banner_id,value interstitial_id, value gravity_mode, value testing_ads){
+	init(val_string(banner_id),val_string(interstitial_id), val_string(gravity_mode), val_bool(testing_ads));
 	return alloc_null();
 }
-DEFINE_PRIM(admobex_init,3);
+DEFINE_PRIM(admobex_init,4);
 
 static value admobex_banner_show(){
 	showBanner();
