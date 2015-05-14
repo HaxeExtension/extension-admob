@@ -4,7 +4,7 @@ import openfl.Lib;
 
 class AdMob {
 
-	private static var inicialized:Bool=false;
+	private static var initialized:Bool=false;
 	private static var testingAds:Bool=false;
 
 	////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@ class AdMob {
 	
 	public static function enableTestingAds() {
 		if ( testingAds ) return;
-		if ( inicialized ) {
+		if ( initialized ) {
 			var msg:String;
 			msg = "FATAL ERROR: If you want to enable Testing Ads, you must enable them before calling INIT!.\n";
 			msg+= "Throwing an exception to avoid displaying read ads when you want testing ads.";
@@ -52,8 +52,8 @@ class AdMob {
 
 	public static function initAndroid(bannerId:String, interstitialId:String, gravityMode:GravityMode){
 		#if android
-		if(inicialized) return;
-		inicialized = true;
+		if(initialized) return;
+		initialized = true;
 		try{
 			// JNI METHOD LINKING
 			__init = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "init", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)V");
@@ -71,8 +71,8 @@ class AdMob {
 	
 	public static function initIOS(bannerId:String, interstitialId:String, gravityMode:GravityMode){
 		#if ios
-		if(inicialized) return;
-		inicialized = true;
+		if(initialized) return;
+		initialized = true;
 		try{
 			// CPP METHOD LINKING
 			__init = cpp.Lib.load("adMobEx","admobex_init",4);
