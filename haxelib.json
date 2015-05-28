@@ -8,6 +8,6 @@
         "dependencies": {
             "openfl-gps-lib": ""
         },
-        "version": "1.4.0",
-        "releasenote": "Add enableTestingAds() function + bug fix on iOS"
+        "version": "1.4.1",
+        "releasenote": "Set Theme.Translucent to enable transparent background interstitial ad on Android."
 }
