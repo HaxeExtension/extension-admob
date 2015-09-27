@@ -12,7 +12,7 @@ class AdMob {
 	private static var __init:String->String->String->Bool->Void = function(bannerId:String, interstitialId:String, gravityMode:String, testingAds:Bool){};
 	private static var __showBanner:Void->Void = function(){};
 	private static var __hideBanner:Void->Void = function(){};
-	private static var __showInterstitial:Void->Void = function(){};
+	private static var __showInterstitial:Void->Bool = function(){ return false; };
 	private static var __onResize:Void->Void = function(){};
 	private static var __refresh:Void->Void = function(){};
 
@@ -24,17 +24,18 @@ class AdMob {
 	////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
-	public static function showInterstitial(minInterval:Int=60, minCallsBeforeDisplay:Int=0) {
+	public static function showInterstitial(minInterval:Int=60, minCallsBeforeDisplay:Int=0):Bool {
 		displayCallsCounter++;
-		if( (Lib.getTimer()-lastTimeInterstitial)<(minInterval*1000) ) return;
-		if( minCallsBeforeDisplay > displayCallsCounter ) return;
+		if( (Lib.getTimer()-lastTimeInterstitial)<(minInterval*1000) ) return false;
+		if( minCallsBeforeDisplay > displayCallsCounter ) return false;
 		displayCallsCounter = 0;
 		lastTimeInterstitial = Lib.getTimer();
 		try{
-			__showInterstitial();
+			return __showInterstitial();
 		}catch(e:Dynamic){
 			trace("ShowInterstitial Exception: "+e);
 		}
+		return false;
 	}
 	
 	public static function enableTestingAds() {
@@ -59,7 +60,7 @@ class AdMob {
 			__init = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "init", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)V");
 			__showBanner = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showBanner", "()V");
 			__hideBanner = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "hideBanner", "()V");
-			__showInterstitial = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showInterstitial", "()V");
+			__showInterstitial = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showInterstitial", "()Z");
 			__onResize = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "onResize", "()V");
 
 			__init(bannerId,interstitialId,(gravityMode==GravityMode.TOP)?'TOP':'BOTTOM',testingAds);

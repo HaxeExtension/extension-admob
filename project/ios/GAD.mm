@@ -12,6 +12,7 @@ extern "C"{
 
 - (id)initWithID:(NSString*)ID;
 - (void)show;
+- (bool)isReady;
 
 @end
 
@@ -29,10 +30,13 @@ extern "C"{
     return self;
 }
 
+- (bool)isReady{
+    return (ad != nil && ad.isReady);
+}
+
 - (void)show{
-    if (ad != nil && ad.isReady) {
-        [ad presentFromRootViewController:[[[UIApplication sharedApplication] keyWindow] rootViewController]];
-    }
+    if (![self isReady]) return;
+    [ad presentFromRootViewController:[[[UIApplication sharedApplication] keyWindow] rootViewController]];
 }
 
 /// Called when an interstitial ad request succeeded.
@@ -130,9 +134,12 @@ namespace admobex {
 		[bannerView loadRequest:[GADRequest request]];
 	}
 
-    void showInterstitial(){
-        if(interstitialListener!=nil) [interstitialListener show];
+    bool showInterstitial(){
+        if(interstitialListener==nil) return false;
+        if(![interstitialListener isReady]) return false;
+        [interstitialListener show];
         interstitialListener = [[InterstitialListener alloc] initWithID:interstitialID];
+        return true;
     }
 
 }

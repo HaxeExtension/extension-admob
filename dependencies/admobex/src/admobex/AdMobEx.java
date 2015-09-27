@@ -75,22 +75,30 @@ public class AdMobEx extends Extension {
 	}
 
 
-	public static void showInterstitial() {
-		Log.d("AdMobEx","Show Interstitial Begin");
-		if(loadingInterstitial) return;
+	public static boolean showInterstitial() {
+		Log.d("AdMobEx","Show Interstitial: Begins");
+		if(loadingInterstitial) return false;
 		if(failInterstitial){
 			mainActivity.runOnUiThread(new Runnable() {
 				public void run() { getInstance().reloadInterstitial();}
 			});	
-			return;
+			Log.d("AdMobEx","Show Interstitial: Interstitial not loaded... reloading.");
+			return false;
 		}
-		Log.d("AdMobEx","Show Interstitial Middle");
 
-		if(interstitialId=="") return;
+		if(interstitialId=="") {
+			Log.d("AdMobEx","Show Interstitial: InterstitialID is empty... ignoring.");
+			return false;
+		}
+		if(!getInstance().interstitial.isLoaded()) {
+			Log.d("AdMobEx","Show Interstitial: Not loaded... ignoring.");
+			return false;
+		}
 		mainActivity.runOnUiThread(new Runnable() {
-			public void run() {	if(getInstance().interstitial.isLoaded()) getInstance().interstitial.show();	}
+			public void run() {	getInstance().interstitial.show(); }
 		});
-		Log.d("AdMobEx","Show Interstitial End");
+		Log.d("AdMobEx","Show Interstitial: Compelte.");
+		return true;
 	}
 
 
