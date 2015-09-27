@@ -90,12 +90,14 @@ public class AdMobEx extends Extension {
 			Log.d("AdMobEx","Show Interstitial: InterstitialID is empty... ignoring.");
 			return false;
 		}
-		if(!getInstance().interstitial.isLoaded()) {
-			Log.d("AdMobEx","Show Interstitial: Not loaded... ignoring.");
-			return false;
-		}
 		mainActivity.runOnUiThread(new Runnable() {
-			public void run() {	getInstance().interstitial.show(); }
+			public void run() {	
+				if(!getInstance().interstitial.isLoaded()){
+					Log.d("AdMobEx","Show Interstitial: Not loaded (THIS SHOULD NEVER BE THE CASE HERE!)... ignoring.");
+					return;
+				}
+				getInstance().interstitial.show();
+			}
 		});
 		Log.d("AdMobEx","Show Interstitial: Compelte.");
 		return true;

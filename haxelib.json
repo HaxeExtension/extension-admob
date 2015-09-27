@@ -8,6 +8,6 @@
         "dependencies": {
             "openfl-gps-lib": ""
         },
-        "version": "1.4.1",
-        "releasenote": "Set Theme.Translucent to enable transparent background interstitial ad on Android."
+        "version": "1.4.2",
+        "releasenote": "Make showInterstitial return true or false to allow local mediation."
 }
