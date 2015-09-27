@@ -1,6 +1,6 @@
 {
-        "name": "openfl-admob",
-        "url": "https://github.com/sempaigames/openfl-admob",
+        "name": "extension-admob",
+        "url": "https://github.com/sempaigames/extension-admob",
         "license": "MIT",
         "contributors":["fbricker"],
         "tags": ["ads","api","google","ad","monetization","admob"],

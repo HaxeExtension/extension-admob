@@ -1,4 +1,4 @@
-#openfl-admob
+#extension-admob
 
 OpenFL extension for "Google AdMob" on iOS and Android.
 This extension allows you to easily integrate Google AdMob on your OpenFL (or HaxeFlixel) game / application.
@@ -75,7 +75,7 @@ class MainClass {
 
 To install this library, you can simply get the library from haxelib like this:
 ```bash
-haxelib install openfl-admob
+haxelib install extension-admob
 ```
 
 Also, you'll need to download the google-play-services_lib and android-support-v4 from your Android SDK Manager. To do that, you need to execute the android tool from:
@@ -87,7 +87,7 @@ Then select *Google Play Services* and *Android Support Library* under the "Extr
 
 Once this is done, you just need to add this to your project.xml
 ```xml
-<haxelib name="openfl-admob" />
+<haxelib name="extension-admob" />
 ```
 
 ###Disclaimer

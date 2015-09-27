@@ -4,5 +4,5 @@ cd "$dir"
 rm -rf project/obj
 lime rebuild . ios
 rm -rf project/obj
-rm -f openfl-admob.zip
-zip -r openfl-admob.zip extension haxelib.json include.xml project ndll dependencies frameworks
+rm -f extension-admob.zip
+zip -r extension-admob.zip extension haxelib.json include.xml project ndll dependencies frameworks
