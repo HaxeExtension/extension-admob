@@ -8,6 +8,6 @@
         "dependencies": {
             "openfl-gps-lib": ""
         },
-        "version": "1.4.2",
-        "releasenote": "Make showInterstitial return true or false to allow local mediation."
+        "version": "1.4.3",
+        "releasenote": "Zero pad MD5 hex digest to 32 characters if necessary to fix problem with test ads."
 }
