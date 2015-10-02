@@ -256,7 +256,9 @@ public class AdMobEx extends Extension {
 		try  {
 		    digest = MessageDigest.getInstance("MD5");
 		    digest.update(s.getBytes(),0,s.length());
-		    return new java.math.BigInteger(1, digest.digest()).toString(16);
+		    String hexDigest = new java.math.BigInteger(1, digest.digest()).toString(16);
+		    if (hexDigest.length() >= 32) return hexDigest;
+		    else return "00000000000000000000000000000000".substring(hexDigest.length()) + hexDigest;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
