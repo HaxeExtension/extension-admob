@@ -8,6 +8,6 @@
         "dependencies": {
             "extension-googleplayservices-lib": ""
         },
-        "version": "1.4.4",
-        "releasenote": "Update dependencies."
+        "version": "1.4.5",
+        "releasenote": "Fix hideBanner implementation (sometimes it just didn't hide)."
 }

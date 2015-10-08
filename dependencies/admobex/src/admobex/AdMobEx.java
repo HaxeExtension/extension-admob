@@ -129,14 +129,7 @@ public class AdMobEx extends Extension {
 	public static void hideBanner() {
 		if(bannerId=="") return;
 		mustBeShowingBanner=false;
-		if(failBanner){
-			mainActivity.runOnUiThread(new Runnable() {
-				public void run() {getInstance().reloadBanner();}
-			});
-			return;
-		}
 		Log.d("AdMobEx","Hide Banner");
-
 		mainActivity.runOnUiThread(new Runnable() {
 			public void run() {	getInstance().banner.setVisibility(View.INVISIBLE); }
 		});
