@@ -8,6 +8,6 @@
         "dependencies": {
             "extension-googleplayservices-lib": ""
         },
-        "version": "1.4.5",
-        "releasenote": "Fix hideBanner implementation (sometimes it just didn't hide)."
+        "version": "1.4.6",
+        "releasenote": "Upgrade iOS SDK to version 7.5.2."
 }
