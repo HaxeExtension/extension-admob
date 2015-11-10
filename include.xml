@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension>
 	<section if="android">
+		<haxelib name="extension-android-support-v4" /> 
 		<haxelib name="extension-googleplayservices-lib" /> 
 		<dependency name="admobex" path="dependencies/admobex" /> 
 	</section>

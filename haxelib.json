@@ -6,8 +6,9 @@
         "tags": ["ads","api","google","ad","monetization","admob"],
         "description": "Google AdMob / OpenFL extension for Android + iOS.",
         "dependencies": {
+            "extension-android-support-v4": "",
             "extension-googleplayservices-lib": ""
         },
-        "version": "1.4.6",
-        "releasenote": "Upgrade iOS SDK to version 7.5.2."
+        "version": "1.4.7",
+        "releasenote": "Use android-support-v4 from specific extension."
 }
