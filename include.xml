@@ -16,6 +16,7 @@
 		<dependency name="CoreTelephony.framework" />
 		<dependency name="EventKit.framework" />
 		<dependency name="EventKitUI.framework" />
+		<dependency name="MediaPlayer.framework" />
 		<dependency name="MessageUI.framework" />
 		<dependency name="StoreKit.framework" />
 		<dependency name="SystemConfiguration.framework" />
