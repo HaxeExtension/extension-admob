@@ -9,6 +9,7 @@ This extension allows you to easily integrate Google AdMob on your OpenFL (or Ha
 * Setup your banners to be on top or on the bottom of the screen.
 * Allows you to specify min amount of time between interstitial displays (to avoid annoying your users).
 * Allows you to specify min amount of calls to interstitial before it actually gets displayed (to avoid annoying your users).
+* Callback support for Interstitial Events.
 
 ###Simple use Example
 
@@ -25,6 +26,10 @@ class MainClass {
 		// Note that if you decide to call enableTestingAds(), you must do that before calling INIT methods.
 		AdMob.enableTestingAds();
 
+		// If you want to get instertitial events (LOADING, LOADED, CLOSED, DISPLAYING, ETC), provide
+		// some callback function for this.
+		AdMob.onInterstitialEvent = onInterstitialEvent;
+		
 		// then call init with Android and iOS banner IDs in the main method.
 		// parameters are (bannerId:String, interstitialId:String, gravityMode:GravityMode).
 		// if you don't have the bannerId and interstitialId, go to www.google.com/ads/admob to create them.
@@ -65,6 +70,24 @@ class MainClass {
 	function beginGame() {
 		// some implementation
 		AdMob.hideBanner(); // if you don't want the banner to be on screen while playing... call AdMob.hideBanner();
+	}
+	
+	function onInterstitialEvent(event:String) {
+		trace("THE INSTERSTITIAL IS "+event);
+		/*
+		Note that the "event" String will be one of this:
+		    AdMob.LEAVING
+		    AdMob.FAILED
+		    AdMob.CLOSED
+		    AdMob.DISPLAYING
+		    AdMob.LOADED
+		    AdMob.LOADING
+		
+		So, you can do something like:
+		if(event == AdMob.CLOSED) trace("The player dismissed the ad!");
+		else if(event == AdMob.LEAVING) trace("The player clicked the ad :), and we're leaving to the ad destination");
+		else if(event == AdMob.FAILED) trace("Failed to load the ad... the extension will retry automatically.");
+		*/
 	}
 	
 }
