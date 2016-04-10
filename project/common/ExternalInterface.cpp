@@ -12,12 +12,14 @@
 
 using namespace admobex;
 
+AutoGCRoot* intestitialEventHandle = NULL;
 
-static value admobex_init(value banner_id,value interstitial_id, value gravity_mode, value testing_ads){
+static value admobex_init(value banner_id,value interstitial_id, value gravity_mode, value testing_ads, value onInterstitialEvent){
+	intestitialEventHandle = new AutoGCRoot(onInterstitialEvent);
 	init(val_string(banner_id),val_string(interstitial_id), val_string(gravity_mode), val_bool(testing_ads));
 	return alloc_null();
 }
-DEFINE_PRIM(admobex_init,4);
+DEFINE_PRIM(admobex_init,5);
 
 static value admobex_banner_show(){
 	showBanner();
@@ -53,3 +55,12 @@ DEFINE_PRIM(admobex_interstitial_show,0);
 
 
 extern "C" int admobex_register_prims () { return 0; }
+
+
+extern "C" void reportInterstitialEvent(const char* event)
+{
+	if(intestitialEventHandle == NULL) return;
+//    value o = alloc_empty_object();
+//    alloc_field(o,val_id("event"),alloc_string(event));
+    val_call1(intestitialEventHandle->get(), alloc_string(event));
+}

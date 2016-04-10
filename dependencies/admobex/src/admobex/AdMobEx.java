@@ -16,6 +16,7 @@ import android.media.audiofx.AudioEffect.OnControlStatusChangeListener;
 import android.widget.RelativeLayout;
 import android.view.ViewGroup;
 import org.haxe.extension.Extension;
+import org.haxe.lime.HaxeObject;
 import android.view.Gravity;
 import android.view.View;
 import android.util.Log;
@@ -50,6 +51,18 @@ public class AdMobEx extends Extension {
 	private static Boolean testingAds=false;
 	private static int gravity=Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
 
+	private static HaxeObject callback=null;
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static final String LEAVING = "LEAVING";
+	public static final String FAILED = "FAILED";
+	public static final String CLOSED = "CLOSED";
+	public static final String DISPLAYING = "DISPLAYING";
+	public static final String LOADED = "LOADED";
+	public static final String LOADING = "LOADING";
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -62,10 +75,11 @@ public class AdMobEx extends Extension {
 	}
 
 
-	public static void init(String bannerId, String interstitialId, String gravityMode, boolean testingAds){
+	public static void init(String bannerId, String interstitialId, String gravityMode, boolean testingAds, HaxeObject callback){
 		AdMobEx.bannerId=bannerId;
 		AdMobEx.interstitialId=interstitialId;
 		AdMobEx.testingAds=testingAds;
+		AdMobEx.callback=callback;
 		if(gravityMode.equals("TOP")){
 			AdMobEx.gravity=Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 		}
@@ -74,6 +88,14 @@ public class AdMobEx extends Extension {
 		});	
 	}
 
+	private static void reportInterstitialEvent(final String event){
+		if(callback == null) return;
+		mainActivity.runOnUiThread(new Runnable() {
+			public void run() { 
+				callback.call1("_onInterstitialEvent",event);
+			}
+		});
+	}
 
 	public static boolean showInterstitial() {
 		Log.d("AdMobEx","Show Interstitial: Begins");
@@ -93,6 +115,7 @@ public class AdMobEx extends Extension {
 		mainActivity.runOnUiThread(new Runnable() {
 			public void run() {	
 				if(!getInstance().interstitial.isLoaded()){
+					reportInterstitialEvent(AdMobEx.FAILED);
 					Log.d("AdMobEx","Show Interstitial: Not loaded (THIS SHOULD NEVER BE THE CASE HERE!)... ignoring.");
 					return;
 				}
@@ -169,16 +192,27 @@ public class AdMobEx extends Extension {
 			interstitial.setAdListener(new AdListener() {
 				public void onAdLoaded() {
 					AdMobEx.getInstance().loadingInterstitial=false;
+					reportInterstitialEvent(AdMobEx.LOADED);
 					Log.d("AdMobEx","Received Interstitial!");
 				}
 				public void onAdFailedToLoad(int errorcode) {
 					AdMobEx.getInstance().loadingInterstitial=false;	
 					AdMobEx.getInstance().failInterstitial=true;
+					reportInterstitialEvent(AdMobEx.FAILED);
 					Log.d("AdMobEx","Fail to get Interstitial: "+errorcode);
 				}
 				public void onAdClosed() {
 					AdMobEx.getInstance().reloadInterstitial();
+					reportInterstitialEvent(AdMobEx.CLOSED);
 					Log.d("AdMobEx","Dismiss Interstitial");
+				}
+				public void onAdOpened() {
+					reportInterstitialEvent(AdMobEx.DISPLAYING);
+					Log.d("AdMobEx","Displaying Interstitial");
+				}
+				public void onAdLeftApplication() {
+					reportInterstitialEvent(AdMobEx.LEAVING);
+					Log.d("AdMobEx","User clicked on Interstitial, leaving app");
 				}
 			});
 			this.reloadInterstitial();
@@ -230,6 +264,7 @@ public class AdMobEx extends Extension {
 		if(interstitialId=="") return;
 		if(loadingInterstitial) return;
 		Log.d("AdMobEx","Reload Interstitial");
+		reportInterstitialEvent(AdMobEx.LOADING);
 		loadingInterstitial=true;
 		interstitial.loadAd(adReq);
 		failInterstitial=false;

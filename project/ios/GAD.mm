@@ -5,6 +5,15 @@ extern "C"{
     #import "GoogleMobileAds/GADBannerView.h"
 }
 
+extern "C" void reportInterstitialEvent (const char* event);
+static const char* ADMOB_LEAVING = "LEAVING";
+static const char* ADMOB_FAILED = "FAILED";
+static const char* ADMOB_CLOSED = "CLOSED";
+static const char* ADMOB_DISPLAYING = "DISPLAYING";
+static const char* ADMOB_LOADED = "LOADED";
+static const char* ADMOB_LOADING = "LOADING";
+
+
 @interface InterstitialListener : NSObject <GADInterstitialDelegate> {
     @public
     GADInterstitial         *ad;
@@ -20,13 +29,14 @@ extern "C"{
 
 - (id)initWithID:(NSString*)ID {
     self = [super init];
-    NSLog(@"AdMob Init");
     if(!self) return nil;
     ad = [[GADInterstitial alloc] initWithAdUnitID:ID];
     ad.delegate = self;
     GADRequest *request = [GADRequest request];
     request.testDevices = @[ kGADSimulatorID ];
     [ad performSelector:@selector(loadRequest:) withObject:request afterDelay:1];
+    NSLog(@"AdMob Loading Interstitial");
+    reportInterstitialEvent(ADMOB_LOADING);
     return self;
 }
 
@@ -42,16 +52,19 @@ extern "C"{
 /// Called when an interstitial ad request succeeded.
 - (void)interstitialDidReceiveAd:(GADInterstitial *)ad {
     NSLog(@"interstitialDidReceiveAd");
+    reportInterstitialEvent(ADMOB_LOADED);
 }
 
 /// Called when an interstitial ad request failed.
 - (void)interstitial:(GADInterstitial *)ad didFailToReceiveAdWithError:(GADRequestError *)error {
     NSLog(@"interstitialDidFailToReceiveAdWithError: %@", [error localizedDescription]);
+    reportInterstitialEvent(ADMOB_FAILED);
 }
 
 /// Called just before presenting an interstitial.
 - (void)interstitialWillPresentScreen:(GADInterstitial *)ad {
     NSLog(@"interstitialWillPresentScreen");
+    reportInterstitialEvent(ADMOB_DISPLAYING);
 }
 
 /// Called before the interstitial is to be animated off the screen.
@@ -62,12 +75,14 @@ extern "C"{
 /// Called just after dismissing an interstitial and it has animated off the screen.
 - (void)interstitialDidDismissScreen:(GADInterstitial *)ad {
     NSLog(@"interstitialDidDismissScreen");
+    reportInterstitialEvent(ADMOB_CLOSED);
 }
 
 /// Called just before the application will background or terminate because the user clicked on an
 /// ad that will launch another application (such as the App Store).
 - (void)interstitialWillLeaveApplication:(GADInterstitial *)ad {
     NSLog(@"interstitialWillLeaveApplication");
+    reportInterstitialEvent(ADMOB_LEAVING);
 }
 
 @end
