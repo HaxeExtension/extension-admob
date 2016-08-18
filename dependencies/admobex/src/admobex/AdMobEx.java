@@ -34,6 +34,7 @@ public class AdMobEx extends Extension {
 	private AdView banner;
 	private RelativeLayout rl;
 	private AdRequest adReq;
+	private RewardedVideoAd _rewardedAd;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,6 +127,12 @@ public class AdMobEx extends Extension {
 		return true;
 	}
 
+	public static void showRewardedAd()
+	{
+		if (_rewardedAd.isLoaded()) {
+		   _rewardedAd.show();
+		}
+	}
 
 	public static void showBanner() {
 		if(bannerId=="") return;
@@ -216,7 +223,53 @@ public class AdMobEx extends Extension {
 				}
 			});
 			this.reloadInterstitial();
+
+			_rewardedAd = MobileAds.getRewardedVideoAdInstance(this);
+    		_rewardedAd.setRewardedVideoAdListener(new RewardedVideoAdListener()
+    			{
+    				@Override
+					public void onRewarded(RewardItem reward) {
+					    Toast.makeText(this, "onRewarded! currency: " + reward.getType() + "  amount: " +
+					            reward.getAmount(), Toast.LENGTH_SHORT).show();
+					}
+
+					@Override
+					public void onRewardedVideoAdLeftApplication() {
+					    Toast.makeText(this, "onRewardedVideoAdLeftApplication",
+					            Toast.LENGTH_SHORT).show();
+					}
+
+					@Override
+					public void onRewardedVideoAdClosed() {
+					    Toast.makeText(this, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
+					}
+
+					@Override
+					public void onRewardedVideoAdFailedToLoad(int errorCode) {
+					    Toast.makeText(this, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
+					}
+
+					@Override
+					public void onRewardedVideoAdLoaded() {
+					    Toast.makeText(this, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
+					}
+
+					@Override
+					public void onRewardedVideoAdOpened() {
+					    Toast.makeText(this, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
+					}
+
+					@Override
+					public void onRewardedVideoStarted() {
+					    Toast.makeText(this, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
+					}
+    			});
+    		loadRewardedVideoAd();
 		}
+	}
+
+	private void loadRewardedVideoAd() {
+	    _rewardedAd.loadAd(AD_UNIT_ID, new AdRequest.Builder().build());
 	}
 
 	private void reinitBanner(){
@@ -293,4 +346,19 @@ public class AdMobEx extends Extension {
 		return "";
 	}
 
+
+	/////////////////////////////////////
+	/// EVENTS HANDLER
+
+	public void onResume() {
+	    _rewardedAd.resume(Extension.mainActivity);
+	}
+
+	public void onPause() {
+	    _rewardedAd.pause(Extension.mainActivity);
+	}
+
+	public void onDestroy() {
+	    _rewardedAd.destroy(Extension.mainActivity);
+	}
 }

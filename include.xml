@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension>
+	<section if="ios || android">
+		<echo value="admob-extension: Adding adcolony dependencies"			if="adcolony-mediation" />
+		<echo value="admob-extension: Adding applovin dependencies"			if="applovin-mediation" />
+		<echo value="admob-extension: Adding facebook dependencies"			if="facebook-mediation" />
+		<echo value="admob-extension: Adding vungle dependencies"			if="vungle-mediation" />
+		
+	</section>
+
 	<section if="android">
 		<haxelib name="extension-android-support-v4" /> 
-		<haxelib name="extension-googleplayservices-lib" /> 
+		<haxelib name="extension-googleplayservices-lib" />
 		<dependency name="admobex" path="dependencies/admobex" /> 
+		<dependency name="adcolony-mediation"		path="dependencies/adcolony-mediation"		if="adcolony-mediation" />
+		<dependency name="applovin-mediation"		path="dependencies/applovin-mediation"		if="applovin-mediation" />
+		<template path="dependencies/applovin-mediation/AdMobMediationInterEvent.java" rename="::APP_PACKAGE::/AdMobMediationInterEvent.java" if="applovin-mediation" />
+		<dependency name="facebook-mediation"		path="dependencies/facebook-mediation"		if="facebook-mediation" />
+		<dependency name="vungle-mediation"		path="dependencies/vungle-mediation"		if="vungle-mediation" />
+		
+
+		<android extension="admobex.AdMobEx" />
 	</section>
 	<section if="ios">
 		<ndll name="admobex" />
