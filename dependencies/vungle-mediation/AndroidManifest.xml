@@ -1,0 +1,23 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.admobex"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+	<application android:hardwareAccelerated="true">
+		<activity
+		::if (WIN_ORIENTATION=="portrait")::android:screenOrientation="portrait"::end::::if (WIN_ORIENTATION=="landscape")::android:screenOrientation="landscape"::end::	
+		android:name="com.vungle.publisher.VideoFullScreenAdActivity"
+		android:configChanges="keyboardHidden|orientation|screenSize"
+		android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+
+		<activity android:name="com.vungle.publisher.MraidFullScreenAdActivity"
+		 android:configChanges="keyboardHidden|orientation|screenSize"
+		 android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
+	</application>
+
+	<uses-permission android:name="android.permission.INTERNET" />
+ 
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	
+</manifest>

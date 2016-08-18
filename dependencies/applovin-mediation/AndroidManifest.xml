@@ -1,0 +1,23 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.admobex"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+	<application android:hardwareAccelerated="true">
+		<activity
+		android:name="com.applovin.adview.AppLovinInterstitialActivity"/>
+		<activity
+		android:name="com.applovin.adview.AppLovinConfirmationActivity"/>
+
+		<meta-data android:name="applovin.sdk.key"
+       	android:value="::ENV_APPLOVIN_SDK_KEY::"  />
+	</application>
+
+	<!-- These permissions are mandatory to run AppLovin SDK -->
+	<uses-permission android:name="android.permission.INTERNET"/>
+
+	<!-- These permissions are strongly recommended and will result in higher performance -->
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	
+</manifest>
