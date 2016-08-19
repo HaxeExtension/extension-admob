@@ -135,9 +135,13 @@ public class AdMobEx extends Extension {
 
 	public static void showRewarded()
 	{
-		if (getInstance().rewardedAd.isLoaded()) {
-		  getInstance().rewardedAd.show();
-		}
+		mainActivity.runOnUiThread(new Runnable() {
+			public void run() { 
+				if (getInstance().rewardedAd.isLoaded()) {
+				  getInstance().rewardedAd.show();
+				}
+			}	
+		});
 	}
 
 	public static void showBanner() {
