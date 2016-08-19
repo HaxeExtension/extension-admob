@@ -2,6 +2,7 @@ package admobex;
 import java.util.Date;
 import java.util.Queue;
 
+import android.widget.Toast;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -24,6 +25,9 @@ import android.provider.Settings.Secure;
 import java.security.MessageDigest;
 
 import com.google.android.gms.ads.*;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.android.gms.ads.reward.RewardItem;
 
 public class AdMobEx extends Extension {
 
@@ -34,7 +38,7 @@ public class AdMobEx extends Extension {
 	private AdView banner;
 	private RelativeLayout rl;
 	private AdRequest adReq;
-	private RewardedVideoAd _rewardedAd;
+	private RewardedVideoAd rewardedAd;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +46,7 @@ public class AdMobEx extends Extension {
 	private static Boolean failInterstitial=false;
 	private static Boolean loadingInterstitial=false;
 	private static String interstitialId=null;
+	private static String rewardedId = null;
 
 	private static Boolean failBanner=false;
 	private static Boolean loadingBanner=false;
@@ -76,9 +81,10 @@ public class AdMobEx extends Extension {
 	}
 
 
-	public static void init(String bannerId, String interstitialId, String gravityMode, boolean testingAds, HaxeObject callback){
+	public static void init(String bannerId, String interstitialId, String rewardedId, String gravityMode, boolean testingAds, HaxeObject callback){
 		AdMobEx.bannerId=bannerId;
 		AdMobEx.interstitialId=interstitialId;
+		AdMobEx.rewardedId = rewardedId;
 		AdMobEx.testingAds=testingAds;
 		AdMobEx.callback=callback;
 		if(gravityMode.equals("TOP")){
@@ -127,10 +133,10 @@ public class AdMobEx extends Extension {
 		return true;
 	}
 
-	public static void showRewardedAd()
+	public static void showRewarded()
 	{
-		if (_rewardedAd.isLoaded()) {
-		   _rewardedAd.show();
+		if (getInstance().rewardedAd.isLoaded()) {
+		  getInstance().rewardedAd.show();
 		}
 	}
 
@@ -175,7 +181,7 @@ public class AdMobEx extends Extension {
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private AdMobEx() {
+	public AdMobEx() {
 
 		AdRequest.Builder builder = new AdRequest.Builder();
 
@@ -223,45 +229,48 @@ public class AdMobEx extends Extension {
 				}
 			});
 			this.reloadInterstitial();
+		}
 
-			_rewardedAd = MobileAds.getRewardedVideoAdInstance(this);
-    		_rewardedAd.setRewardedVideoAdListener(new RewardedVideoAdListener()
+		if(rewardedId != "")
+		{
+			rewardedAd = MobileAds.getRewardedVideoAdInstance(Extension.mainContext);
+    		rewardedAd.setRewardedVideoAdListener(new RewardedVideoAdListener()
     			{
     				@Override
 					public void onRewarded(RewardItem reward) {
-					    Toast.makeText(this, "onRewarded! currency: " + reward.getType() + "  amount: " +
+					    Toast.makeText(Extension.mainContext, "onRewarded! currency: " + reward.getType() + "  amount: " +
 					            reward.getAmount(), Toast.LENGTH_SHORT).show();
 					}
 
 					@Override
 					public void onRewardedVideoAdLeftApplication() {
-					    Toast.makeText(this, "onRewardedVideoAdLeftApplication",
+					    Toast.makeText(Extension.mainContext, "onRewardedVideoAdLeftApplication",
 					            Toast.LENGTH_SHORT).show();
 					}
 
 					@Override
 					public void onRewardedVideoAdClosed() {
-					    Toast.makeText(this, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
+					    Toast.makeText(Extension.mainContext, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
 					}
 
 					@Override
 					public void onRewardedVideoAdFailedToLoad(int errorCode) {
-					    Toast.makeText(this, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
+					    Toast.makeText(Extension.mainContext, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
 					}
 
 					@Override
 					public void onRewardedVideoAdLoaded() {
-					    Toast.makeText(this, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
+					    Toast.makeText(Extension.mainContext, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
 					}
 
 					@Override
 					public void onRewardedVideoAdOpened() {
-					    Toast.makeText(this, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
+					    Toast.makeText(Extension.mainContext, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
 					}
 
 					@Override
 					public void onRewardedVideoStarted() {
-					    Toast.makeText(this, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
+					    Toast.makeText(Extension.mainContext, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
 					}
     			});
     		loadRewardedVideoAd();
@@ -269,7 +278,7 @@ public class AdMobEx extends Extension {
 	}
 
 	private void loadRewardedVideoAd() {
-	    _rewardedAd.loadAd(AD_UNIT_ID, new AdRequest.Builder().build());
+	    rewardedAd.loadAd(rewardedId, new AdRequest.Builder().build());
 	}
 
 	private void reinitBanner(){
@@ -351,14 +360,14 @@ public class AdMobEx extends Extension {
 	/// EVENTS HANDLER
 
 	public void onResume() {
-	    _rewardedAd.resume(Extension.mainActivity);
+	    getInstance().rewardedAd.resume();
 	}
 
 	public void onPause() {
-	    _rewardedAd.pause(Extension.mainActivity);
+	    getInstance().rewardedAd.pause();
 	}
 
 	public void onDestroy() {
-	    _rewardedAd.destroy(Extension.mainActivity);
+	    getInstance().rewardedAd.destroy();
 	}
 }
