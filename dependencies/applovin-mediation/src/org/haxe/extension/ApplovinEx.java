@@ -8,6 +8,6 @@ public class ApplovinEx extends Extension {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		AppLovinSdk.initializeSdk(context);
+		AppLovinSdk.initializeSdk(Extension.mainContext);
 	}
 }
