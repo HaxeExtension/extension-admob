@@ -397,7 +397,7 @@ public class AdMobEx extends Extension {
 		Log.d("AdMobEx","Reload Rewarded");
 
 		loadingRewarded = true;
-		rewardedAd.loadAd(rewardedId,adReq);
+		rewardedAd.loadAd(rewardedId,new AdRequest.Builder().build());
 		failRewarded = false;
 	}
 
@@ -407,7 +407,7 @@ public class AdMobEx extends Extension {
 		Log.d("AdMobEx","Reload Interstitial");
 		reportInterstitialEvent(AdMobEx.LOADING);
 		loadingInterstitial=true;
-		interstitial.loadAd(adReq);
+		interstitial.loadAd(new AdRequest.Builder().build());
 		failInterstitial=false;
 	}
 

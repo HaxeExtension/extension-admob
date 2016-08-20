@@ -14,7 +14,7 @@
 		<dependency name="admobex" path="dependencies/admobex" /> 
 		<dependency name="adcolony-mediation"		path="dependencies/adcolony-mediation"		if="adcolony-mediation" />
 		<dependency name="applovin-mediation"		path="dependencies/applovin-mediation"		if="applovin-mediation" />
-		<!-- <template path="dependencies/applovin-mediation/AdMobMediationInterEvent.java" rename="::APP_PACKAGE::/AdMobMediationInterEvent.java" if="applovin-mediation" /> -->
+		<template path="dependencies/AdMobMediationInterEvent.java" rename="${APP_PATH}/AdMobMediationInterEvent.java" if="applovin-mediation" />
 		<dependency name="facebook-mediation"		path="dependencies/facebook-mediation"		if="facebook-mediation" />
 		<dependency name="vungle-mediation"		path="dependencies/vungle-mediation"		if="vungle-mediation" />
 		
