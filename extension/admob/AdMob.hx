@@ -9,7 +9,7 @@ class AdMob {
 
 	////////////////////////////////////////////////////////////////////////////
 
-	private static var __init:String->String->String->String->Bool->Dynamic->Void = function(bannerId:String, interstitialId:String, rewardedId:String, gravityMode:String, testingAds:Bool, callback:Dynamic){};
+	private static var __init:String->String->String->String->String->Bool->Dynamic->Void = function(appId:String, bannerId:String, interstitialId:String, rewardedId:String, gravityMode:String, testingAds:Bool, callback:Dynamic){};
 	private static var __showBanner:Void->Void = function(){};
 	private static var __hideBanner:Void->Void = function(){};
 	private static var __showInterstitial:Void->Bool = function(){ return false; };
@@ -52,20 +52,20 @@ class AdMob {
 		testingAds = true;
 	}
 
-	public static function initAndroid(bannerId:String, interstitialId:String, rewardedId:String, gravityMode:GravityMode){
+	public static function initAndroid(appId:String, bannerId:String, interstitialId:String, rewardedId:String, gravityMode:GravityMode){
 		#if android
 		if(initialized) return;
 		initialized = true;
 		try{
 			// JNI METHOD LINKING
-			__init = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "init", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLorg/haxe/lime/HaxeObject;)V");
+			__init = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "init", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLorg/haxe/lime/HaxeObject;)V");
 			__showBanner = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showBanner", "()V");
 			__hideBanner = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "hideBanner", "()V");
 			__showInterstitial = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showInterstitial", "()Z");
 			__showRewarded = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showRewarded","()V");
 			__onResize = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "onResize", "()V");
 
-			__init(bannerId,interstitialId, rewardedId, (gravityMode==GravityMode.TOP)?'TOP':'BOTTOM',testingAds, getInstance());
+			__init(appId, bannerId,interstitialId, rewardedId, (gravityMode==GravityMode.TOP)?'TOP':'BOTTOM',testingAds, getInstance());
 		}catch(e:Dynamic){
 			trace("Android INIT Exception: "+e);
 		}
@@ -91,7 +91,7 @@ class AdMob {
 		#end
 	}
 
-	public static function showRewardedAd()
+	public static function showRewardedAd():Void
 	{
 		try {
 			__showRewarded();
@@ -133,10 +133,13 @@ class AdMob {
 	public static inline var DISPLAYING:String = "DISPLAYING";
 	public static inline var LOADED:String = "LOADED";
 	public static inline var LOADING:String = "LOADING";
+	public static inline var REWARDED:String = "REWARDED";
 
 	////////////////////////////////////////////////////////////////////////////
 
 	public static var onInterstitialEvent:String->Void = null;
+	public static var onRewardedEvent:String->Void = null;
+	public static var onGetReward:String->Int->Void = null;
 	private static var instance:AdMob = null;
 
 	private static function getInstance():AdMob{
@@ -152,5 +155,16 @@ class AdMob {
 		if(onInterstitialEvent != null) onInterstitialEvent(event);
 		else trace("Interstitial event: "+event+ " (assign AdMob.onInterstitialEvent to get this events and avoid this traces)");
 	}
+
+	public function _onRewardedEvent(event:String){
+		if(onRewardedEvent != null) onRewardedEvent(event);
+		else trace("Interstitial event: "+event+ " (assign AdMob.onInterstitialEvent to get this events and avoid this traces)");
+	}
 	
+	public function _onGetReward(rewardType:String, rewardAmount:Int)
+	{
+		if(onGetReward!=null)
+			onGetReward(rewardType, rewardAmount);
+		else trace("Get Reward not assigned");
+	}
 }
