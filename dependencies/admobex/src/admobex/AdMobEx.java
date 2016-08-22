@@ -28,6 +28,11 @@ import com.google.android.gms.ads.*;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.ads.reward.RewardItem;
+import com.google.ads.mediation.admob.AdMobAdapter;
+
+// ad colony
+// import com.jirbo.adcolony.AdColonyAdapter;
+// import com.jirbo.adcolony.AdColonyBundleBuilder;
 
 public class AdMobEx extends Extension {
 
@@ -293,15 +298,13 @@ public class AdMobEx extends Extension {
 					reportRewardedEvent(AdMobEx.REWARDED);
 					getReward(reward.getType(), reward.getAmount());
 
-				    Toast.makeText(Extension.mainContext, "onRewarded! currency: " + reward.getType() + "  amount: " +
-				            reward.getAmount(), Toast.LENGTH_SHORT).show();
+				    Toast.makeText(Extension.mainContext, "onRewarded! currency: " + reward.getType() + "  amount: " +reward.getAmount(), Toast.LENGTH_SHORT).show();
 				}
 
 				@Override
 				public void onRewardedVideoAdLeftApplication() {
 					reportRewardedEvent(AdMobEx.LEAVING);
-				    Toast.makeText(Extension.mainContext, "onRewardedVideoAdLeftApplication",
-				            Toast.LENGTH_SHORT).show();
+				    //Toast.makeText(Extension.mainContext, "onRewardedVideoAdLeftApplication",Toast.LENGTH_SHORT).show();
 				}
 
 				@Override
@@ -309,7 +312,7 @@ public class AdMobEx extends Extension {
 					AdMobEx.getInstance().reloadRewarded();
 					reportRewardedEvent(AdMobEx.CLOSED);
 					Log.d("AdMobEx","Dismiss Interstitial");
-				    Toast.makeText(Extension.mainContext, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
+				    //Toast.makeText(Extension.mainContext, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
 				}
 
 				@Override
@@ -318,7 +321,7 @@ public class AdMobEx extends Extension {
 					AdMobEx.getInstance().failRewarded=true;
 					reportInterstitialEvent(AdMobEx.FAILED);
 					Log.d("AdMobEx","Fail to get Interstitial: " + errorCode);
-				    Toast.makeText(Extension.mainContext, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
+				    //Toast.makeText(Extension.mainContext, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
 				}
 
 				@Override
@@ -397,7 +400,17 @@ public class AdMobEx extends Extension {
 		Log.d("AdMobEx","Reload Rewarded");
 
 		loadingRewarded = true;
-		rewardedAd.loadAd(rewardedId,new AdRequest.Builder().build());
+		
+		Bundle extras = new Bundle();
+        	extras.putBoolean( "_noRefresh", true );
+
+        // AdColonyBundleBuilder.setZoneId("rewardvideo");
+		AdRequest adRequest = new AdRequest.Builder()
+		// .addNetworkExtrasBundle( AdColonyAdapter.class, AdColonyBundleBuilder.build() )
+		.addNetworkExtrasBundle( AdMobAdapter.class, extras)
+		.build();
+		// rewardedAd.loadAd(rewardedId,new AdRequest.Builder().build());
+		rewardedAd.loadAd(rewardedId,adRequest);
 		failRewarded = false;
 	}
 

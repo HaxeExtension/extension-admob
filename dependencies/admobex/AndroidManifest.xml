@@ -6,5 +6,18 @@
 			android:theme="@android:style/Theme.Translucent" />
 		<meta-data android:name="com.google.android.gms.version"
 			android:value="@integer/google_play_services_version"/>
+		
+		<activity
+		android:name="com.jirbo.adcolony.AdColonyOverlay"
+		android:configChanges="keyboardHidden|orientation|screenSize"
+		android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+		<activity
+		android:name="com.jirbo.adcolony.AdColonyFullscreen"
+		android:configChanges="keyboardHidden|orientation|screenSize"
+		android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+		<activity
+		android:name="com.jirbo.adcolony.AdColonyBrowser"
+		android:configChanges="keyboardHidden|orientation|screenSize"
+		android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
 	</application>
 </manifest>
