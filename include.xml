@@ -7,6 +7,7 @@
 		<echo value="admob-extension: Adding vungle dependencies"			if="vungle-mediation" />
 		<echo value="admob-extension: Adding chartboost dependencies"			if="chartboost-mediation" />
 		<echo value="admob-extension: Adding unity dependencies"			if="unity-mediation" />
+		<echo value="admob-extension: Adding inmobi dependencies"			if="inmobi-mediation" />
 	</section>
 
 	<section if="android">
@@ -20,6 +21,7 @@
 		<dependency name="facebook-mediation"		path="dependencies/facebook-mediation"		if="facebook-mediation" />
 		<dependency name="vungle-mediation"		path="dependencies/vungle-mediation"		if="vungle-mediation" />
 		<dependency name="unity-mediation"		path="dependencies/unity-mediation"		if="unity-mediation" />
+		<dependency name="inmobi-mediation"		path="dependencies/inmobi-mediation"		if="inmobi-mediation" />
 
 		<!-- This will add new admobex.AdMobEx to GameActivity.onCreate -->
 		<!-- <android extension="admobex.AdMobEx" /> -->

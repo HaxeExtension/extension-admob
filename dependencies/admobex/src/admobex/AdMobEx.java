@@ -31,8 +31,8 @@ import com.google.android.gms.ads.reward.RewardItem;
 import com.google.ads.mediation.admob.AdMobAdapter;
 
 // ad colony
-// import com.jirbo.adcolony.AdColonyAdapter;
-// import com.jirbo.adcolony.AdColonyBundleBuilder;
+import com.jirbo.adcolony.AdColonyAdapter;
+import com.jirbo.adcolony.AdColonyBundleBuilder;
 
 public class AdMobEx extends Extension {
 
@@ -406,7 +406,8 @@ public class AdMobEx extends Extension {
 
         // AdColonyBundleBuilder.setZoneId("rewardvideo");
 		AdRequest adRequest = new AdRequest.Builder()
-		// .addNetworkExtrasBundle( AdColonyAdapter.class, AdColonyBundleBuilder.build() )
+		// adcolony specific needs
+		.addNetworkExtrasBundle( AdColonyAdapter.class, AdColonyBundleBuilder.build() )
 		.addNetworkExtrasBundle( AdMobAdapter.class, extras)
 		.build();
 		// rewardedAd.loadAd(rewardedId,new AdRequest.Builder().build());
