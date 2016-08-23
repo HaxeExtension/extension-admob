@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension>
+	<section if="ios || android">
+		<echo value="admob-extension: Adding adcolony dependencies"			if="adcolony-mediation" />
+		<echo value="admob-extension: Adding applovin dependencies"			if="applovin-mediation" />
+		<echo value="admob-extension: Adding facebook dependencies"			if="facebook-mediation" />
+		<echo value="admob-extension: Adding vungle dependencies"			if="vungle-mediation" />
+		<echo value="admob-extension: Adding chartboost dependencies"			if="chartboost-mediation" />
+		<echo value="admob-extension: Adding unity dependencies"			if="unity-mediation" />
+		<echo value="admob-extension: Adding inmobi dependencies"			if="inmobi-mediation" />
+	</section>
+
 	<section if="android">
 		<haxelib name="extension-android-support-v4" /> 
-		<haxelib name="extension-googleplayservices-lib" /> 
+		<haxelib name="extension-googleplayservices-lib" />
 		<dependency name="admobex" path="dependencies/admobex" /> 
+		<dependency name="adcolony-mediation"		path="dependencies/adcolony-mediation"		if="adcolony-mediation" />
+		<dependency name="applovin-mediation"		path="dependencies/applovin-mediation"		if="applovin-mediation" />
+		<dependency name="chartboost-mediation"		path="dependencies/chartboost-mediation"		if="chartboost-mediation" />
+		<template path="dependencies/AdMobMediationInterEvent.java" rename="${APP_PATH}/AdMobMediationInterEvent.java" if="applovin-mediation" />
+		<dependency name="facebook-mediation"		path="dependencies/facebook-mediation"		if="facebook-mediation" />
+		<dependency name="vungle-mediation"		path="dependencies/vungle-mediation"		if="vungle-mediation" />
+		<dependency name="unity-mediation"		path="dependencies/unity-mediation"		if="unity-mediation" />
+		<dependency name="inmobi-mediation"		path="dependencies/inmobi-mediation"		if="inmobi-mediation" />
+
+		<!-- This will add new admobex.AdMobEx to GameActivity.onCreate -->
+		<!-- <android extension="admobex.AdMobEx" /> -->
 	</section>
 	<section if="ios">
 		<ndll name="admobex" />
