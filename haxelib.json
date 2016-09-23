@@ -1,14 +1,10 @@
 {
-        "name": "extension-admob",
-        "url": "https://github.com/sempaigames/extension-admob",
-        "license": "MIT",
-        "contributors":["fbricker"],
-        "tags": ["ads","api","google","ad","monetization","admob"],
-        "description": "Google AdMob / OpenFL extension for Android + iOS.",
-        "dependencies": {
-            "extension-android-support-v4": "",
-            "extension-googleplayservices-lib": ""
-        },
-        "version": "1.5.0",
-        "releasenote": "Report Interstitial Events + Upgrade iOS SDK to version 7.7.1 + Require MediaPlayer Framework."
+	"name": "extension-admob",
+	"url": "https://github.com/sempaigames/extension-admob",
+	"license": "MIT",
+	"contributors":["fbricker"],
+	"tags": ["ads","api","google","ad","monetization","admob"],
+	"description": "Google AdMob / OpenFL extension for Android + iOS.",
+	"version": "1.6.0",
+	"releasenote": "Upgrade to Android AdMob version 9.6.0."
 }

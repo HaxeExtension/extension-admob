@@ -4,7 +4,5 @@
 		<activity ::if (WIN_ORIENTATION=="portrait")::android:screenOrientation="portrait"::end::::if (WIN_ORIENTATION=="landscape")::android:screenOrientation="landscape"::end:: android:name="com.google.android.gms.ads.AdActivity"
 			android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
 			android:theme="@android:style/Theme.Translucent" />
-		<meta-data android:name="com.google.android.gms.version"
-			android:value="@integer/google_play_services_version"/>
 	</application>
 </manifest>
