@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension>
 	<section if="android">
-		<set name="google-play-services-basement" />
-		<set name="google-play-services-ads-lite" />
-		<haxelib name="extension-googleplayservices-basement" />
+		<section unless="openfl-legacy || openfl-next">
+			<set name="google-mobile-ads" />
+			<haxelib name="google-play-services" />
+		</section>
+		
+		<section if="openfl-legacy || openfl-next">
+			<set name="google-play-services-basement" />
+			<set name="google-play-services-ads-lite" />
+			<haxelib name="extension-googleplayservices-basement" />
+		</section>
+
 		<dependency name="admobex" path="dependencies/admobex" />
 	</section>
+	
 	<section if="ios">
 		<ndll name="admobex" />
 		<dependency path="frameworks/GoogleMobileAds.framework" />
