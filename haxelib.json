@@ -5,10 +5,9 @@
 	"contributors":["fbricker"],
 	"tags": ["ads","api","google","ad","monetization","admob"],
 	"description": "Google AdMob / OpenFL extension for Android + iOS.",
-	"version": "1.6.1",
+	"version": "1.6.2",
 	"dependencies": {
-		"extension-googleplayservices-basement": "",
-		"google-play-services": ""
+		"extension-googleplayservices-basement": ""
 	},
-	"releasenote": "Add gradle support."
+	"releasenote": "Minimize dependencies."
 }

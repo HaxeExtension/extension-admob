@@ -2,8 +2,7 @@
 <extension>
 	<section if="android">
 		<section unless="openfl-legacy || openfl-next">
-			<set name="google-mobile-ads" />
-			<haxelib name="google-play-services" />
+			<set name="playServicesVersion" value="+" unless="playServicesVersion" />
 		</section>
 		
 		<section if="openfl-legacy || openfl-next">

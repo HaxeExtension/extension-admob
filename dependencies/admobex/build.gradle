@@ -25,5 +25,5 @@ android {
 
 dependencies {
 	compile project(':deps:extension-api')
-	compile project(':deps:google-play-services')
+	compile 'com.google.android.gms:play-services-ads:::SET_PLAY_SERVICES_VERSION::'
 }
