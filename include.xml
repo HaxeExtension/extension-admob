@@ -2,6 +2,7 @@
 <extension>
 	<section if="android">
 		<section unless="openfl-legacy || openfl-next">
+			<echo value="ALERT: Setting GoolePlayServices to the last version on your SDK. Please read how to upgrade and choose your version here: https://github.com/player-03/google-play-services" unless="playServicesVersion" />
 			<set name="playServicesVersion" value="+" unless="playServicesVersion" />
 		</section>
 		
