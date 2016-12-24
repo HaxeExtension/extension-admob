@@ -13,6 +13,20 @@ static const char* ADMOB_DISPLAYING = "DISPLAYING";
 static const char* ADMOB_LOADED = "LOADED";
 static const char* ADMOB_LOADING = "LOADING";
 
+////////////////////////////////////////////////////////////////////////
+
+static bool _admobexChildDirected;
+
+GADRequest *_admobexGetGADRequest(){
+    GADRequest *request = [GADRequest request];
+    if(_admobexChildDirected){
+        NSLog(@"AdMobEx: enabling COPPA support");
+        [request tagForChildDirectedTreatment:YES];
+    }
+    return request;        
+}
+
+////////////////////////////////////////////////////////////////////////
 
 @interface InterstitialListener : NSObject <GADInterstitialDelegate> {
     @public
@@ -32,7 +46,7 @@ static const char* ADMOB_LOADING = "LOADING";
     if(!self) return nil;
     ad = [[GADInterstitial alloc] initWithAdUnitID:ID];
     ad.delegate = self;
-    GADRequest *request = [GADRequest request];
+    GADRequest *request = _admobexGetGADRequest();
     request.testDevices = @[ kGADSimulatorID ];
     [ad performSelector:@selector(loadRequest:) withObject:request afterDelay:1];
     NSLog(@"AdMob Loading Interstitial");
@@ -96,11 +110,12 @@ namespace admobex {
     static NSString *interstitialID;
 	UIViewController *root;
     
-	void init(const char *__BannerID, const char *__InterstitialID, const char *gravityMode, bool testingAds){
+	void init(const char *__BannerID, const char *__InterstitialID, const char *gravityMode, bool testingAds, bool tagForChildDirectedTreatment){
 		root = [[[UIApplication sharedApplication] keyWindow] rootViewController];
         NSString *GMODE = [NSString stringWithUTF8String:gravityMode];
         NSString *bannerID = [NSString stringWithUTF8String:__BannerID];
         interstitialID = [NSString stringWithUTF8String:__InterstitialID];
+        _admobexChildDirected = tagForChildDirectedTreatment;
 
         if(testingAds){
             interstitialID = @"ca-app-pub-3940256099942544/4411468910"; // ADMOB GENERIC TESTING INTERSTITIAL
@@ -121,7 +136,7 @@ namespace admobex {
 		bannerView.adUnitID = bannerID;
 		bannerView.rootViewController = root;
 
-        GADRequest *request = [GADRequest request];
+        GADRequest *request = _admobexGetGADRequest();
 		request.testDevices = @[ kGADSimulatorID ];
 		[bannerView loadRequest:request];
         [root.view addSubview:bannerView];
@@ -146,7 +161,7 @@ namespace admobex {
     }
     
 	void refreshBanner(){
-		[bannerView loadRequest:[GADRequest request]];
+		[bannerView loadRequest:_admobexGetGADRequest()];
 	}
 
     bool showInterstitial(){
@@ -156,5 +171,6 @@ namespace admobex {
         interstitialListener = [[InterstitialListener alloc] initWithID:interstitialID];
         return true;
     }
+
 
 }

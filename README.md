@@ -26,6 +26,10 @@ class MainClass {
 		// Note that if you decide to call enableTestingAds(), you must do that before calling INIT methods.
 		AdMob.enableTestingAds();
 
+		// if your app is for children and you want to enable the COPPA policy,
+		// you need to call tagForChildDirectedTreatment(), before calling INIT.
+		// AdMob.tagForChildDirectedTreatment();
+
 		// If you want to get instertitial events (LOADING, LOADED, CLOSED, DISPLAYING, ETC), provide
 		// some callback function for this.
 		AdMob.onInterstitialEvent = onInterstitialEvent;

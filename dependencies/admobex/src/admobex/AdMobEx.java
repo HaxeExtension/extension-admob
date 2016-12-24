@@ -49,6 +49,7 @@ public class AdMobEx extends Extension {
 
 	private static AdMobEx instance=null;
 	private static Boolean testingAds=false;
+	private static Boolean tagForChildDirectedTreatment=false;
 	private static int gravity=Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
 
 	private static HaxeObject callback=null;
@@ -75,11 +76,12 @@ public class AdMobEx extends Extension {
 	}
 
 
-	public static void init(String bannerId, String interstitialId, String gravityMode, boolean testingAds, HaxeObject callback){
+	public static void init(String bannerId, String interstitialId, String gravityMode, boolean testingAds, boolean tagForChildDirectedTreatment, HaxeObject callback){
 		AdMobEx.bannerId=bannerId;
 		AdMobEx.interstitialId=interstitialId;
 		AdMobEx.testingAds=testingAds;
 		AdMobEx.callback=callback;
+		AdMobEx.tagForChildDirectedTreatment=tagForChildDirectedTreatment;
 		if(gravityMode.equals("TOP")){
 			AdMobEx.gravity=Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 		}
@@ -180,6 +182,10 @@ public class AdMobEx extends Extension {
 		}
 		
 		builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+		if(tagForChildDirectedTreatment){
+			Log.d("AdMobEx","Enabling COPPA support.");
+			builder.tagForChildDirectedTreatment(true);
+		}
 		adReq = builder.build();
 
 		if(bannerId!=""){

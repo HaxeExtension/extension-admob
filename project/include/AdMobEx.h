@@ -5,7 +5,7 @@
 namespace admobex {
 	
 	
-	void init(const char *BannerID, const char *InterstitialID, const char *gravityMode, bool testingAds);
+	void init(const char *BannerID, const char *InterstitialID, const char *gravityMode, bool testingAds, bool tagForChildDirectedTreatment);
 	void showBanner();
 	void hideBanner();
 	void refreshBanner();

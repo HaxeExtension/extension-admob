@@ -6,10 +6,11 @@ class AdMob {
 
 	private static var initialized:Bool=false;
 	private static var testingAds:Bool=false;
+	private static var childDirected:Bool=false;
 
 	////////////////////////////////////////////////////////////////////////////
 
-	private static var __init:String->String->String->Bool->Dynamic->Void = function(bannerId:String, interstitialId:String, gravityMode:String, testingAds:Bool, callback:Dynamic){};
+	private static var __init:String->String->String->Bool->Bool->Dynamic->Void = function(bannerId:String, interstitialId:String, gravityMode:String, testingAds:Bool, tagForChildDirectedTreatment:Bool, callback:Dynamic){};
 	private static var __showBanner:Void->Void = function(){};
 	private static var __hideBanner:Void->Void = function(){};
 	private static var __showInterstitial:Void->Bool = function(){ return false; };
@@ -37,6 +38,19 @@ class AdMob {
 		}
 		return false;
 	}
+
+	public static function tagForChildDirectedTreatment(){
+		if ( childDirected ) return;
+		if ( initialized ) {
+			var msg:String;
+			msg = "FATAL ERROR: If you want to set tagForChildDirectedTreatment, you must enable them before calling INIT!.\n";
+			msg+= "Throwing an exception to avoid displaying ads withtou tagForChildDirectedTreatment.";
+			trace(msg);
+			throw msg;
+			return;
+		}
+		childDirected = true;		
+	}
 	
 	public static function enableTestingAds() {
 		if ( testingAds ) return;
@@ -57,13 +71,13 @@ class AdMob {
 		initialized = true;
 		try{
 			// JNI METHOD LINKING
-			__init = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "init", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLorg/haxe/lime/HaxeObject;)V");
+			__init = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "init", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZLorg/haxe/lime/HaxeObject;)V");
 			__showBanner = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showBanner", "()V");
 			__hideBanner = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "hideBanner", "()V");
 			__showInterstitial = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "showInterstitial", "()Z");
 			__onResize = openfl.utils.JNI.createStaticMethod("admobex/AdMobEx", "onResize", "()V");
 
-			__init(bannerId,interstitialId,(gravityMode==GravityMode.TOP)?'TOP':'BOTTOM',testingAds, getInstance());
+			__init(bannerId,interstitialId,(gravityMode==GravityMode.TOP)?'TOP':'BOTTOM',testingAds, childDirected, getInstance());
 		}catch(e:Dynamic){
 			trace("Android INIT Exception: "+e);
 		}
@@ -76,13 +90,13 @@ class AdMob {
 		initialized = true;
 		try{
 			// CPP METHOD LINKING
-			__init = cpp.Lib.load("adMobEx","admobex_init",5);
+			__init = cpp.Lib.load("adMobEx","admobex_init",6);
 			__showBanner = cpp.Lib.load("adMobEx","admobex_banner_show",0);
 			__hideBanner = cpp.Lib.load("adMobEx","admobex_banner_hide",0);
 			__showInterstitial = cpp.Lib.load("adMobEx","admobex_interstitial_show",0);
 			__refresh = cpp.Lib.load("adMobEx","admobex_banner_refresh",0);
 
-			__init(bannerId,interstitialId,(gravityMode==GravityMode.TOP)?'TOP':'BOTTOM',testingAds, getInstance()._onInterstitialEvent);
+			__init(bannerId,interstitialId,(gravityMode==GravityMode.TOP)?'TOP':'BOTTOM',testingAds, childDirected, getInstance()._onInterstitialEvent);
 		}catch(e:Dynamic){
 			trace("iOS INIT Exception: "+e);
 		}

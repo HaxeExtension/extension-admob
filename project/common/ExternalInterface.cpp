@@ -14,12 +14,12 @@ using namespace admobex;
 
 AutoGCRoot* intestitialEventHandle = NULL;
 
-static value admobex_init(value banner_id,value interstitial_id, value gravity_mode, value testing_ads, value onInterstitialEvent){
+static value admobex_init(value banner_id,value interstitial_id, value gravity_mode, value testing_ads, value tagForChildDirectedTreatment, value onInterstitialEvent){
 	intestitialEventHandle = new AutoGCRoot(onInterstitialEvent);
-	init(val_string(banner_id),val_string(interstitial_id), val_string(gravity_mode), val_bool(testing_ads));
+	init(val_string(banner_id),val_string(interstitial_id), val_string(gravity_mode), val_bool(testing_ads), val_bool(tagForChildDirectedTreatment));
 	return alloc_null();
 }
-DEFINE_PRIM(admobex_init,5);
+DEFINE_PRIM(admobex_init,6);
 
 static value admobex_banner_show(){
 	showBanner();
