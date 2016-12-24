@@ -8,12 +8,9 @@
 #import <Foundation/Foundation.h>
 
 #import <GoogleMobileAds/GADAdDelegate.h>
-#import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
 @class GADInterstitial;
 @class GADRequestError;
-
-GAD_ASSUME_NONNULL_BEGIN
 
 /// Delegate for receiving state change messages from a GADInterstitial such as interstitial ad
 /// requests succeeding/failing.
@@ -39,9 +36,6 @@ GAD_ASSUME_NONNULL_BEGIN
 /// Store from a link on the interstitial).
 - (void)interstitialWillPresentScreen:(GADInterstitial *)ad;
 
-/// Called when |ad| fails to present.
-- (void)interstitialDidFailToPresentScreen:(GADInterstitial *)ad;
-
 /// Called before the interstitial is to be animated off the screen.
 - (void)interstitialWillDismissScreen:(GADInterstitial *)ad;
 
@@ -55,5 +49,3 @@ GAD_ASSUME_NONNULL_BEGIN
 - (void)interstitialWillLeaveApplication:(GADInterstitial *)ad;
 
 @end
-
-GAD_ASSUME_NONNULL_END

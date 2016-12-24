@@ -9,8 +9,6 @@
 
 #import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
-GAD_ASSUME_NONNULL_BEGIN
-
 @protocol GADCustomEventInterstitial;
 
 /// Call back to this delegate in your custom event. You must call
@@ -28,7 +26,7 @@ GAD_ASSUME_NONNULL_BEGIN
 /// any error object sent from the ad network's SDK, or an NSError describing the error. Pass nil if
 /// not available.
 - (void)customEventInterstitial:(id<GADCustomEventInterstitial>)customEvent
-                      didFailAd:(NSError *GAD_NULLABLE_TYPE)error;
+                      didFailAd:(NSError *)error;
 
 /// Your Custom Event object should call this when the user touches or "clicks" the ad to initiate
 /// an action. When the SDK receives this callback, it reports the click back to the mediation
@@ -51,12 +49,8 @@ GAD_ASSUME_NONNULL_BEGIN
 - (void)customEventInterstitialWillLeaveApplication:(id<GADCustomEventInterstitial>)customEvent;
 
 #pragma mark Deprecated
-
-/// Deprecated. Use customEventInterstitialDidReceiveAd:.
 - (void)customEventInterstitial:(id<GADCustomEventInterstitial>)customEvent
                    didReceiveAd:(NSObject *)ad
     GAD_DEPRECATED_MSG_ATTRIBUTE("Use customEventInterstitialDidReceiveAd:.");
 
 @end
-
-GAD_ASSUME_NONNULL_END

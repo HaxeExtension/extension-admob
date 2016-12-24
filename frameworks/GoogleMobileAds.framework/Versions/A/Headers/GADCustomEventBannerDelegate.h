@@ -10,8 +10,6 @@
 
 #import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
-GAD_ASSUME_NONNULL_BEGIN
-
 @protocol GADCustomEventBanner;
 
 /// Call back to this delegate in your custom event. You must call customEventBanner:didReceiveAd:
@@ -27,8 +25,7 @@ GAD_ASSUME_NONNULL_BEGIN
 /// Your Custom Event object must call this when it fails to receive or create the ad view. Pass
 /// along any error object sent from the ad network's SDK, or an NSError describing the error. Pass
 /// nil if not available.
-- (void)customEventBanner:(id<GADCustomEventBanner>)customEvent
-                didFailAd:(NSError *GAD_NULLABLE_TYPE)error;
+- (void)customEventBanner:(id<GADCustomEventBanner>)customEvent didFailAd:(NSError *)error;
 
 /// Your Custom Event object should call this when the user touches or "clicks" the ad to initiate
 /// an action. When the SDK receives this callback, it reports the click back to the mediation
@@ -58,11 +55,8 @@ GAD_ASSUME_NONNULL_BEGIN
 
 #pragma mark Deprecated
 
-/// Deprecated. Use customEventBannerWasClicked:.
 - (void)customEventBanner:(id<GADCustomEventBanner>)customEvent
         clickDidOccurInAd:(UIView *)view
     GAD_DEPRECATED_MSG_ATTRIBUTE("Use customEventBannerWasClicked:.");
 
 @end
-
-GAD_ASSUME_NONNULL_END
