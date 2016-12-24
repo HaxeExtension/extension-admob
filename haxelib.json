@@ -9,5 +9,5 @@
 	"dependencies": {
 		"extension-googleplayservices-basement": ""
 	},
-	"releasenote": "Add COPPA support."
+	"releasenote": "Add COPPA support & upgrade iOS framework to v7.8.1."
 }

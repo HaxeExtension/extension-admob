@@ -11,7 +11,7 @@
 #error The Google Mobile Ads SDK requires a deployment target of iOS 6.0 or later.
 #endif
 
-//! Project version string for GoogleMobileAds.
+/// Project version string for GoogleMobileAds.
 FOUNDATION_EXPORT const unsigned char GoogleMobileAdsVersionString[];
 
 // Header files.
@@ -24,16 +24,21 @@ FOUNDATION_EXPORT const unsigned char GoogleMobileAdsVersionString[];
 #import <GoogleMobileAds/GADBannerViewDelegate.h>
 #import <GoogleMobileAds/GADCorrelator.h>
 #import <GoogleMobileAds/GADCorrelatorAdLoaderOptions.h>
+#import <GoogleMobileAds/GADDebugOptionsViewController.h>
 #import <GoogleMobileAds/GADExtras.h>
 #import <GoogleMobileAds/GADInAppPurchase.h>
 #import <GoogleMobileAds/GADInAppPurchaseDelegate.h>
 #import <GoogleMobileAds/GADInterstitial.h>
 #import <GoogleMobileAds/GADInterstitialDelegate.h>
+#import <GoogleMobileAds/GADMediaView.h>
 #import <GoogleMobileAds/GADMobileAds.h>
 #import <GoogleMobileAds/GADNativeExpressAdView.h>
 #import <GoogleMobileAds/GADNativeExpressAdViewDelegate.h>
 #import <GoogleMobileAds/GADRequest.h>
 #import <GoogleMobileAds/GADRequestError.h>
+#import <GoogleMobileAds/GADVideoController.h>
+#import <GoogleMobileAds/GADVideoControllerDelegate.h>
+#import <GoogleMobileAds/GADVideoOptions.h>
 
 #import <GoogleMobileAds/DFPBannerView.h>
 #import <GoogleMobileAds/DFPCustomRenderedAd.h>
@@ -48,6 +53,7 @@ FOUNDATION_EXPORT const unsigned char GoogleMobileAdsVersionString[];
 #import <GoogleMobileAds/GADAdLoaderAdTypes.h>
 #import <GoogleMobileAds/GADAdLoaderDelegate.h>
 
+#import <GoogleMobileAds/GADAdChoicesView.h>
 #import <GoogleMobileAds/GADNativeAd.h>
 #import <GoogleMobileAds/GADNativeAdDelegate.h>
 #import <GoogleMobileAds/GADNativeAdImage.h>
@@ -57,6 +63,7 @@ FOUNDATION_EXPORT const unsigned char GoogleMobileAdsVersionString[];
 #import <GoogleMobileAds/GADNativeCustomTemplateAd.h>
 
 #import <GoogleMobileAds/GADNativeAdImageAdLoaderOptions.h>
+#import <GoogleMobileAds/GADNativeAdViewAdOptions.h>
 
 #import <GoogleMobileAds/GADCustomEventBanner.h>
 #import <GoogleMobileAds/GADCustomEventBannerDelegate.h>
@@ -65,6 +72,7 @@ FOUNDATION_EXPORT const unsigned char GoogleMobileAdsVersionString[];
 #import <GoogleMobileAds/GADCustomEventInterstitialDelegate.h>
 #import <GoogleMobileAds/GADCustomEventNativeAd.h>
 #import <GoogleMobileAds/GADCustomEventNativeAdDelegate.h>
+#import <GoogleMobileAds/GADCustomEventParameters.h>
 #import <GoogleMobileAds/GADCustomEventRequest.h>
 #import <GoogleMobileAds/GADMediatedNativeAd.h>
 #import <GoogleMobileAds/GADMediatedNativeAdDelegate.h>
@@ -79,3 +87,10 @@ FOUNDATION_EXPORT const unsigned char GoogleMobileAdsVersionString[];
 #import <GoogleMobileAds/GADAdReward.h>
 #import <GoogleMobileAds/GADRewardBasedVideoAd.h>
 #import <GoogleMobileAds/GADRewardBasedVideoAdDelegate.h>
+
+#import <GoogleMobileAds/Mediation/GADMAdNetworkAdapterProtocol.h>
+#import <GoogleMobileAds/Mediation/GADMAdNetworkConnectorProtocol.h>
+#import <GoogleMobileAds/Mediation/GADMediationAdRequest.h>
+#import <GoogleMobileAds/Mediation/GADMEnums.h>
+#import <GoogleMobileAds/Mediation/GADMRewardBasedVideoAdNetworkAdapterProtocol.h>
+#import <GoogleMobileAds/Mediation/GADMRewardBasedVideoAdNetworkConnectorProtocol.h>

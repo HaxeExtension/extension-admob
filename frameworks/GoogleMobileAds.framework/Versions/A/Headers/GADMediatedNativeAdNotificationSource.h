@@ -6,7 +6,11 @@
 //
 
 #import <Foundation/Foundation.h>
+
 #import <GoogleMobileAds/GADMediatedNativeAd.h>
+#import <GoogleMobileAds/GoogleMobileAdsDefines.h>
+
+GAD_ASSUME_NONNULL_BEGIN
 
 /// Notifies the Google Mobile Ads SDK about the events performed by adapters. Adapters may perform
 /// some action (e.g. opening an in app browser or open the iTunes store) when handling callbacks
@@ -14,8 +18,12 @@
 /// by calling the relevant methods from this class.
 @interface GADMediatedNativeAdNotificationSource : NSObject
 
+/// Called by the adapter when it has registered an impression on the tracked view. Adapter should
+/// only call this method if -[GADMAdNetworkAdapter handlesUserImpressions] returns YES.
++ (void)mediatedNativeAdDidRecordImpression:(id<GADMediatedNativeAd>)mediatedNativeAd;
+
 /// Called by the adapter when it has registered a user click on the tracked view. Adapter should
-/// only call this method if - [GADMAdNetworkAdapter handlesUserClicks] returns YES.
+/// only call this method if -[GADMAdNetworkAdapter handlesUserClicks] returns YES.
 + (void)mediatedNativeAdDidRecordClick:(id<GADMediatedNativeAd>)mediatedNativeAd;
 
 /// Must be called by the adapter just before mediatedNativeAd has opened an in app modal screen.
@@ -33,3 +41,5 @@
 + (void)mediatedNativeAdWillLeaveApplication:(id<GADMediatedNativeAd>)mediatedNativeAd;
 
 @end
+
+GAD_ASSUME_NONNULL_END
