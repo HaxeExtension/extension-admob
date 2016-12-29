@@ -10,7 +10,7 @@
 		android:name="com.applovin.adview.AppLovinConfirmationActivity"/>
 
 		<meta-data android:name="applovin.sdk.key"
-       	android:value="::ENV_APPLOVIN_SDK_KEY::"  />
+       	android:value="::APPLOVIN_SDK_KEY::"  />
 	</application>
 
 	<!-- These permissions are mandatory to run AppLovin SDK -->

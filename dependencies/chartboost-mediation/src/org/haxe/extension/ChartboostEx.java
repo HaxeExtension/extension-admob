@@ -11,7 +11,7 @@ public class ChartboostEx extends Extension {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-        Chartboost.startWithAppId(Extension.mainActivity, "::ENV_CHARTBOOST_APP_ID::", "::ENV_CHARTBOOST_APP_SIGNATURE::");
+        Chartboost.startWithAppId(Extension.mainActivity, "::CHARTBOOST_APP_ID::", "::CHARTBOOST_APP_SIGNATURE::");
         Chartboost.onCreate(Extension.mainActivity);
 	}
 
@@ -34,7 +34,8 @@ public class ChartboostEx extends Extension {
     public void onDestroy() {
         Chartboost.onDestroy(Extension.mainActivity);
     }
-
+	
+/*
     @Override
     public boolean onBackPressed() {
         // If an interstitial is on screen, close it.
@@ -43,4 +44,5 @@ public class ChartboostEx extends Extension {
         else
             return super.onBackPressed();
     }
+*/
 }

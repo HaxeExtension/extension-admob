@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2013 AppLovin.
  */
-package ::APP_PACKAGE_NAME::;
+package ::APP_PACKAGE::;
 
 import android.app.Activity;
 

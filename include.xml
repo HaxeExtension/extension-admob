@@ -12,7 +12,9 @@
 
 	<section if="android">
 		<haxelib name="extension-android-support-v4" /> 
-		<haxelib name="extension-googleplayservices-lib" />
+		<set name="google-play-services-basement" />
+		<set name="google-play-services-ads-lite" />
+		<haxelib name="extension-googleplayservices-basement" />
 		<dependency name="admobex" path="dependencies/admobex" /> 
 		<dependency name="adcolony-mediation"		path="dependencies/adcolony-mediation"		if="adcolony-mediation" />
 		<dependency name="applovin-mediation"		path="dependencies/applovin-mediation"		if="applovin-mediation" />
