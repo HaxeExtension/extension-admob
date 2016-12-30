@@ -31,7 +31,7 @@ class MainClass {
 		// some callback function for this.
 		AdMob.onInterstitialEvent = onInterstitialEvent;
 
-		AdMob.onGetReward = rewardCb;
+		AdMob.onGetReward = onRewarded;
 
 		
 		// then call init with Android and iOS banner IDs in the main method.
