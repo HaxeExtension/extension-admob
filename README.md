@@ -30,15 +30,22 @@ class MainClass {
 		// If you want to get instertitial events (LOADING, LOADED, CLOSED, DISPLAYING, ETC), provide
 		// some callback function for this.
 		AdMob.onInterstitialEvent = onInterstitialEvent;
+
+		AdMob.onGetReward = rewardCb;
+
 		
 		// then call init with Android and iOS banner IDs in the main method.
-		// parameters are (bannerId:String, interstitialId:String, gravityMode:GravityMode).
+		// parameters are (appId:String, bannerId:String, interstitialId:String, rewardedId:String, gravityMode:GravityMode).
 		// if you don't have the bannerId and interstitialId, go to www.google.com/ads/admob to create them.
-
-		AdMob.initAndroid("ca-app-pub-XXXXX123456","ca-app-pub-XXXXX123457", GravityMode.BOTTOM); // may also be GravityMode.TOP
+		
+		AdMob.initAndroid("ca-app-pub-XXXXX123456", "ca-app-pub-XXXXX123456", "ca-app-pub-XXXXX123456","ca-app-pub-XXXXX123457", GravityMode.BOTTOM); // may also be GravityMode.TOP
 		AdMob.initIOS("ca-app-pub-XXXXX123458","ca-app-pub-XXXXX123459", GravityMode.BOTTOM); // may also be GravityMode.TOP
 
 		// NOTE: If your game allows screen rotation, you should call AdMob.onResize(); when rotation happens.
+	}
+
+	function showRewardedVideo() {
+		AdMob.showRewardedAd();
 	}
 	
 	function gameOver() {
@@ -90,6 +97,11 @@ class MainClass {
 		else if(event == AdMob.FAILED) trace("Failed to load the ad... the extension will retry automatically.");
 		*/
 	}
+
+	function onRewarded(rewardType:String, amount:Int):Void
+	{
+
+	}
 	
 }
 
@@ -117,6 +129,16 @@ Once this is done, you just need to add this to your project.xml
 Also, you may need to set android sdk version to 23 or higher (as some versions of support-library-v4 and google play services requires this:
 ```xml
 <android target-sdk-version="23" if="android" />
+```
+
+To add mediation :
+```xml
+<set name="facebook-mediation" />
+<set name="inmobi-mediation" />
+<set name="applovin-mediation" />
+<set name="vungle-mediation" /> 
+<set name="chartboost-mediation" /> 
+<set name="unity-mediation" />
 ```
 
 ###Disclaimer
