@@ -10,6 +10,7 @@ This extension allows you to easily integrate Google AdMob on your OpenFL (or Ha
 * Allows you to specify min amount of time between interstitial displays (to avoid annoying your users).
 * Allows you to specify min amount of calls to interstitial before it actually gets displayed (to avoid annoying your users).
 * Callback support for Interstitial Events.
+* Mediation support
 
 ###Simple use Example
 
