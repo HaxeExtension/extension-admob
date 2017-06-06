@@ -14,12 +14,21 @@ using namespace admobex;
 
 AutoGCRoot* intestitialEventHandle = NULL;
 
-static value admobex_init(value banner_id,value interstitial_id, value gravity_mode, value testing_ads, value tagForChildDirectedTreatment, value onInterstitialEvent){
-	intestitialEventHandle = new AutoGCRoot(onInterstitialEvent);
-	init(val_string(banner_id),val_string(interstitial_id), val_string(gravity_mode), val_bool(testing_ads), val_bool(tagForChildDirectedTreatment));
+static value admobex_init(value *args, int count){
+	value on_interstitial_event = args[5];
+	intestitialEventHandle = new AutoGCRoot(on_interstitial_event);
+
+	const char* banner_id_str = val_string(args[0]);
+	const char* interstitial_id_str = val_string(args[1]);
+	const char* gravity_mode_str = val_string(args[2]);
+	bool testing_ads = val_bool(args[3]);
+	bool child_directed_treatment = val_bool(args[4]);
+
+	init(banner_id_str, interstitial_id_str, gravity_mode_str, testing_ads, child_directed_treatment);
+
 	return alloc_null();
 }
-DEFINE_PRIM(admobex_init,6);
+DEFINE_PRIM_MULT(admobex_init);
 
 static value admobex_banner_show(){
 	showBanner();
