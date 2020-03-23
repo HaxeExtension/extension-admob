@@ -1,6 +1,12 @@
 package extension.admob;
 
 import openfl.Lib;
+#if (openfl < "4.0.0")
+import openfl.utils.JNI;
+#else
+import lime.system.JNI;
+#end
+
 
 class AdMob {
 
@@ -71,11 +77,11 @@ class AdMob {
 		initialized = true;
 		try{
 			// JNI METHOD LINKING
-			__init = lime.system.JNI.createStaticMethod("admobex/AdMobEx", "init", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZLorg/haxe/lime/HaxeObject;)V");
-			__showBanner = lime.system.JNI.createStaticMethod("admobex/AdMobEx", "showBanner", "()V");
-			__hideBanner = lime.system.JNI.createStaticMethod("admobex/AdMobEx", "hideBanner", "()V");
-			__showInterstitial = lime.system.JNI.createStaticMethod("admobex/AdMobEx", "showInterstitial", "()Z");
-			__onResize = lime.system.JNI.createStaticMethod("admobex/AdMobEx", "onResize", "()V");
+			__init = JNI.createStaticMethod("admobex/AdMobEx", "init", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZLorg/haxe/lime/HaxeObject;)V");
+			__showBanner = JNI.createStaticMethod("admobex/AdMobEx", "showBanner", "()V");
+			__hideBanner = JNI.createStaticMethod("admobex/AdMobEx", "hideBanner", "()V");
+			__showInterstitial = JNI.createStaticMethod("admobex/AdMobEx", "showInterstitial", "()Z");
+			__onResize = JNI.createStaticMethod("admobex/AdMobEx", "onResize", "()V");
 
 			__init(bannerId,interstitialId,(gravityMode==GravityMode.TOP)?'TOP':'BOTTOM',testingAds, childDirected, getInstance());
 		}catch(e:Dynamic){
