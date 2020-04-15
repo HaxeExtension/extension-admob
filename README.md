@@ -1,9 +1,9 @@
-#extension-admob
+# extension-admob
 
 OpenFL extension for "Google AdMob" on iOS and Android.
 This extension allows you to easily integrate Google AdMob on your OpenFL (or HaxeFlixel) game / application.
 
-###Main Features
+### Main Features
 
 * Banners & Interstitial Support.
 * Setup your banners to be on top or on the bottom of the screen.
@@ -11,7 +11,7 @@ This extension allows you to easily integrate Google AdMob on your OpenFL (or Ha
 * Allows you to specify min amount of calls to interstitial before it actually gets displayed (to avoid annoying your users).
 * Callback support for Interstitial Events.
 
-###Simple use Example
+### Simple use Example
 
 ```haxe
 // This example show a simple use case.
@@ -98,7 +98,7 @@ class MainClass {
 
 ```
 
-###How to Install
+### How to Install
 
 To install this library, you can simply get the library from haxelib like this:
 ```bash
@@ -115,7 +115,7 @@ Also, you may need to set android sdk version to 23 or higher (as some versions 
 <android target-sdk-version="23" if="android" />
 ```
 
-###Disclaimer
+### Disclaimer
 
 Google is a registered trademark of Google Inc.
 http://unibrander.com/united-states/140279US/google.html
@@ -123,7 +123,7 @@ http://unibrander.com/united-states/140279US/google.html
 AdMob is a registrered trademark of Google Inc.
 http://unibrander.com/united-states/479956US/admob.html
 
-###License
+### License
 
 The MIT License (MIT) - [LICENSE.md](LICENSE.md)
 
