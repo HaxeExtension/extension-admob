@@ -7,7 +7,7 @@ This extension allows you to integrate Google AdMob on your OpenFL application.<
 ### Main Features
 
 * iOS SDK 8.5
-* AndroidS Dk 20.0.3
+* Android SDK 20.0.3
 * iOS14+ App Tracking Transparency (if iOS14+, app automatically presents user authorization request on first start)
 * COPPA, CCPA
 * Banners, Interstitial, Rewarded ads
