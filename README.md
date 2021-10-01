@@ -12,7 +12,7 @@ This extension allows you to integrate Google AdMob on your OpenFL application.<
 * COPPA, CCPA
 * Banners, Interstitial, Rewarded ads
 * Ads sound volume control
-* Events.
+* Events
 
 ### Prerequisites
 Set the following in your project.xml, replace value with your app id from Admob:
