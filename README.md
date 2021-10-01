@@ -33,7 +33,7 @@ android.enableJetifier=true
 ### Sample code
 
 ```haxe
-import extension.admob.AdMob;
+import extension.admob.Admob;
 import extension.admob.AdmobEvent;
 
 ...
