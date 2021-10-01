@@ -1,16 +1,20 @@
+#include <string>
+#include <vector>
+
 #ifndef ADMOBEX_H
 #define ADMOBEX_H
 
 
-namespace admobex {
-	
-	
-	void init(const char *BannerID, const char *InterstitialID, const char *gravityMode, bool testingAds, bool tagForChildDirectedTreatment);
-	void showBanner();
+namespace admobex
+{	
+	void init(bool testingAds, bool childDirected, bool enableRDP, bool requestIDFA);
+	void showBanner(const char *id, int size, int align);
 	void hideBanner();
-	void refreshBanner();
-	bool showInterstitial();
-	
+	void loadInterstitial(const char *id);
+	void showInterstitial();
+	void loadRewarded(const char* id);
+	void showRewarded();
+	void setVolume(float vol);
 }
 
 

@@ -5,12 +5,6 @@
 			<echo value="ALERT: Setting GoolePlayServices to the last version on your SDK. Please read how to upgrade and choose your version here: https://github.com/player-03/google-play-services" unless="playServicesVersion" />
 			<set name="playServicesVersion" value="+" unless="playServicesVersion" />
 		</section>
-		
-		<section if="openfl-legacy || openfl-next">
-			<set name="google-play-services-basement" />
-			<set name="google-play-services-ads-lite" />
-			<haxelib name="extension-googleplayservices-basement" />
-		</section>
 
 		<dependency name="admobex" path="dependencies/admobex" />
 	</section>
@@ -18,17 +12,14 @@
 	<section if="ios">
 		<ndll name="admobex" />
 		<dependency path="frameworks/GoogleMobileAds.framework" />
-		<dependency name="AdSupport.framework" />
-		<dependency name="AudioToolbox.framework" />
-		<dependency name="AVFoundation.framework" />
-		<dependency name="CoreGraphics.framework" />
-		<dependency name="CoreMedia.framework" />
-		<dependency name="CoreTelephony.framework" />
-		<dependency name="EventKit.framework" />
-		<dependency name="EventKitUI.framework" />
-		<dependency name="MediaPlayer.framework" />
-		<dependency name="MessageUI.framework" />
-		<dependency name="StoreKit.framework" />
-		<dependency name="SystemConfiguration.framework" />
+		<dependency path="frameworks/GoogleAppMeasurement.framework" />
+		<dependency path="frameworks/GoogleUtilities.framework" />
+		<dependency path="frameworks/nanopb.framework" />
+		<dependency path="frameworks/PromisesObjC.framework" />
+		<dependency path="frameworks/UserMessagingPlatform.framework" />
+		<dependency name="JavaScriptCore.framework" />
+		<dependency name="AppTrackingTransparency.framework" />
+		<template path="templates" />
+		<config:ios linker-flags="-ObjC"/>
 	</section>
 </extension>

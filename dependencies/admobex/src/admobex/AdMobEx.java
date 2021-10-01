@@ -1,302 +1,434 @@
 package admobex;
-import java.util.Date;
-import java.util.Queue;
 
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Bundle;
+import android.provider.Settings.Secure;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Window;
-import android.view.WindowManager;
-import android.content.Context;
-import android.content.Intent;
-import android.media.AudioManager;
-import android.media.audiofx.AudioEffect.OnControlStatusChangeListener;
-import android.widget.RelativeLayout;
-import android.view.ViewGroup;
-import org.haxe.extension.Extension;
-import org.haxe.lime.HaxeObject;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
-import android.util.Log;
-import android.provider.Settings.Secure;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+
+import org.haxe.extension.Extension;
+import org.haxe.lime.HaxeObject;
+
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.google.android.gms.ads.*;
+public class AdmobEx extends Extension
+{
+	public static final String INIT_OK = "INIT_OK";
+	public static final String INIT_FAIL = "INIT_FAIL";
+	public static final String BANNER_LOADED = "BANNER_LOADED";
+	public static final String BANNER_FAILED_TO_LOAD = "BANNER_FAILED_TO_LOAD";
+	public static final String BANNER_OPENED = "BANNER_OPENED";
+	public static final String BANNER_CLICKED = "BANNER_CLICKED";
+	public static final String BANNER_CLOSED = "BANNER_CLOSED";
+	public static final String INTERSTITIAL_LOADED = "INTERSTITIAL_LOADED";
+	public static final String INTERSTITIAL_FAILED_TO_LOAD = "INTERSTITIAL_FAILED_TO_LOAD";
+	public static final String INTERSTITIAL_DISMISSED = "INTERSTITIAL_DISMISSED";
+	public static final String INTERSTITIAL_FAILED_TO_SHOW = "INTERSTITIAL_CACHE_OK";
+	public static final String INTERSTITIAL_SHOWED = "INTERSTITIAL_SHOWED";
+	public static final String REWARDED_LOADED = "REWARDED_LOADED";
+	public static final String REWARDED_FAILED_TO_LOAD = "REWARDED_FAILED_TO_LOAD";
+	public static final String REWARDED_DISMISSED = "REWARDED_DISMISSED";
+	public static final String REWARDED_FAILED_TO_SHOW = "REWARDED_CACHE_OK";
+	public static final String REWARDED_SHOWED = "REWARDED_SHOWED";
+	public static final String REWARDED_EARNED = "REWARDED_EARNED";
+	public static final String WHAT_IS_GOING_ON = "WHAT_IS_GOING_ON";
+	
+	private static final int BANNER_SIZE_ADAPTIVE = 0; //Anchored adaptive, somewhat default now (a replacement for SMART_BANNER); banner width is fullscreen, height calculated acordingly (might not work well with landscape orientation)
+	private static final int BANNER_SIZE_BANNER = 1; //320x50
+	private static final int BANNER_SIZE_FLUID = 2; //A dynamically sized banner that matches its parent's width and expands/contracts its height to match the ad's content after loading completes.
+	private static final int BANNER_SIZE_FULL_BANNER = 3; //468x60
+	private static final int BANNER_SIZE_LARGE_BANNER = 4; //320x100
+	private static final int BANNER_SIZE_LEADERBOARD = 5; //728x90
+	private static final int BANNER_SIZE_MEDIUM_RECTANGLE = 6; //300x250
+	private static final int BANNER_SIZE_WIDE_SKYSCRAPER = 7; //160x600
+	
+	private static AdView _banner = null;
+	private static RelativeLayout _rl = null;
+	private static AdSize _bannerSize = null;
+	private static InterstitialAd _interstitial = null;
+	private static RewardedAd _rewarded = null;
 
-public class AdMobEx extends Extension {
+	private static HaxeObject _callback = null;
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////
+	public static void init(final boolean testingAds, final boolean childDirected, final boolean enableRDP, HaxeObject callback)
+	{
+		_callback = callback;
+		
+		mainActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				RequestConfiguration.Builder configuration = new RequestConfiguration.Builder();
 
-	private InterstitialAd interstitial;
-	private AdView banner;
-	private RelativeLayout rl;
-	private AdRequest adReq;
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-
-	private static Boolean failInterstitial=false;
-	private static Boolean loadingInterstitial=false;
-	private static String interstitialId=null;
-
-	private static Boolean failBanner=false;
-	private static Boolean loadingBanner=false;
-	private static Boolean mustBeShowingBanner=false;
-	private static String bannerId=null;
-
-	private static AdMobEx instance=null;
-	private static Boolean testingAds=false;
-	private static Boolean tagForChildDirectedTreatment=false;
-	private static int gravity=Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-
-	private static HaxeObject callback=null;
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static final String LEAVING = "LEAVING";
-	public static final String FAILED = "FAILED";
-	public static final String CLOSED = "CLOSED";
-	public static final String DISPLAYING = "DISPLAYING";
-	public static final String LOADED = "LOADED";
-	public static final String LOADING = "LOADING";
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static AdMobEx getInstance(){
-		if(instance==null && bannerId!=null) instance = new AdMobEx();
-		if(bannerId==null){
-			Log.e("AdMobEx","You tried to get Instance without calling INIT first on AdMobEx class!");
-		}
-		return instance;
-	}
-
-
-	public static void init(String bannerId, String interstitialId, String gravityMode, boolean testingAds, boolean tagForChildDirectedTreatment, HaxeObject callback){
-		AdMobEx.bannerId=bannerId;
-		AdMobEx.interstitialId=interstitialId;
-		AdMobEx.testingAds=testingAds;
-		AdMobEx.callback=callback;
-		AdMobEx.tagForChildDirectedTreatment=tagForChildDirectedTreatment;
-		if(gravityMode.equals("TOP")){
-			AdMobEx.gravity=Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-		}
-		mainActivity.runOnUiThread(new Runnable() {
-			public void run() { getInstance(); }
-		});	
-	}
-
-	private static void reportInterstitialEvent(final String event){
-		if(callback == null) return;
-		mainActivity.runOnUiThread(new Runnable() {
-			public void run() { 
-				callback.call1("_onInterstitialEvent",event);
-			}
-		});
-	}
-
-	public static boolean showInterstitial() {
-		Log.d("AdMobEx","Show Interstitial: Begins");
-		if(loadingInterstitial) return false;
-		if(failInterstitial){
-			mainActivity.runOnUiThread(new Runnable() {
-				public void run() { getInstance().reloadInterstitial();}
-			});	
-			Log.d("AdMobEx","Show Interstitial: Interstitial not loaded... reloading.");
-			return false;
-		}
-
-		if(interstitialId=="") {
-			Log.d("AdMobEx","Show Interstitial: InterstitialID is empty... ignoring.");
-			return false;
-		}
-		mainActivity.runOnUiThread(new Runnable() {
-			public void run() {	
-				if(!getInstance().interstitial.isLoaded()){
-					reportInterstitialEvent(AdMobEx.FAILED);
-					Log.d("AdMobEx","Show Interstitial: Not loaded (THIS SHOULD NEVER BE THE CASE HERE!)... ignoring.");
-					return;
+				//> set testing devices
+				if(testingAds)
+				{
+					List<String> testDeviceIds = new ArrayList<String>();
+					
+					testDeviceIds.add(AdRequest.DEVICE_ID_EMULATOR); //needed???
+					
+					String androidId = Secure.getString(mainActivity.getContentResolver(), Secure.ANDROID_ID);
+					String deviceId = md5(androidId).toUpperCase();
+					testDeviceIds.add(deviceId);
+					
+					configuration.setTestDeviceIds(testDeviceIds);
+					//Log.d("AdmobEx", "TEST DEVICE ID: "+deviceId);
 				}
-				getInstance().interstitial.show();
+				//<
+				
+				//> set COPPA
+				if(childDirected)
+				{
+					//Log.d("AdmobEx", "Enabling COPPA support.");
+					configuration.setTagForChildDirectedTreatment(RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_TRUE);
+				}
+				//<
+				
+				MobileAds.setRequestConfiguration(configuration.build());
+				
+				//> set CCPA
+				if(enableRDP)
+				{
+					//Log.d("AdmobEx", "Enabling RDP.");
+					SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
+					SharedPreferences.Editor editor = sharedPref.edit();
+					editor.putInt("gad_rdp", 1);
+					editor.commit();
+				}
+				//<
+
+				MobileAds.initialize(mainContext, new OnInitializationCompleteListener()
+				{
+					@Override
+					public void onInitializationComplete(InitializationStatus initializationStatus)
+					{
+						//Log.d("AdmobEx", INIT_OK);
+						_callback.call("onStatus", new Object[] {INIT_OK, ""});
+					}
+				});
 			}
 		});
-		Log.d("AdMobEx","Show Interstitial: Compelte.");
-		return true;
 	}
-
-
-	public static void showBanner() {
-		if(bannerId=="") return;
-		mustBeShowingBanner=true;
-		if(failBanner){
-			mainActivity.runOnUiThread(new Runnable() {
-				public void run() {getInstance().reloadBanner();}
-			});
+	
+	public static void showBanner(final String id, final int size, final int align)
+	{
+		if(_banner != null)
+		{
+			//Log.d("AdmobEx", BANNER_FAILED_TO_LOAD+"Hide previous banner first!");
+			_callback.call("onStatus", new Object[] {BANNER_FAILED_TO_LOAD, "Hide previous banner first!"});
 			return;
 		}
-		Log.d("AdMobEx","Show Banner");
 		
-		mainActivity.runOnUiThread(new Runnable() {
-			public void run() {
-				getInstance().rl.removeView(getInstance().banner);
-				getInstance().rl.addView(getInstance().banner);
-				getInstance().rl.bringToFront();
-				getInstance().banner.setVisibility(View.VISIBLE);
+		mainActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				_rl = new RelativeLayout(mainActivity);
+				_rl.setGravity(align);
+			
+				_banner = new AdView(mainActivity);
+				_banner.setAdUnitId(id);
+				
+				AdSize adSize = AdSize.INVALID;
+				switch(size)
+				{
+					case BANNER_SIZE_ADAPTIVE: adSize = getAdSize(); break; //get right size for adaptive banner
+					case BANNER_SIZE_BANNER: adSize = AdSize.BANNER; break;
+					case BANNER_SIZE_FLUID: adSize = AdSize.FLUID; break;
+					case BANNER_SIZE_FULL_BANNER: adSize = AdSize.FULL_BANNER; break;
+					case BANNER_SIZE_LARGE_BANNER: adSize = AdSize.LARGE_BANNER; break;
+					case BANNER_SIZE_LEADERBOARD: adSize = AdSize.LEADERBOARD; break;
+					case BANNER_SIZE_MEDIUM_RECTANGLE: adSize = AdSize.MEDIUM_RECTANGLE; break;
+					case BANNER_SIZE_WIDE_SKYSCRAPER: adSize = AdSize.WIDE_SKYSCRAPER; break;
+				}
+				
+				_banner.setAdSize(adSize);
+				_banner.setAdListener(new AdListener() {
+					@Override
+					public void onAdLoaded() {
+						// Code to be executed when an ad finishes loading.
+						//Log.d("AdmobEx", BANNER_LOADED);
+						_callback.call("onStatus", new Object[] {BANNER_LOADED, ""});
+						_banner.setVisibility(View.VISIBLE); //To fix this problem, if it is still actual: https://groups.google.com/forum/#!topic/google-admob-ads-sdk/avwVXvBt_sM
+					}
+
+					@Override
+					public void onAdFailedToLoad(LoadAdError adError) {
+						// Code to be executed when an ad request fails.
+						//Log.d("AdmobEx", BANNER_FAILED_TO_LOAD+adError.toString());
+						_callback.call("onStatus", new Object[] {BANNER_FAILED_TO_LOAD, adError.toString()});
+					}
+
+					@Override
+					public void onAdOpened() {
+						// Code to be executed when an ad opens an overlay that
+						// covers the screen.
+						//Log.d("AdmobEx", BANNER_OPENED);
+						_callback.call("onStatus", new Object[] {BANNER_OPENED, ""}); //ie shown
+					}
+
+					@Override
+					public void onAdClicked() {
+						// Code to be executed when the user clicks on an ad.
+						//Log.d("AdmobEx", BANNER_CLICKED);
+						_callback.call("onStatus", new Object[] {BANNER_CLICKED, ""});
+					}
+
+					@Override
+					public void onAdClosed() {
+						// Code to be executed when the user is about to return
+						// to the app after tapping on an ad.
+						//Log.d("AdmobEx", BANNER_CLOSED);
+						_callback.call("onStatus", new Object[] {BANNER_CLOSED, ""});
+					}
+				});
+				
+				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+				mainActivity.addContentView(_rl, params);
+				_rl.addView(_banner);
+				_rl.bringToFront();
+				
+				AdRequest adRequest = new AdRequest.Builder().build();
+				_banner.loadAd(adRequest);
 			}
 		});
 	}
-
-
-	public static void hideBanner() {
-		if(bannerId=="") return;
-		mustBeShowingBanner=false;
-		Log.d("AdMobEx","Hide Banner");
-		mainActivity.runOnUiThread(new Runnable() {
-			public void run() {	getInstance().banner.setVisibility(View.INVISIBLE); }
-		});
-	}
-
-	public static void onResize(){
-		Log.d("AdMobEx","On Resize");
-		mainActivity.runOnUiThread(new Runnable() {
-			public void run() {	getInstance().reinitBanner(); }
-		});
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-
-	private AdMobEx() {
-
-		AdRequest.Builder builder = new AdRequest.Builder();
-
-		if(testingAds){
-			String android_id = Secure.getString(mainActivity.getContentResolver(), Secure.ANDROID_ID);
-    	    String deviceId = md5(android_id).toUpperCase();
-			Log.d("AdMobEx","DEVICE ID: "+deviceId);
-			builder.addTestDevice(deviceId);
-		}
-		
-		builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
-		if(tagForChildDirectedTreatment){
-			Log.d("AdMobEx","Enabling COPPA support.");
-			builder.tagForChildDirectedTreatment(true);
-		}
-		adReq = builder.build();
-
-		if(bannerId!=""){
-			this.reinitBanner();
-		}
-		
-		if(interstitialId!=""){
-			interstitial = new InterstitialAd(mainActivity);
-			interstitial.setAdUnitId(interstitialId);
-			interstitial.setAdListener(new AdListener() {
-				public void onAdLoaded() {
-					AdMobEx.getInstance().loadingInterstitial=false;
-					reportInterstitialEvent(AdMobEx.LOADED);
-					Log.d("AdMobEx","Received Interstitial!");
-				}
-				public void onAdFailedToLoad(int errorcode) {
-					AdMobEx.getInstance().loadingInterstitial=false;	
-					AdMobEx.getInstance().failInterstitial=true;
-					reportInterstitialEvent(AdMobEx.FAILED);
-					Log.d("AdMobEx","Fail to get Interstitial: "+errorcode);
-				}
-				public void onAdClosed() {
-					AdMobEx.getInstance().reloadInterstitial();
-					reportInterstitialEvent(AdMobEx.CLOSED);
-					Log.d("AdMobEx","Dismiss Interstitial");
-				}
-				public void onAdOpened() {
-					reportInterstitialEvent(AdMobEx.DISPLAYING);
-					Log.d("AdMobEx","Displaying Interstitial");
-				}
-				public void onAdLeftApplication() {
-					reportInterstitialEvent(AdMobEx.LEAVING);
-					Log.d("AdMobEx","User clicked on Interstitial, leaving app");
+	
+	public static void hideBanner()
+	{
+		if(_banner != null)
+		{
+			mainActivity.runOnUiThread(new Runnable()
+			{
+				public void run()
+				{
+					_banner.setVisibility(View.INVISIBLE);
+					ViewGroup parent = (ViewGroup) _rl.getParent();
+					parent.removeView(_rl);
+					_rl.removeView(_banner);
+					_banner.destroy();
+					_banner = null;
+					_rl = null;
 				}
 			});
-			this.reloadInterstitial();
 		}
 	}
+	
+	public static void loadInterstitial(final String id)
+	{
+		mainActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				AdRequest adRequest = new AdRequest.Builder().build();
 
-	private void reinitBanner(){
-		if(loadingBanner) return;	
-		if(banner==null){ // if this is the first time we call this function
-			rl = new RelativeLayout(mainActivity);
-			rl.setGravity(gravity);
-		} else {
-			ViewGroup parent = (ViewGroup) rl.getParent();
-			parent.removeView(rl);
-			rl.removeView(banner);
-			banner.destroy();
-		}
+				InterstitialAd.load(mainActivity, id, adRequest, new InterstitialAdLoadCallback() {
+					@Override
+					public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+						// The _interstitial reference will be null until
+						// an ad is loaded.
+						_interstitial = interstitialAd;
+						_interstitial.setFullScreenContentCallback(new FullScreenContentCallback(){
+							@Override
+							public void onAdDismissedFullScreenContent() {
+								// Called when fullscreen content is dismissed.
+								//Log.d("AdmobEx", INTERSTITIAL_DISMISSED);
+								_callback.call("onStatus", new Object[] {INTERSTITIAL_DISMISSED, ""});
+							}
 
-		banner = new AdView(mainActivity);
-		banner.setAdUnitId(bannerId);
-		banner.setAdSize(AdSize.SMART_BANNER);
-		banner.setAdListener(new AdListener() {
-			public void onAdLoaded() {
-				AdMobEx.getInstance().loadingBanner=false;	
-				Log.d("AdMobEx","Received Banner OK!");
-				if(AdMobEx.getInstance().mustBeShowingBanner){
-					AdMobEx.getInstance().showBanner();
-				}else{
-					AdMobEx.getInstance().hideBanner();
-				}				
-			}
-			public void onAdFailedToLoad(int errorcode) {
-				AdMobEx.getInstance().loadingBanner=false;
-				AdMobEx.getInstance().failBanner=true;
-				Log.d("AdMobEx","Fail to get Banner: "+errorcode);				
+							@Override
+							public void onAdFailedToShowFullScreenContent(AdError adError) {
+								// Called when fullscreen content failed to show.
+								//Log.d("AdmobEx", INTERSTITIAL_FAILED_TO_SHOW+adError.toString());
+								_callback.call("onStatus", new Object[] {INTERSTITIAL_FAILED_TO_SHOW, adError.toString()});
+							}
+
+							@Override
+							public void onAdShowedFullScreenContent() {
+								// Called when fullscreen content is shown.
+								// Make sure to set your reference to null so you don't
+								// show it a second time.
+								//Log.d("AdmobEx", INTERSTITIAL_SHOWED);
+								_interstitial = null;
+								_callback.call("onStatus", new Object[] {INTERSTITIAL_SHOWED, ""});
+							}
+						});
+						
+						//Log.d("AdmobEx", INTERSTITIAL_LOADED);
+						_callback.call("onStatus", new Object[] {INTERSTITIAL_LOADED, ""});
+					}
+
+					@Override
+					public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+						// Handle the error
+						//Log.d("AdmobEx", INTERSTITIAL_FAILED_TO_LOAD+loadAdError.getMessage());
+						_interstitial = null;
+						_callback.call("onStatus", new Object[] {INTERSTITIAL_FAILED_TO_LOAD, loadAdError.getMessage()});
+					}
+				});
 			}
 		});
-
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-			RelativeLayout.LayoutParams.MATCH_PARENT,
-			RelativeLayout.LayoutParams.MATCH_PARENT);					
-		mainActivity.addContentView(rl, params);
-		rl.addView(banner);
-		rl.bringToFront();
-		reloadBanner();
 	}
 
-	private void reloadInterstitial(){
-		if(interstitialId=="") return;
-		if(loadingInterstitial) return;
-		Log.d("AdMobEx","Reload Interstitial");
-		reportInterstitialEvent(AdMobEx.LOADING);
-		loadingInterstitial=true;
-		interstitial.loadAd(adReq);
-		failInterstitial=false;
+	public static void showInterstitial()
+	{
+		if(_interstitial != null)
+		{
+			mainActivity.runOnUiThread(new Runnable() {
+				public void run()
+				{
+					_interstitial.show(mainActivity);
+					//_callback.call("onStatus", new Object[] {INTERSTITIAL_SHOWED, ""}); //no need here, because called at onAdShowedFullScreenContent
+				}
+			});
+		}
+		else
+		{
+			//Log.d("AdmobEx", INTERSTITIAL_FAILED_TO_SHOW+"You need to load interstitial ad first!");
+			_callback.call("onStatus", new Object[] {INTERSTITIAL_FAILED_TO_SHOW, "You need to load interstitial ad first!"});
+		}
+	}
+	
+	public static void loadRewarded(final String id)
+	{
+		mainActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				AdRequest adRequest = new AdRequest.Builder().build();
+
+				RewardedAd.load(mainActivity, id, adRequest, new RewardedAdLoadCallback() {
+					@Override
+					public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
+						_rewarded = rewardedAd;
+						_rewarded.setFullScreenContentCallback(new FullScreenContentCallback(){
+							@Override
+							public void onAdDismissedFullScreenContent() {
+								// Called when fullscreen content is dismissed.
+								_callback.call("onStatus", new Object[] {REWARDED_DISMISSED, ""});
+							}
+
+							@Override
+							public void onAdFailedToShowFullScreenContent(AdError adError) {
+								// Called when fullscreen content failed to show.
+								_callback.call("onStatus", new Object[] {REWARDED_FAILED_TO_SHOW, adError.toString()});
+							}
+
+							@Override
+							public void onAdShowedFullScreenContent() {
+								// Called when fullscreen content is shown.
+								// Make sure to set your reference to null so you don't
+								// show it a second time.
+								_rewarded = null;
+								_callback.call("onStatus", new Object[] {REWARDED_SHOWED, ""});
+							}
+						});
+						
+						_callback.call("onStatus", new Object[] {REWARDED_LOADED, ""});
+					}
+
+					@Override
+					public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+						// Handle the error
+						_rewarded = null;
+						_callback.call("onStatus", new Object[] {REWARDED_FAILED_TO_LOAD, loadAdError.getMessage()});
+					}
+				});
+			}
+		});
 	}
 
-	private void reloadBanner(){
-		if(bannerId=="") return;
-		if(loadingBanner) return;
-		Log.d("AdMobEx","Reload Banner");
-		loadingBanner=true;
-		banner.loadAd(adReq);
-		failBanner=false;
+	public static void showRewarded()
+	{
+		if(_rewarded != null)
+		{
+			mainActivity.runOnUiThread(new Runnable() {
+				public void run()
+				{
+					_rewarded.show(mainActivity, new OnUserEarnedRewardListener() {
+						@Override
+						public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+							// Handle the reward.
+							int rewardAmount = rewardItem.getAmount();
+							String rewardType = rewardItem.getType();
+							_callback.call("onStatus", new Object[] {REWARDED_EARNED, rewardType+":"+String.valueOf(rewardAmount)});
+						}
+					});
+					//_callback.call("onStatus", new Object[] {REWARDED_SHOWED, ""}); //no need here, because called at onAdShowedFullScreenContent
+				}
+			});
+		}
+		else
+			_callback.call("onStatus", new Object[] {REWARDED_FAILED_TO_SHOW, "You need to load rewarded ad first!"});
 	}
+	
+	public static void setVolume(final float vol)
+	{
+		mainActivity.runOnUiThread(new Runnable() {
+			public void run() {	MobileAds.setAppVolume(vol); }
+		});
+	}
+	
+	//> copy/paste from https://developers.google.com/admob/android/banner/anchored-adaptive
+	private static AdSize getAdSize() {
+		// Step 2 - Determine the screen width (less decorations) to use for the ad width.
+		Display display = mainActivity.getWindowManager().getDefaultDisplay();
+		DisplayMetrics outMetrics = new DisplayMetrics();
+		display.getMetrics(outMetrics);
 
-	private static String md5(String s)  {
+		float widthPixels = outMetrics.widthPixels;
+		float density = outMetrics.density;
+
+		int adWidth = (int) (widthPixels / density);
+
+		// Step 3 - Get adaptive ad size and return for setting on the ad view.
+		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainContext, adWidth);
+	}
+	//<
+	
+	//> from previous version of extension
+	private static String md5(String s) {
 		MessageDigest digest;
 		try  {
-		    digest = MessageDigest.getInstance("MD5");
-		    digest.update(s.getBytes(),0,s.length());
-		    String hexDigest = new java.math.BigInteger(1, digest.digest()).toString(16);
-		    if (hexDigest.length() >= 32) return hexDigest;
-		    else return "00000000000000000000000000000000".substring(hexDigest.length()) + hexDigest;
+			digest = MessageDigest.getInstance("MD5");
+			digest.update(s.getBytes(),0,s.length());
+			String hexDigest = new java.math.BigInteger(1, digest.digest()).toString(16);
+			if (hexDigest.length() >= 32) return hexDigest;
+			else return "00000000000000000000000000000000".substring(hexDigest.length()) + hexDigest;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "";
 	}
-
+	//<
 }

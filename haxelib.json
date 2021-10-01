@@ -1,13 +1,10 @@
 {
 	"name": "extension-admob",
-	"url": "https://github.com/sempaigames/extension-admob",
+	"url": "https://github.com/HaxeExtension/extension-admob",
 	"license": "MIT",
-	"contributors":["fbricker"],
+	"contributors":["pozirk"],
 	"tags": ["ads","api","google","ad","monetization","admob"],
 	"description": "Google AdMob / OpenFL extension for Android + iOS.",
-	"version": "1.6.4",
-	"dependencies": {
-		"extension-googleplayservices-basement": ""
-	},
-	"releasenote": "Add COPPA support."
+	"version": "2.0.0",
+	"releasenote": ""
 }
