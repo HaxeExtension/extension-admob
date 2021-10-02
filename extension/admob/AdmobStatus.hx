@@ -10,7 +10,7 @@ class AdmobStatus extends EventDispatcher
 {
 	public function onStatus(status:String, data:String = null):Void
 	{
-		trace("onStatus: ", status, data);
+		//trace("onStatus: ", status, data);
 		var ae:AdmobEvent = new AdmobEvent(status, data);
 		this.dispatchEvent(ae);
 	}

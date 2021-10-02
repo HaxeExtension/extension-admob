@@ -28,11 +28,11 @@ class AdmobEvent extends Event
 	public static var REWARDED_EARNED:String = "REWARDED_EARNED";
 	public static var WHAT_IS_GOING_ON:String = "WHAT_IS_GOING_ON"; //an event that should never happen
 	
-	public var _data:String; //extra info about event
+	public var data(default, null):String; //extra info about event
 	
-	public function new(type:String, data:String = null)
+	public function new(type:String, sdata:String = null)
 	{
 		super(type, false, false);
-		_data = data;
+		data = sdata;
 	}
 }

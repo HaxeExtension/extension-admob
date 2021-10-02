@@ -35,7 +35,7 @@ class Admob
 	private static inline var EXT_ADMOB_IOS:String = "AdmobEx";
 	
 	private static var _inited:Bool = false;
-	public static var _status(default, null):AdmobStatus = new AdmobStatus();
+	public static var status(default, null):AdmobStatus = new AdmobStatus();
 
 	private static var _initIos:Bool->Bool->Bool->Bool->Dynamic->Void = function(testingAds:Bool, childDirected:Bool, enableRDP:Bool, requestIDFA:Bool, callback:Dynamic) {};
 	private static var _initAndroid:Bool->Bool->Bool->Dynamic->Void = function(testingAds:Bool, childDirected:Bool, enableRDP:Bool, callback:Dynamic) {};
@@ -72,12 +72,12 @@ class Admob
 			_showRewarded = JNI.createStaticMethod(EXT_ADMOB_ANDY, "showRewarded", "()V");
 			_setVolume = JNI.createStaticMethod(EXT_ADMOB_ANDY, "setVolume", "(F)V");
 
-			_initAndroid(testingAds, childDirected, enableRDP, _status);
+			_initAndroid(testingAds, childDirected, enableRDP, status);
 		}
 		catch(e:Dynamic)
 		{
 			//trace("Android Init Exception: " + e);
-			_status.onStatus(AdmobEvent.INIT_FAIL, e);
+			status.onStatus(AdmobEvent.INIT_FAIL, e);
 		}
 #elseif ios
 		try
@@ -91,12 +91,12 @@ class Admob
 			_showRewarded = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_rewarded_show", 0);
 			_setVolume = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_set_volume", 1);
 
-			_initIos(testingAds, childDirected, enableRDP, requestIDFA, _status.onStatus);
+			_initIos(testingAds, childDirected, enableRDP, requestIDFA, status.onStatus);
 		}
 		catch(e:Dynamic)
 		{
 			//trace("iOS Init Exception: " + e);
-			_status.onStatus(AdmobEvent.INIT_FAIL, e);
+			status.onStatus(AdmobEvent.INIT_FAIL, e);
 		}
 #end
 	}
@@ -104,7 +104,7 @@ class Admob
 	public static function showBanner(id:String, size:Int = Admob.BANNER_SIZE_ADAPTIVE, align:Int = Admob.BANNER_ALIGN_BOTTOM)
 	{
 		if(!_inited)
-			_status.onStatus(AdmobEvent.BANNER_FAILED_TO_LOAD, "Extension is not initialized!");
+			status.onStatus(AdmobEvent.BANNER_FAILED_TO_LOAD, "Extension is not initialized!");
 		
 		try
 		{
@@ -113,14 +113,14 @@ class Admob
 		catch(e:Dynamic)
 		{
 			trace("showBanner Exception: " + e);
-			_status.onStatus(AdmobEvent.BANNER_FAILED_TO_LOAD, e);
+			status.onStatus(AdmobEvent.BANNER_FAILED_TO_LOAD, e);
 		}
 	}
 
 	public static function hideBanner()
 	{
 		if(!_inited)
-			_status.onStatus(AdmobEvent.WHAT_IS_GOING_ON, "Extension is not initialized!");
+			status.onStatus(AdmobEvent.WHAT_IS_GOING_ON, "Extension is not initialized!");
 		
 		try
 		{
@@ -129,14 +129,14 @@ class Admob
 		catch (e:Dynamic)
 		{
 			trace("hideBanner Exception: " + e);
-			_status.onStatus(AdmobEvent.WHAT_IS_GOING_ON, e);
+			status.onStatus(AdmobEvent.WHAT_IS_GOING_ON, e);
 		}
 	}
 	
 	public static function loadInterstitial(id:String):Void
 	{
 		if(!_inited)
-			_status.onStatus(AdmobEvent.INTERSTITIAL_FAILED_TO_LOAD, "Extension is not initialized!");
+			status.onStatus(AdmobEvent.INTERSTITIAL_FAILED_TO_LOAD, "Extension is not initialized!");
 		
 		try
 		{
@@ -145,14 +145,14 @@ class Admob
 		catch(e:Dynamic)
 		{
 			trace("loadInterstitial Exception: " + e);
-			_status.onStatus(AdmobEvent.INTERSTITIAL_FAILED_TO_LOAD, e);
+			status.onStatus(AdmobEvent.INTERSTITIAL_FAILED_TO_LOAD, e);
 		}
 	}
 	
 	public static function showInterstitial():Void
 	{
 		if(!_inited)
-			_status.onStatus(AdmobEvent.INTERSTITIAL_FAILED_TO_SHOW, "Extension is not initialized!");
+			status.onStatus(AdmobEvent.INTERSTITIAL_FAILED_TO_SHOW, "Extension is not initialized!");
 		
 		try
 		{
@@ -161,14 +161,14 @@ class Admob
 		catch(e:Dynamic)
 		{
 			trace("showInterstitial Exception: " + e);
-			_status.onStatus(AdmobEvent.INTERSTITIAL_FAILED_TO_SHOW, e);
+			status.onStatus(AdmobEvent.INTERSTITIAL_FAILED_TO_SHOW, e);
 		}
 	}
 	
 	public static function loadRewarded(id:String):Void
 	{
 		if(!_inited)
-			_status.onStatus(AdmobEvent.REWARDED_FAILED_TO_LOAD, "Extension is not initialized!");
+			status.onStatus(AdmobEvent.REWARDED_FAILED_TO_LOAD, "Extension is not initialized!");
 		
 		try
 		{
@@ -177,14 +177,14 @@ class Admob
 		catch(e:Dynamic)
 		{
 			trace("loadInterstitial Exception: " + e);
-			_status.onStatus(AdmobEvent.REWARDED_FAILED_TO_LOAD, e);
+			status.onStatus(AdmobEvent.REWARDED_FAILED_TO_LOAD, e);
 		}
 	}
 
 	public static function showRewarded():Void
 	{
 		if(!_inited)
-			_status.onStatus(AdmobEvent.REWARDED_FAILED_TO_SHOW, "Extension is not initialized!");
+			status.onStatus(AdmobEvent.REWARDED_FAILED_TO_SHOW, "Extension is not initialized!");
 		
 		try
 		{
@@ -193,7 +193,7 @@ class Admob
 		catch(e:Dynamic)
 		{
 			trace("showRewarded Exception: " + e);
-			_status.onStatus(AdmobEvent.REWARDED_FAILED_TO_SHOW, e);
+			status.onStatus(AdmobEvent.REWARDED_FAILED_TO_SHOW, e);
 		}
 	}
 
@@ -204,7 +204,7 @@ class Admob
 	public static function setVolume(vol:Float):Void
 	{
 		if(!_inited)
-			_status.onStatus(AdmobEvent.WHAT_IS_GOING_ON, "Extension is not initialized!");
+			status.onStatus(AdmobEvent.WHAT_IS_GOING_ON, "Extension is not initialized!");
 		
 		try
 		{
@@ -213,7 +213,7 @@ class Admob
 		catch(e:Dynamic)
 		{
 			trace("setVolume Exception: "+e);
-			_status.onStatus(AdmobEvent.WHAT_IS_GOING_ON, e);
+			status.onStatus(AdmobEvent.WHAT_IS_GOING_ON, e);
 		}
 	}
 }
