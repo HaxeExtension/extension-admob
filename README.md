@@ -38,14 +38,14 @@ import extension.admob.AdmobEvent;
 
 ...
 
-Admob._status.addEventListener(AdmobEvent.INIT_OK, onInitOk); //add more event listeners, if needed
+Admob.status.addEventListener(AdmobEvent.INIT_OK, onInitOk); //add more event listeners, if needed
 Admob.init(); //set first param to true to enable testing ads, default is false
 
 ...
 
 private function onInitOk(ae:AdmobEvent):Void
 {
-	trace(ae.type, ae._data);
+	trace(ae.type, ae.data);
 	Admob.setVolume(0); //set sound volume to 0 (mute)
 	//you can start loading ads after successful initialization
 }
@@ -60,7 +60,7 @@ Admob.hideBanner();
 
 ...
 
-Admob._status.addEventListener(AdmobEvent.INTERSTITIAL_LOADED, onLoadInterstitial);
+Admob.status.addEventListener(AdmobEvent.INTERSTITIAL_LOADED, onLoadInterstitial);
 Admob.loadInterstitial([INTERSTITIAL_ID]);
 
 ...
