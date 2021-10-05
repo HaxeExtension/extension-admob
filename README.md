@@ -88,6 +88,8 @@ Once this is done, you just need to add this to your project.xml
 Also, you may need to set android sdk version to 29 or higher (as some versions of google play services requires that):
 ```xml
 <android target-sdk-version="29" if="android" />
+<config:android gradle-version="6.7.1" if="android" />
+<config:android gradle-plugin="4.2.0" if="android" />
 ```
 
 ### Disclaimer
