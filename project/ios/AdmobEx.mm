@@ -357,7 +357,7 @@ namespace admobex
 	static BannerListener *_bannerListener;
 	static InterstitialListener *_interstitialListener;
 	static RewardedListener *_rewardedListener;
-	static NSString *statusIDFA = @"";
+	//static NSString *statusIDFA = @"";
 	
 	void init(bool testingAds, bool childDirected, bool enableRDP, bool requestIDFA)
 	{
@@ -378,9 +378,9 @@ namespace admobex
 				[deviceId appendFormat:@"%02x", digest[i]];
 			//<
 			
-			NSLog(@"Test device %@, %@", UDIDString, deviceId);
+			//NSLog(@"Test device %@, %@", UDIDString, deviceId);
 			
-			GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[deviceId];
+			GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[deviceId, kGADSimulatorID];
         }
 		//<
 		
@@ -409,7 +409,7 @@ namespace admobex
 				
 				[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status)
 				{
-					switch(status)
+					/*switch(status)
 					{
 					  case ATTrackingManagerAuthorizationStatusAuthorized:
 						//NSLog(@"IDFA authorized!");
@@ -427,29 +427,27 @@ namespace admobex
 						//NSLog(@"IDFA restricted!");
 						statusIDFA = @(IDFA_RESTRICTED);
 						break;
-					}
+					}*/
 					
 					[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 					{
-						//onStatus(INIT_OK, [statusIDFA UTF8String]); //it's crasing here...
+						onStatus(INIT_OK, nil); //it's crasing here if use statusIDFA...
 					}];
 				}];
 				
-				//onStatus(INIT_OK, [statusIDFA UTF8String]); //hope it's always ok
-				
 				return;
 			}
-			else
+			/*else
 			{
-				//onStatus(IDFA_NOT_SUPPORTED, nil);
 				statusIDFA = @(IDFA_NOT_SUPPORTED);
-			}
+			}*/
 		}
 		//<
-
+		
+		//if IDFA wasn't requested or not iOS14+
 		[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 		{
-			onStatus(INIT_OK, [statusIDFA UTF8String]); //hope it's always ok
+			onStatus(INIT_OK, nil);
 		}];
     }
 
@@ -510,7 +508,7 @@ namespace admobex
 	
 	void setVolume(float vol)
 	{
-		NSLog(@"setVolume %f", vol);
+		//NSLog(@"setVolume %f", vol);
 		
         GADMobileAds.sharedInstance.applicationVolume = vol;
     }

@@ -1,20 +1,34 @@
 # extension-admob
 
 OpenFL extension for "Google AdMob" on iOS and Android.<br />
-This extension allows you to integrate Google AdMob on your OpenFL application.<br />
-*Extension still has some bugs.*
+This extension allows you to integrate Google AdMob on your OpenFL application.
 
-### Main Features
+### Features
 
-* iOS SDK 8.5
+* iOS SDK 8.11
 * Android SDK 20.0.3
 * iOS14+ App Tracking Transparency (if iOS14+, app automatically presents user authorization request on first start)
 * COPPA, CCPA
 * Banners, Interstitial, Rewarded ads
 * Ads sound volume control
 * Events
+* Some bugs :)
 
-### Prerequisites
+### Installation
+
+~~To install this library, you can simply get the library from haxelib like this:~~<br />
+```bash
+haxelib install extension-admob
+```
+Not yet, but hope I will upload it to haxelib eventually, so download code from Github for now.
+
+Once this is done, you just need to add this to your project.xml
+```xml
+<haxelib name="extension-admob" />
+```
+
+### Setup
+
 Set the following in your project.xml, replace value with your app id from Admob:
 ```xml
 <setenv name="ADMOB_APPID" value="ca-app-pub-XXXXX123457" if="android"/>
@@ -24,21 +38,34 @@ Set the following in your project.xml, replace value with your app id from Admob
 For Android:<br />
 You need to install the latest version of Android SDK Platfrom, Android SDK Platfrom-Tools and Android SDK Build-Tools.<br />
 Current version of Lime (7.9.0) doesn't support latest Gradle version.<br />
-Open file "\lib\lime\X,X,X\templates\android\template\gradle.properties" and add the following lines in the end of the file to fix that:
+More details here: https://github.com/haxelime/lime/issues/1476
+
+You need to set Gradle version in your project.xml file:
+```xml
+<config:android gradle-version="6.7.1" if="android" />
+<config:android gradle-plugin="4.2.0" if="android" />
+```
+
+And fix some other problems with Lime, open file "\lib\lime\X,X,X\templates\android\template\gradle.properties" and add the following lines in the end of the file:
 ```
 android.useAndroidX=true
 android.enableJetifier=true
 ```
 
+Also, you may need to set android sdk version to 29 or higher (as some versions of google play services requires that):
+```xml
+<android target-sdk-version="29" if="android" />
+```
+
 ### Sample code
 
 ```haxe
-import extension.admob.Admob;
+import extension.admob.AdMob;
 import extension.admob.AdmobEvent;
 
 ...
 
-Admob.status.addEventListener(AdmobEvent.INIT_OK, onInitOk); //add more event listeners, if needed
+Admob.status.addEventListener(AdmobEvent.INIT_OK, onInitOk); //add more event listener, if needed
 Admob.init(); //set first param to true to enable testing ads, default is false
 
 ...
@@ -46,8 +73,8 @@ Admob.init(); //set first param to true to enable testing ads, default is false
 private function onInitOk(ae:AdmobEvent):Void
 {
 	trace(ae.type, ae.data);
-	Admob.setVolume(0); //set sound volume to 0 (mute)
-	//you can start loading ads after successful initialization
+	Admob.setVolume(0); //set sound volume to 0 (mute) for interstitial and rewarded ads
+	//can start loading ads after successful initialization
 }
 
 ...
@@ -70,26 +97,6 @@ private function onLoadInterstitial(ae:AdmobEvent):Void
 {
 	Admob.showInterstitial();
 }
-```
-
-### How to Install
-
-~~To install this library, you can simply get the library from haxelib like this:~~<br />
-*Not yet, but hope I will upload it to haxelib.*
-```bash
-haxelib install extension-admob
-```
-
-Once this is done, you just need to add this to your project.xml
-```xml
-<haxelib name="extension-admob" />
-```
-
-Also, you may need to set android sdk version to 29 or higher (as some versions of google play services requires that):
-```xml
-<android target-sdk-version="29" if="android" />
-<config:android gradle-version="6.7.1" if="android" />
-<config:android gradle-plugin="4.2.0" if="android" />
 ```
 
 ### Disclaimer

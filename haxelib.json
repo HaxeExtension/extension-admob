@@ -5,6 +5,6 @@
 	"contributors":["pozirk"],
 	"tags": ["ads","api","google","ad","monetization","admob"],
 	"description": "Google AdMob / OpenFL extension for Android + iOS.",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"releasenote": ""
 }
