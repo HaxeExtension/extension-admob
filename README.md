@@ -52,9 +52,9 @@ android.useAndroidX=true
 android.enableJetifier=true
 ```
 
-Also, you may need to set android sdk version to 29 or higher (as some versions of google play services requires that):
+Also, you may need to set android sdk version to 30 or higher (as some versions of google play services requires that):
 ```xml
-<android target-sdk-version="29" if="android" />
+<android target-sdk-version="30" if="android" />
 ```
 
 ### Sample code
@@ -65,7 +65,7 @@ import extension.admob.AdmobEvent;
 
 ...
 
-Admob.status.addEventListener(AdmobEvent.INIT_OK, onInitOk); //add more event listener, if needed
+Admob.status.addEventListener(AdmobEvent.INIT_OK, onInitOk); //you can add more event listeners, if needed
 Admob.init(); //set first param to true to enable testing ads, default is false
 
 ...
@@ -74,7 +74,7 @@ private function onInitOk(ae:AdmobEvent):Void
 {
 	trace(ae.type, ae.data);
 	Admob.setVolume(0); //set sound volume to 0 (mute) for interstitial and rewarded ads
-	//can start loading ads after successful initialization
+	//you can start showing/loading ads after successful initialization
 }
 
 ...
@@ -98,6 +98,12 @@ private function onLoadInterstitial(ae:AdmobEvent):Void
 	Admob.showInterstitial();
 }
 ```
+
+### Game with Admob extension
+
+Google Play: https://play.google.com/store/apps/details?id=air.com.pozirk.allinonesolitaire<br />
+App Store: https://itunes.apple.com/app/all-in-one-solitaire-free/id660577037<br />
+Win/lose any game to see interstitial ad.
 
 ### Disclaimer
 
