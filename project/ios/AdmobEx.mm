@@ -5,6 +5,8 @@
 #import <AdSupport/AdSupport.h>
 #include <CommonCrypto/CommonDigest.h>
 
+//https://developers.google.com/admob/ios/ios14?hl=en
+
 extern "C" void onStatus(const char* code, const char* data);
 
 static const char* INIT_OK = "INIT_OK";
@@ -22,7 +24,7 @@ static const char* INTERSTITIAL_SHOWED = "INTERSTITIAL_SHOWED";
 static const char* REWARDED_LOADED = "REWARDED_LOADED";
 static const char* REWARDED_FAILED_TO_LOAD = "REWARDED_FAILED_TO_LOAD";
 static const char* REWARDED_DISMISSED = "REWARDED_DISMISSED";
-static const char* REWARDED_FAILED_TO_SHOW = "REWARDED_CACHE_OK";
+static const char* REWARDED_FAILED_TO_SHOW = "REWARDED_FAILED_TO_SHOW";
 static const char* REWARDED_SHOWED = "REWARDED_SHOWED";
 static const char* REWARDED_EARNED = "REWARDED_EARNED";
 static const char* WHAT_IS_GOING_ON = "WHAT_IS_GOING_ON";
@@ -213,6 +215,7 @@ static const char* IDFA_NOT_SUPPORTED = "IDFA_NOT_SUPPORTED";
 	self = [super init];
 	if(!self) return nil;
 	
+	self._ad = nil;
 	GADRequest *request = [GADRequest request];
     [GADInterstitialAd loadWithAdUnitID:ID
 		request:request
@@ -286,6 +289,7 @@ didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
 	self = [super init];
 	if(!self) return nil;
 	
+	self._ad = nil;
 	GADRequest *request = [GADRequest request];
 	[GADRewardedAd loadWithAdUnitID:ID
 		request:request

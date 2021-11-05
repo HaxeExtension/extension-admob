@@ -18,12 +18,12 @@ class AdmobEvent extends Event
 	public static var INTERSTITIAL_LOADED:String = "INTERSTITIAL_LOADED";
 	public static var INTERSTITIAL_FAILED_TO_LOAD:String = "INTERSTITIAL_FAILED_TO_LOAD";
 	public static var INTERSTITIAL_DISMISSED:String = "INTERSTITIAL_DISMISSED";
-	public static var INTERSTITIAL_FAILED_TO_SHOW:String = "INTERSTITIAL_CACHE_OK";
+	public static var INTERSTITIAL_FAILED_TO_SHOW:String = "INTERSTITIAL_FAILED_TO_SHOW";
 	public static var INTERSTITIAL_SHOWED:String = "INTERSTITIAL_SHOWED";
 	public static var REWARDED_LOADED:String = "REWARDED_LOADED";
 	public static var REWARDED_FAILED_TO_LOAD:String = "REWARDED_FAILED_TO_LOAD";
 	public static var REWARDED_DISMISSED:String = "REWARDED_DISMISSED";
-	public static var REWARDED_FAILED_TO_SHOW:String = "REWARDED_CACHE_OK";
+	public static var REWARDED_FAILED_TO_SHOW:String = "REWARDED_FAILED_TO_SHOW";
 	public static var REWARDED_SHOWED:String = "REWARDED_SHOWED";
 	public static var REWARDED_EARNED:String = "REWARDED_EARNED";
 	public static var WHAT_IS_GOING_ON:String = "WHAT_IS_GOING_ON"; //an event that should never happen

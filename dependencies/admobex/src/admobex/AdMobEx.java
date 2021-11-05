@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//https://developers.google.com/admob/android/quick-start?hl=en
+
 public class AdmobEx extends Extension
 {
 	public static final String INIT_OK = "INIT_OK";
@@ -53,12 +55,12 @@ public class AdmobEx extends Extension
 	public static final String INTERSTITIAL_LOADED = "INTERSTITIAL_LOADED";
 	public static final String INTERSTITIAL_FAILED_TO_LOAD = "INTERSTITIAL_FAILED_TO_LOAD";
 	public static final String INTERSTITIAL_DISMISSED = "INTERSTITIAL_DISMISSED";
-	public static final String INTERSTITIAL_FAILED_TO_SHOW = "INTERSTITIAL_CACHE_OK";
+	public static final String INTERSTITIAL_FAILED_TO_SHOW = "INTERSTITIAL_FAILED_TO_SHOW";
 	public static final String INTERSTITIAL_SHOWED = "INTERSTITIAL_SHOWED";
 	public static final String REWARDED_LOADED = "REWARDED_LOADED";
 	public static final String REWARDED_FAILED_TO_LOAD = "REWARDED_FAILED_TO_LOAD";
 	public static final String REWARDED_DISMISSED = "REWARDED_DISMISSED";
-	public static final String REWARDED_FAILED_TO_SHOW = "REWARDED_CACHE_OK";
+	public static final String REWARDED_FAILED_TO_SHOW = "REWARDED_FAILED_TO_SHOW";
 	public static final String REWARDED_SHOWED = "REWARDED_SHOWED";
 	public static final String REWARDED_EARNED = "REWARDED_EARNED";
 	public static final String WHAT_IS_GOING_ON = "WHAT_IS_GOING_ON";
