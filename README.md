@@ -36,7 +36,7 @@ Set the following in your project.xml, replace value with your app id from Admob
 ```
 
 For Android:<br />
-You need to install the latest version of Android SDK Platfrom, Android SDK Platfrom-Tools and Android SDK Build-Tools.<br />
+You need to install the latest version of Google Play services, Android SDK Platfrom, Android SDK Platfrom-Tools and Android SDK Build-Tools.<br />
 Current version of Lime (7.9.0) doesn't support latest Gradle version.<br />
 More details here: https://github.com/haxelime/lime/issues/1476
 
