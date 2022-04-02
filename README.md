@@ -99,6 +99,11 @@ private function onLoadInterstitial(ae:AdmobEvent):Void
 }
 ```
 
+### Not working, eh?
+While I was working on this extension I've had lots of problems, so those links might help you, please go through them before contacting me:
+1. https://community.openfl.org/t/extension-admob/13242/12
+2. https://github.com/native-toolkit/lime/issues/1476
+
 ### Game with Admob extension
 
 Google Play: https://play.google.com/store/apps/details?id=air.com.pozirk.allinonesolitaire<br />
