@@ -21,8 +21,6 @@ Not yet, but hope I will upload it to haxelib eventually, so download code from 
 
 Once this is done, you just need to add this to your project.xml
 ```xml
-<set name="playServicesVersion" value="+" /> <!-- this line might be not required -->
-<set name="supportLibraryVersion" value="31.0.+" /> <!-- this line might be not required -->
 <haxelib name="extension-admob" />
 ```
 
@@ -34,7 +32,7 @@ Set the following in your project.xml, replace value with your app id from Admob
 ```
 
 For Android:<br />
-You need to install the latest version of Android SDK Platfrom, Android SDK Platfrom-Tools and Android SDK Build-Tools.<br />
+You need to install the latest version of Android SDK Platfrom (31+), Android SDK Platfrom-Tools, Android SDK Build-Tools and Google play services.<br />
 Current version of Lime (7.9.0) doesn't support latest Gradle version.<br />
 More details here: https://github.com/haxelime/lime/issues/1476
 

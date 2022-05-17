@@ -9,7 +9,6 @@
 		<section if="openfl-legacy || openfl-next">
 			<set name="google-play-services-basement" />
 			<set name="google-play-services-ads-lite" />
-			<haxelib name="extension-googleplayservices-basement" />
 		</section>
 
 		<dependency name="admobex" path="dependencies/admobex" />
