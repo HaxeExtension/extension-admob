@@ -82,37 +82,37 @@ static const char* IDFA_NOT_SUPPORTED = "IDFA_NOT_SUPPORTED";
 			}
 			CGFloat viewWidth = frame.size.width;
 			
-			self._banner = [[GADBannerView alloc] initWithAdSize:GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)];
+			//self._banner = [[GADBannerView alloc] initWithAdSize:GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)];
 			break;
 		}
 		
 		case BANNER_SIZE_BANNER:
 		{
-			self._banner = [[GADBannerView alloc] initWithAdSize:kGADAdSizeBanner];
+			self._banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeBanner];
 			break;
 		}
 		
 		case BANNER_SIZE_FULL_BANNER:
 		{
-			self._banner = [[GADBannerView alloc] initWithAdSize:kGADAdSizeFullBanner];
+			self._banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeFullBanner];
 			break;
 		}
 			
 		case BANNER_SIZE_LARGE_BANNER:
 		{
-			self._banner = [[GADBannerView alloc] initWithAdSize:kGADAdSizeLargeBanner];
+			self._banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeLargeBanner];
 			break;
 		}
 			
 		case BANNER_SIZE_LEADERBOARD:
 		{
-			self._banner = [[GADBannerView alloc] initWithAdSize:kGADAdSizeLeaderboard];
+			self._banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeLeaderboard];
 			break;
 		}
 			
 		case BANNER_SIZE_MEDIUM_RECTANGLE:
 		{
-			self._banner = [[GADBannerView alloc] initWithAdSize:kGADAdSizeMediumRectangle];
+			self._banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeMediumRectangle];
 			break;
 		}
 	}
@@ -241,7 +241,7 @@ static const char* IDFA_NOT_SUPPORTED = "IDFA_NOT_SUPPORTED";
 
 - (void)show
 {
-	if(self._ad != nil)
+	if(self._ad != nil && [self._ad canPresentFromRootViewController:[[[[UIApplication sharedApplication] delegate] window] rootViewController] error:nil])
 	{
 		[self._ad presentFromRootViewController:[[[[UIApplication sharedApplication] delegate] window] rootViewController]];
 		//[self._ad presentFromRootViewController:[[[UIApplication sharedApplication] keyWindow] rootViewController]];
@@ -260,7 +260,7 @@ didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
 }
 
 /// Tells the delegate that the ad presented full screen content.
-- (void)adDidPresentFullScreenContent:(nonnull id<GADFullScreenPresentingAd>)ad {
+- (void)adWillPresentFullScreenContent:(nonnull id<GADFullScreenPresentingAd>)ad {
     //NSLog(@"Ad did present full screen content.");
 	onStatus(INTERSTITIAL_SHOWED, nil);
 }
@@ -318,7 +318,7 @@ didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
 
 - (void)show
 {
-	if(self._ad != nil)
+	if(self._ad != nil && [self._ad canPresentFromRootViewController:[[[[UIApplication sharedApplication] delegate] window] rootViewController] error:nil])
 	{
 		[self._ad presentFromRootViewController:[[[[UIApplication sharedApplication] delegate] window] rootViewController]
 			userDidEarnRewardHandler:^
@@ -384,7 +384,7 @@ namespace admobex
 			
 			//NSLog(@"Test device %@, %@", UDIDString, deviceId);
 			
-			GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[deviceId, kGADSimulatorID];
+			GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[deviceId, GADSimulatorID];
         }
 		//<
 		

@@ -1,21 +1,18 @@
 # extension-admob
-
 OpenFL extension for "Google AdMob" on iOS and Android.<br />
 This extension allows you to integrate Google AdMob on your OpenFL application.
 
 ### Features
-
-* iOS SDK 8.11
-* Android SDK 20.0.3
+* iOS Mobile Ads SDK 9.4.0
+* Android Mobile Ads SDK 20.6.0
 * iOS14+ App Tracking Transparency (if iOS14+, app automatically presents user authorization request on first start)
 * COPPA, CCPA
 * Banners, Interstitial, Rewarded ads
 * Ads sound volume control
 * Events
-* Some bugs :)
+* Some bugs (adaptive banners are not working on iOS due to bug in SDK) :)
 
 ### Installation
-
 ~~To install this library, you can simply get the library from haxelib like this:~~<br />
 ```bash
 haxelib install extension-admob
@@ -24,11 +21,12 @@ Not yet, but hope I will upload it to haxelib eventually, so download code from 
 
 Once this is done, you just need to add this to your project.xml
 ```xml
+<set name="playServicesVersion" value="+" /> <!-- this line might be not required -->
+<set name="supportLibraryVersion" value="31.0.+" /> <!-- this line might be not required -->
 <haxelib name="extension-admob" />
 ```
 
 ### Setup
-
 Set the following in your project.xml, replace value with your app id from Admob:
 ```xml
 <setenv name="ADMOB_APPID" value="ca-app-pub-XXXXX123457" if="android"/>
@@ -52,13 +50,12 @@ android.useAndroidX=true
 android.enableJetifier=true
 ```
 
-Also, you may need to set android sdk version to 30 or higher (as some versions of google play services requires that):
+Also, you may need to set android sdk version to 31 or higher (as some versions of google play services requires that):
 ```xml
-<android target-sdk-version="30" if="android" />
+<android target-sdk-version="31" if="android" />
 ```
 
 ### Sample code
-
 ```haxe
 import extension.admob.AdMob;
 import extension.admob.AdmobEvent;
@@ -99,14 +96,17 @@ private function onLoadInterstitial(ae:AdmobEvent):Void
 }
 ```
 
-### Game with Admob extension
+### Not working, eh?
+While I was working on this extension I came across lots of problems/bugs, so those links might help you, please go through them before contacting me:
+1. https://community.openfl.org/t/extension-admob/13242/12
+2. https://github.com/native-toolkit/lime/issues/1476
 
+### Game with Admob extension
 Google Play: https://play.google.com/store/apps/details?id=air.com.pozirk.allinonesolitaire<br />
 App Store: https://itunes.apple.com/app/all-in-one-solitaire-free/id660577037<br />
 Win/lose any game to see interstitial ad.
 
 ### Disclaimer
-
 Google is a registered trademark of Google Inc.
 http://unibrander.com/united-states/140279US/google.html
 
@@ -114,7 +114,6 @@ AdMob is a registrered trademark of Google Inc.
 http://unibrander.com/united-states/479956US/admob.html
 
 ### License
-
 The MIT License (MIT) - [LICENSE.md](LICENSE.md)
 
-Copyright &copy; 2021 Pozirk Games (https://www.pozirk.com/)
+Copyright &copy; 2022 Pozirk Games (https://www.pozirk.com/)
