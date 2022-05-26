@@ -1,14 +1,3 @@
-buildscript {
-	repositories {
-		maven {
-			url "https://repo1.maven.org/maven2/"
-		}
-	}
-	dependencies {
-		classpath 'com.android.tools.build:gradle:2.1.0'
-	}
-}
-
 apply plugin: 'com.android.library'
 
 android {
@@ -24,6 +13,6 @@ android {
 }
 
 dependencies {
-	compile project(':deps:extension-api')
-	compile 'com.google.android.gms:play-services-ads:::SET_PLAY_SERVICES_VERSION::'
+	implementation project(':deps:extension-api')
+	implementation 'com.google.android.gms:play-services-ads:::SET_PLAY_SERVICES_VERSION::'
 }
