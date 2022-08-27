@@ -102,7 +102,7 @@ While I was working on this extension I came across lots of problems/bugs, so th
 ### Game with Admob extension
 Google Play: https://play.google.com/store/apps/details?id=air.com.pozirk.allinonesolitaire<br />
 App Store: https://itunes.apple.com/app/all-in-one-solitaire-free/id660577037<br />
-Win/lose any game to see interstitial ad.
+Win/lose/restart any game to see interstitial ad.
 
 ### Disclaimer
 Google is a registered trademark of Google Inc.
