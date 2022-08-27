@@ -1,6 +1,6 @@
 # extension-admob
-OpenFL extension for "Google AdMob" on iOS and Android.<br />
-This extension allows you to integrate Google AdMob on your OpenFL application.
+Google AdMob OpenFL extension for iOS and Android.<br />
+This extension allows you to integrate Google AdMob with your OpenFL application.
 
 ### Features
 * iOS Mobile Ads SDK 9.4.0
