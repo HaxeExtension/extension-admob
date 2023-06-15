@@ -3,7 +3,7 @@ Google AdMob OpenFL extension for iOS and Android.<br />
 This extension allows you to integrate Google AdMob with your OpenFL application.
 
 ### Features
-* iOS Mobile Ads SDK 10.6.0 (Xcode version to 14.1+,  iOS 11.0+)
+* iOS Mobile Ads SDK 10.6.0 (Xcode version 14.1+,  iOS 11.0+)
 * Android Mobile Ads SDK is always the latest automatically (update with SDK Manager)
 * iOS14+ App Tracking Transparency (if iOS14+, app automatically presents user authorization request on first start)
 * COPPA, CCPA
@@ -99,7 +99,7 @@ While I was working on this extension I came across lots of problems/bugs, so th
 1. https://community.openfl.org/t/extension-admob/13242/12
 2. https://github.com/native-toolkit/lime/issues/1476
 
-### Game with Admob extension
+### Games with Admob extension
 Google Play: https://play.google.com/store/apps/details?id=air.com.pozirk.allinonesolitaire<br />
 App Store: https://itunes.apple.com/app/all-in-one-solitaire-free/id660577037<br />
 Win/lose/restart any game to see interstitial ad.
