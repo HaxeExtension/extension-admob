@@ -6,6 +6,7 @@
 //
 
 #import <GoogleMobileAds/GADAdNetworkExtras.h>
+#import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 #import <GoogleMobileAds/Mediation/GADMediationServerConfiguration.h>
 #import <UIKit/UIKit.h>
 
@@ -36,16 +37,22 @@
 /// Indicates whether the publisher is requesting test ads.
 @property(nonatomic, readonly) BOOL isTestRequest;
 
-/// Indicates whether the publisher has specified latitude and longitude location.
-@property(nonatomic, readonly) BOOL hasUserLocation;
+#pragma mark - Deprecated
 
-/// The user's latitude or 0 if location isn't specified.
-@property(nonatomic, readonly) CGFloat userLatitude;
+/// Deprecated and unsupported. Always returns NO.
+@property(nonatomic, readonly) BOOL hasUserLocation GAD_DEPRECATED_MSG_ATTRIBUTE(
+    "Deprecated and unsupported. Always returns NO.");
 
-/// The user's longitude or 0 if location isn't specified.
-@property(nonatomic, readonly) CGFloat userLongitude;
+/// Deprecated and unsupported. Always returns 0.
+@property(nonatomic, readonly) CGFloat userLatitude GAD_DEPRECATED_MSG_ATTRIBUTE(
+    "Deprecated and unsupported. Always returns 0.");
 
-/// The user's location accuracy or 0 if location isn't specified.
-@property(nonatomic, readonly) CGFloat userLocationAccuracyInMeters;
+/// Deprecated and unsupported. Always returns 0.
+@property(nonatomic, readonly) CGFloat userLongitude GAD_DEPRECATED_MSG_ATTRIBUTE(
+    "Deprecated and unsupported. Always returns 0.");
+
+/// Deprecated and unsupported. Always returns 0.
+@property(nonatomic, readonly) CGFloat userLocationAccuracyInMeters GAD_DEPRECATED_MSG_ATTRIBUTE(
+    "Deprecated and unsupported. Always returns 0.");
 
 @end

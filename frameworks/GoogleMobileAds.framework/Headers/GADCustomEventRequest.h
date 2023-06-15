@@ -17,7 +17,7 @@
 /// Keywords set in GADRequest. Returns nil if no keywords are set.
 @property(nonatomic, readonly, copy, nullable) NSArray *userKeywords;
 
-/// The additional parameters set by the application. This property allows you to pass additional
+/// The additional parameters set by the application. This property lets you pass additional
 /// information from your application to your Custom Event object. To do so, create an instance of
 /// GADCustomEventExtras to pass to GADRequest -registerAdNetworkExtras:. The instance should have
 /// an NSDictionary set for a particular custom event label. That NSDictionary becomes the
@@ -26,29 +26,5 @@
 
 /// Indicates whether the testing property has been set in GADRequest.
 @property(nonatomic, readonly, assign) BOOL isTesting;
-
-#pragma mark - Deprecated
-
-/// Deprecated and unsupported. Always NO.
-@property(nonatomic, readonly, assign)
-    BOOL userHasLocation GAD_DEPRECATED_MSG_ATTRIBUTE("Deprecated and unsupported. Always NO.");
-
-/// Deprecated and unsupported. Always 0.
-@property(nonatomic, readonly, assign)
-    CGFloat userLatitude GAD_DEPRECATED_MSG_ATTRIBUTE("Deprecated and unsupported. Always 0.");
-
-/// Deprecated and unsupported. Always 0.
-@property(nonatomic, readonly, assign)
-    CGFloat userLongitude GAD_DEPRECATED_MSG_ATTRIBUTE("Deprecated and unsupported. Always 0.");
-
-/// Deprecated and unsupported. Always 0.
-@property(nonatomic, readonly, assign)
-    CGFloat userLocationAccuracyInMeters GAD_DEPRECATED_MSG_ATTRIBUTE(
-        "Deprecated and unsupported. Always 0.");
-
-/// Deprecated and unsupported. Always nil.
-@property(nonatomic, readonly, copy, nullable)
-    NSString *userLocationDescription GAD_DEPRECATED_MSG_ATTRIBUTE(
-        "Deprecated and unsupported. Always nil.");
 
 @end

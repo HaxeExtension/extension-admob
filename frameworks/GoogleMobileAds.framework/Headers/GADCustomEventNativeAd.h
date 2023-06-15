@@ -41,8 +41,8 @@ GAD_DEPRECATED_MSG_ATTRIBUTE("Use GADMediationNativeAd and GADMediationAdapter i
 /// custom event must notify the Google Mobile Ads SDK of clicks using
 /// +[GADMediatedNativeAdNotificationSource mediatedNativeAdDidRecordClick:]. Return NO if the
 /// custom event doesn't handles user clicks. In this case, the Google Mobile Ads SDK tracks user
-/// clicks itself and the custom event is notified of user clicks via -[GADMediatedUnifiedNativeAd
-/// didRecordClickOnAssetWithName:view:viewController:].
+/// clicks itself and the custom event is notified of user clicks through
+/// -[GADMediatedUnifiedNativeAd didRecordClickOnAssetWithName:view:viewController:].
 - (BOOL)handlesUserClicks;
 
 /// Indicates whether the custom event handles user impressions tracking. If this method returns

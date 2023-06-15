@@ -3,14 +3,14 @@ Google AdMob OpenFL extension for iOS and Android.<br />
 This extension allows you to integrate Google AdMob with your OpenFL application.
 
 ### Features
-* iOS Mobile Ads SDK 9.4.0
-* Android Mobile Ads SDK 20.6.0
+* iOS Mobile Ads SDK 10.6.0 (Xcode version to 14.1+,  iOS 11.0+)
+* Android Mobile Ads SDK is always the latest automatically (update with SDK Manager)
 * iOS14+ App Tracking Transparency (if iOS14+, app automatically presents user authorization request on first start)
 * COPPA, CCPA
 * Banners, Interstitial, Rewarded ads
 * Ads sound volume control
 * Events
-* Some bugs (adaptive banners are not working on iOS due to bug in SDK) :)
+* Some bugs :)
 
 ### Installation
 ~~To install this library, you can simply get the library from haxelib like this:~~<br />
@@ -33,7 +33,7 @@ Set the following in your project.xml, replace value with your app id from Admob
 
 For Android:<br />
 You need to install the latest version of Android SDK Platfrom (31+), Android SDK Platfrom-Tools, Android SDK Build-Tools and Google Play services.<br />
-Current version of Lime (7.9.0) doesn't support latest Gradle version.<br />
+Version of Lime (7.9.0) doesn't support latest Gradle version.<br />
 More details here: https://github.com/haxelime/lime/issues/1476
 
 You need to set Gradle version in your project.xml file:

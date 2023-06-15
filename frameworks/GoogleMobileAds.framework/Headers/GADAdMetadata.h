@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 
 /// Ad metadata key type.
-typedef NSString *GADAdMetadataKey NS_STRING_ENUM;
+typedef NSString *GADAdMetadataKey NS_TYPED_ENUM;
 
 @protocol GADAdMetadataDelegate;
 

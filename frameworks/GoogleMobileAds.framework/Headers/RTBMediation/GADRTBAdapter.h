@@ -19,7 +19,7 @@ typedef void (^GADRTBSignalCompletionHandler)(NSString *_Nullable signals,
 /// Returns an initialized RTB adapter.
 - (nonnull instancetype)init;
 
-/// Asks the receiver for encrypted signals. Signals are provided to the 3PAS at request time. The
+/// Asks the receiver for secure signals. Signals are provided to the 3PAS at request time. The
 /// receiver must call completionHandler with signals or an error.
 ///
 /// This method is called on a non-main thread. The receiver should avoid using the main thread to

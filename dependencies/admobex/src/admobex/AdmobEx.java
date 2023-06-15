@@ -138,6 +138,8 @@ public class AdmobEx extends Extension
 						_callback.call("onStatus", new Object[] {INIT_OK, ""});
 					}
 				});
+				
+				Log.d("AdmobEx", MobileAds.getVersion().toString());
 			}
 		});
 	}
