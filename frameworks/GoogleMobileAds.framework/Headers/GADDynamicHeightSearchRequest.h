@@ -8,7 +8,7 @@
 #import <GoogleMobileAds/GADRequest.h>
 
 /// Use to configure Custom Search Ad (CSA) ad requests. A dynamic height search banner can contain
-/// multiple ads and the height is set dynamically based on the ad contents. Please cross-reference
+/// multiple ads and the height is set dynamically based on the ad contents. Cross-reference
 /// the property sections and properties with the official reference document:
 /// https://developers.google.com/custom-search-ads/docs/reference
 @interface GADDynamicHeightSearchRequest : GADRequest

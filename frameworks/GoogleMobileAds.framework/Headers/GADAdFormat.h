@@ -2,7 +2,7 @@
 //  GADAdFormat.h
 //  Google Mobile Ads SDK
 //
-//  Copyright 2018-2021 Google LLC. All rights reserved.
+//  Copyright 2018-2022 Google LLC. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -15,4 +15,5 @@ typedef NS_ENUM(NSInteger, GADAdFormat) {
   GADAdFormatNative,                ///< Native.
   GADAdFormatRewardedInterstitial,  ///< Rewarded interstitial.
   GADAdFormatUnknown,               ///< Unknown.
+  GADAdFormatAppOpen,               ///< App open.
 };

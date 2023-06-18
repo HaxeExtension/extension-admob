@@ -9,7 +9,7 @@
 #import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
 /// Google AdMob Ads error domain.
-extern NSString *_Nonnull const GADErrorDomain;
+FOUNDATION_EXPORT NSString *_Nonnull const GADErrorDomain;
 
 /// NSError codes for GAD error domain.
 typedef NS_ENUM(NSInteger, GADErrorCode) {

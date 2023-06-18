@@ -28,11 +28,9 @@ typedef void (^GADAppOpenAdLoadCompletionHandler)(GADAppOpenAd *_Nullable appOpe
 ///
 /// @param adUnitID An ad unit ID created in the AdMob or Ad Manager UI.
 /// @param request An ad request object. If nil, a default ad request object is used.
-/// @param orientation The interface orientation that the ad will be presented in.
 /// @param completionHandler A handler to execute when the load operation finishes or times out.
 + (void)loadWithAdUnitID:(nonnull NSString *)adUnitID
                  request:(nullable GADRequest *)request
-             orientation:(UIInterfaceOrientation)orientation
        completionHandler:(nonnull GADAppOpenAdLoadCompletionHandler)completionHandler;
 
 /// Optional delegate object that receives notifications about presentation and dismissal of full
@@ -55,5 +53,12 @@ typedef void (^GADAppOpenAdLoadCompletionHandler)(GADAppOpenAd *_Nullable appOpe
 
 /// Presents the app open ad with the provided view controller. Must be called on the main thread.
 - (void)presentFromRootViewController:(nonnull UIViewController *)rootViewController;
+
+#pragma mark - Deprecated
+/// Deprecated. Use +loadWithAdUnitID:request:completionHandler instead.
++ (void)loadWithAdUnitID:(nonnull NSString *)adUnitID
+                 request:(nullable GADRequest *)request
+             orientation:(UIInterfaceOrientation)orientation
+       completionHandler:(nonnull GADAppOpenAdLoadCompletionHandler)completionHandler;
 
 @end

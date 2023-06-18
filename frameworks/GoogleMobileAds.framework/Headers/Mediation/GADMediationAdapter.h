@@ -6,6 +6,7 @@
 //
 
 #import <GoogleMobileAds/Mediation/GADMediationAdEventDelegate.h>
+#import <GoogleMobileAds/Mediation/GADMediationAppOpenAd.h>
 #import <GoogleMobileAds/Mediation/GADMediationBannerAd.h>
 #import <GoogleMobileAds/Mediation/GADMediationInterstitialAd.h>
 #import <GoogleMobileAds/Mediation/GADMediationNativeAd.h>
@@ -47,6 +48,12 @@ typedef id<GADMediationRewardedAdEventDelegate> _Nullable (
     ^GADMediationRewardedLoadCompletionHandler)(_Nullable id<GADMediationRewardedAd> ad,
                                                 NSError *_Nullable error);
 
+/// Called by the adapter after loading the app open ad or encountering an error. Returns an ad
+/// event delegate to send ad events to the Google Mobile Ads SDK. The block returns nil if a
+/// delegate couldn't be created or if the block has already been called.
+typedef id<GADMediationAppOpenAdEventDelegate> _Nullable (
+    ^GADMediationAppOpenLoadCompletionHandler)(_Nullable id<GADMediationAppOpenAd> ad,
+                                               NSError *_Nullable error);
 /// Executes when adapter set up completes.
 typedef void (^GADMediationAdapterSetUpCompletionBlock)(NSError *_Nullable error);
 
@@ -130,4 +137,12 @@ typedef void (^GADMediationAdapterSetUpCompletionBlock)(NSError *_Nullable error
                                        (nonnull GADMediationRewardedLoadCompletionHandler)
                                            completionHandler;
 
+/// Asks the adapter to load an app open ad with the provided ad configuration. The
+/// adapter must call back completionHandler with the loaded ad, or it may call back with an error.
+/// This method is called on the main thread, and completionHandler must be called back on the main
+/// thread.
+- (void)loadAppOpenAdForAdConfiguration:
+            (nonnull GADMediationAppOpenAdConfiguration *)adConfiguration
+                      completionHandler:
+                          (nonnull GADMediationAppOpenLoadCompletionHandler)completionHandler;
 @end

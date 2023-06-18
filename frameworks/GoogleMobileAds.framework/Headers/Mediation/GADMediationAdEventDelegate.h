@@ -78,13 +78,23 @@
 /// Reports rewarded related information to the Google Mobile Ads SDK from the adapter.
 @protocol GADMediationRewardedAdEventDelegate <GADMediationAdEventDelegate>
 
-/// Notifies the Google Mobile Ads SDK that the GADMediationAd has rewarded the user with a reward.
-- (void)didRewardUserWithReward:(nonnull GADAdReward *)reward;
+/// Notifies the Google Mobile Ads SDK that the GADMediationAd has rewarded the user.
+- (void)didRewardUser;
 
 /// Notifies Google Mobile Ads SDK that the GADMediationAd started video playback.
 - (void)didStartVideo;
 
 /// Notifies Google Mobile Ads SDK that the GADMediationAd's video playback finished.
 - (void)didEndVideo;
+
+#pragma mark - Deprecated
+/// Deprecated. Use -didRewardUser.
+- (void)didRewardUserWithReward:(nonnull GADAdReward *)reward
+    GAD_DEPRECATED_MSG_ATTRIBUTE("Deprecated. Use -didRewardUser.");
+
+@end
+
+/// Reports app open related information to the Google Mobile Ads SDK from the adapter.
+@protocol GADMediationAppOpenAdEventDelegate <GADMediationAdEventDelegate>
 
 @end

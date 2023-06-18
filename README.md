@@ -3,14 +3,14 @@ Google AdMob OpenFL extension for iOS and Android.<br />
 This extension allows you to integrate Google AdMob with your OpenFL application.
 
 ### Features
-* iOS Mobile Ads SDK 9.4.0
-* Android Mobile Ads SDK 20.6.0
+* iOS Mobile Ads SDK 10.6.0 (Xcode version 14.1+,  iOS 11.0+)
+* Android Mobile Ads SDK is always the latest automatically (update with SDK Manager)
 * iOS14+ App Tracking Transparency (if iOS14+, app automatically presents user authorization request on first start)
 * COPPA, CCPA
 * Banners, Interstitial, Rewarded ads
 * Ads sound volume control
 * Events
-* Some bugs (adaptive banners are not working on iOS due to bug in SDK) :)
+* Some bugs :)
 
 ### Installation
 ~~To install this library, you can simply get the library from haxelib like this:~~<br />
@@ -33,7 +33,7 @@ Set the following in your project.xml, replace value with your app id from Admob
 
 For Android:<br />
 You need to install the latest version of Android SDK Platfrom (31+), Android SDK Platfrom-Tools, Android SDK Build-Tools and Google Play services.<br />
-Current version of Lime (7.9.0) doesn't support latest Gradle version.<br />
+Version of Lime (7.9.0) doesn't support latest Gradle version.<br />
 More details here: https://github.com/haxelime/lime/issues/1476
 
 You need to set Gradle version in your project.xml file:
@@ -99,7 +99,7 @@ While I was working on this extension I came across lots of problems/bugs, so th
 1. https://community.openfl.org/t/extension-admob/13242/12
 2. https://github.com/native-toolkit/lime/issues/1476
 
-### Game with Admob extension
+### Games with Admob extension
 Google Play: https://play.google.com/store/apps/details?id=air.com.pozirk.allinonesolitaire<br />
 App Store: https://itunes.apple.com/app/all-in-one-solitaire-free/id660577037<br />
 Win/lose/restart any game to see interstitial ad.

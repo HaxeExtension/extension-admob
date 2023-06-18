@@ -8,16 +8,16 @@
 #import <Foundation/Foundation.h>
 #import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
-typedef NSString *GADNativeAssetIdentifier NS_STRING_ENUM;
+typedef NSString *GADNativeAssetIdentifier NS_TYPED_ENUM;
 
-extern GADNativeAssetIdentifier _Nonnull const GADNativeHeadlineAsset;
-extern GADNativeAssetIdentifier _Nonnull const GADNativeCallToActionAsset;
-extern GADNativeAssetIdentifier _Nonnull const GADNativeIconAsset;
-extern GADNativeAssetIdentifier _Nonnull const GADNativeBodyAsset;
-extern GADNativeAssetIdentifier _Nonnull const GADNativeStoreAsset;
-extern GADNativeAssetIdentifier _Nonnull const GADNativePriceAsset;
-extern GADNativeAssetIdentifier _Nonnull const GADNativeImageAsset;
-extern GADNativeAssetIdentifier _Nonnull const GADNativeStarRatingAsset;
-extern GADNativeAssetIdentifier _Nonnull const GADNativeAdvertiserAsset;
-extern GADNativeAssetIdentifier _Nonnull const GADNativeMediaViewAsset;
-extern GADNativeAssetIdentifier _Nonnull const GADNativeAdChoicesViewAsset;
+FOUNDATION_EXPORT GADNativeAssetIdentifier _Nonnull const GADNativeHeadlineAsset;
+FOUNDATION_EXPORT GADNativeAssetIdentifier _Nonnull const GADNativeCallToActionAsset;
+FOUNDATION_EXPORT GADNativeAssetIdentifier _Nonnull const GADNativeIconAsset;
+FOUNDATION_EXPORT GADNativeAssetIdentifier _Nonnull const GADNativeBodyAsset;
+FOUNDATION_EXPORT GADNativeAssetIdentifier _Nonnull const GADNativeStoreAsset;
+FOUNDATION_EXPORT GADNativeAssetIdentifier _Nonnull const GADNativePriceAsset;
+FOUNDATION_EXPORT GADNativeAssetIdentifier _Nonnull const GADNativeImageAsset;
+FOUNDATION_EXPORT GADNativeAssetIdentifier _Nonnull const GADNativeStarRatingAsset;
+FOUNDATION_EXPORT GADNativeAssetIdentifier _Nonnull const GADNativeAdvertiserAsset;
+FOUNDATION_EXPORT GADNativeAssetIdentifier _Nonnull const GADNativeMediaViewAsset;
+FOUNDATION_EXPORT GADNativeAssetIdentifier _Nonnull const GADNativeAdChoicesViewAsset;

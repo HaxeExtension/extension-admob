@@ -9,19 +9,19 @@
 #import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
 /// Maximum ad content rating.
-typedef NSString *GADMaxAdContentRating NS_STRING_ENUM;
+typedef NSString *GADMaxAdContentRating NS_TYPED_ENUM;
 
 /// Rating for content suitable for general audiences, including families.
-extern GADMaxAdContentRating _Nonnull const GADMaxAdContentRatingGeneral;
+FOUNDATION_EXPORT GADMaxAdContentRating _Nonnull const GADMaxAdContentRatingGeneral;
 /// Rating for content suitable for most audiences with parental guidance.
-extern GADMaxAdContentRating _Nonnull const GADMaxAdContentRatingParentalGuidance;
+FOUNDATION_EXPORT GADMaxAdContentRating _Nonnull const GADMaxAdContentRatingParentalGuidance;
 /// Rating for content suitable for teen and older audiences.
-extern GADMaxAdContentRating _Nonnull const GADMaxAdContentRatingTeen;
+FOUNDATION_EXPORT GADMaxAdContentRating _Nonnull const GADMaxAdContentRatingTeen;
 /// Rating for content suitable only for mature audiences.
-extern GADMaxAdContentRating _Nonnull const GADMaxAdContentRatingMatureAudience;
+FOUNDATION_EXPORT GADMaxAdContentRating _Nonnull const GADMaxAdContentRatingMatureAudience;
 
 /// Add this constant to the testDevices property's array to receive test ads on the simulator.
-extern NSString *_Nonnull const GADSimulatorID;
+FOUNDATION_EXPORT NSString *_Nonnull const GADSimulatorID;
 
 /// Request configuration. The settings in this class will apply to all ad requests.
 @interface GADRequestConfiguration : NSObject
@@ -34,7 +34,7 @@ extern NSString *_Nonnull const GADSimulatorID;
 /// ad request is made.
 @property(nonatomic, copy, nullable) NSArray<NSString *> *testDeviceIdentifiers;
 
-/// This method allows you to specify whether the user is under the age of consent.
+/// This method lets you specify whether the user is under the age of consent.
 /// https://developers.google.com/admob/ios/targeting#users_under_the_age_of_consent.
 ///
 /// If you call this method with YES, a TFUA parameter will be included in all ad requests. This
@@ -43,9 +43,9 @@ extern NSString *_Nonnull const GADSimulatorID;
 /// servers.
 - (void)tagForUnderAgeOfConsent:(BOOL)underAgeOfConsent;
 
-/// [Optional] This method allows you to specify whether you would like your app to be treated as
+/// [Optional] This method lets you specify whether you would like your app to be treated as
 /// child-directed for purposes of the Children’s Online Privacy Protection Act (COPPA),
-/// http://business.ftc.gov/privacy-and-security/childrens-privacy.
+/// https://www.ftc.gov/business-guidance/privacy-security/childrens-privacy.
 ///
 /// If you call this method with YES, you are indicating that your app should be treated as
 /// child-directed for purposes of the Children’s Online Privacy Protection Act (COPPA). If you call
