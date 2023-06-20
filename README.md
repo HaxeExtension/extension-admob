@@ -13,11 +13,10 @@ This extension allows you to integrate Google AdMob with your OpenFL application
 * Some bugs :)
 
 ### Installation
-~~To install this library, you can simply get the library from haxelib like this:~~<br />
+To install this library, you can simply get the library from haxelib like this:<br />
 ```bash
 haxelib install extension-admob
 ```
-Not yet, but hope I will upload it to haxelib eventually, so download code from Github for now.
 
 Once this is done, you just need to add this to your project.xml
 ```xml
