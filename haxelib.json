@@ -2,7 +2,7 @@
 	"name": "extension-admob",
 	"url": "https://github.com/HaxeExtension/extension-admob",
 	"license": "MIT",
-	"contributors":["pozirk"],
+	"contributors":["pozirk", "fbricker"],
 	"tags": ["ads","api","google","ad","monetization","admob"],
 	"description": "Google AdMob / OpenFL extension for Android + iOS.",
 	"version": "2.1.1",
