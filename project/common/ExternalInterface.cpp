@@ -18,15 +18,15 @@ using namespace admobex;
 
 AutoGCRoot* eventHandle = NULL;
 
-static value admobex_init(value testingAds, value childDirected, value enableRDP, value requestIDFA, value onStatus)
+static value admobex_init(value testingAds, value childDirected, value enableRDP, value onStatus)
 {
 	eventHandle = new AutoGCRoot(onStatus);
 
-	init(val_bool(testingAds), val_bool(childDirected), val_bool(enableRDP), val_bool(requestIDFA));
+	init(val_bool(testingAds), val_bool(childDirected), val_bool(enableRDP));
 
 	return alloc_null();
 }
-DEFINE_PRIM(admobex_init, 5);
+DEFINE_PRIM(admobex_init, 4);
 
 static value admobex_banner_show(value id, value size, value align)
 {
@@ -75,7 +75,33 @@ static value admobex_set_volume(value vol)
 	setVolume(val_float(vol));
 	return alloc_null();
 }
-DEFINE_PRIM(admobex_set_volume,1);
+DEFINE_PRIM(admobex_set_volume, 1);
+
+static value admobex_has_consent_for_purpose(value purpose)
+{
+	return alloc_int(hasConsentForPuprpose(val_int(purpose)));
+}
+DEFINE_PRIM(admobex_has_consent_for_purpose, 1);
+
+static value admobex_get_consent()
+{
+	return alloc_string(getConsent());
+}
+DEFINE_PRIM(admobex_get_consent, 0);
+
+static value admobex_is_privacy_options_required()
+{
+	return alloc_int(isPrivacyOptionsRequired());
+}
+DEFINE_PRIM(admobex_is_privacy_options_required, 0);
+
+static value admobex_show_privacy_options_form()
+{
+	showPrivacyOptionsForm();
+	return alloc_null();
+}
+DEFINE_PRIM(admobex_show_privacy_options_form, 0);
+
 
 extern "C" int admobex_register_prims () { return 0; }
 

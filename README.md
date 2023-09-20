@@ -3,8 +3,9 @@ Google AdMob OpenFL extension for iOS and Android.<br />
 This extension allows you to integrate Google AdMob with your OpenFL application.
 
 ### Features
-* iOS Mobile Ads SDK 10.6.0 (Xcode version 14.1+,  iOS 11.0+)
+* iOS Mobile Ads SDK 10.10.0 (Xcode version 14.1+,  iOS 11.0+)
 * Android Mobile Ads SDK is always the latest automatically (update with SDK Manager)
+* GDPR for EEA and UK, read how to setup here: https://support.google.com/admob/answer/10113207
 * iOS14+ App Tracking Transparency (if iOS14+, app automatically presents user authorization request on first start)
 * COPPA, CCPA
 * Banners, Interstitial, Rewarded ads
@@ -32,7 +33,7 @@ Set the following in your project.xml, replace value with your app id from Admob
 
 For Android:<br />
 You need to install the latest version of Android SDK Platfrom (31+), Android SDK Platfrom-Tools, Android SDK Build-Tools and Google Play services.<br />
-Version of Lime (7.9.0) doesn't support latest Gradle version.<br />
+Version of Lime (8.2.0) doesn't support (probably?) latest Gradle version.<br />
 More details here: https://github.com/haxelime/lime/issues/1476
 
 You need to set Gradle version in your project.xml file:
@@ -49,7 +50,7 @@ android.enableJetifier=true
 
 Also, you may need to set android sdk version to 31 or higher (as some versions of google play services requires that):
 ```xml
-<android target-sdk-version="31" if="android" />
+<android target-sdk-version="34" if="android" />
 ```
 
 ### Sample code
@@ -67,7 +68,8 @@ Admob.init(); //set first param to true to enable testing ads, default is false
 private function onInitOk(ae:AdmobEvent):Void
 {
 	trace(ae.type, ae.data);
-	Admob.setVolume(0); //set sound volume to 0 (mute) for interstitial and rewarded ads
+	Admob.setVolume(0.5); //set sound volume to 0.5 for interstitial and rewarded ads
+	Admob.setVolume(-1); //mute
 	//you can start showing/loading ads after successful initialization
 }
 
@@ -93,6 +95,33 @@ private function onLoadInterstitial(ae:AdmobEvent):Void
 }
 ```
 
+Beginning 16 January 2024, Google will require all publishers serving ads to EEA and UK users to use a Google-certified consent management platform (CMP).
+This extension use Google's UMP SDK and shows consent dialog on first app start.
+If user does not consent, there is a high probability that ads will not work.
+
+How to know, if privacy dialog is required (ie user is from UK or EEA):
+```haxe
+if( Admob.isPrivacyOptionsRequired() == 1)
+	//required
+```
+
+How to know, if user consented to personalized ads:
+```haxe
+if(Admob.getConsent() == Admob.CONSENT_FULL)
+	//constented, ads should work fine
+```
+Also:
+```haxe
+if(Admob.hasConsentForPuprpose(0) == 1)
+	//most likely consented, you should check all the purposes, there are like 10 of them (0-9)
+```
+
+How to show privacy dialog to user again:
+```haxe
+Admob.showPrivacyOptionsForm();
+```
+
+
 ### Not working, eh?
 While I was working on this extension I came across lots of problems/bugs, so those links might help you, please go through them before contacting me:
 1. https://community.openfl.org/t/extension-admob/13242/12
@@ -113,4 +142,4 @@ http://unibrander.com/united-states/479956US/admob.html
 ### License
 The MIT License (MIT) - [LICENSE.md](LICENSE.md)
 
-Copyright &copy; 2022 Pozirk Games (https://www.pozirk.com/)
+Copyright &copy; 2023 Pozirk Games (https://www.pozirk.com/)

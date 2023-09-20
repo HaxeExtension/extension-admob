@@ -15,4 +15,5 @@ android {
 dependencies {
 	implementation project(':deps:extension-api')
 	implementation 'com.google.android.gms:play-services-ads:::SET_PLAY_SERVICES_VERSION::'
+	implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
 }

@@ -4,13 +4,15 @@
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
 #import <AdSupport/AdSupport.h>
 #include <CommonCrypto/CommonDigest.h>
+#include <UserMessagingPlatform/UserMessagingPlatform.h>
 
 //https://developers.google.com/admob/ios/ios14?hl=en
 
 extern "C" void onStatus(const char* code, const char* data);
 
 static const char* INIT_OK = "INIT_OK";
-static const char* INIT_FAIL = "INIT_FAIL";
+//static const char* INIT_FAIL = "INIT_FAIL";
+static const char* CONSENT_FAIL = "CONSENT_FAIL";
 static const char* BANNER_LOADED = "BANNER_LOADED";
 static const char* BANNER_FAILED_TO_LOAD = "BANNER_FAILED_TO_LOAD";
 static const char* BANNER_OPENED = "BANNER_OPENED";
@@ -27,6 +29,8 @@ static const char* REWARDED_DISMISSED = "REWARDED_DISMISSED";
 static const char* REWARDED_FAILED_TO_SHOW = "REWARDED_FAILED_TO_SHOW";
 static const char* REWARDED_SHOWED = "REWARDED_SHOWED";
 static const char* REWARDED_EARNED = "REWARDED_EARNED";
+static const char* CONSENT_OK = "CONSENT_OK";
+static const char* CONSENT_FAILED = "CONSENT_FAILED";
 static const char* WHAT_IS_GOING_ON = "WHAT_IS_GOING_ON";
 
 static const int BANNER_SIZE_ADAPTIVE = 0; //Anchored adaptive, somewhat default now (a replacement for SMART_BANNER); banner width is fullscreen, height calculated acordingly (might not work well with landscape orientation)
@@ -361,15 +365,99 @@ namespace admobex
 	static BannerListener *_bannerListener;
 	static InterstitialListener *_interstitialListener;
 	static RewardedListener *_rewardedListener;
+	static int _inited = 0;
 	//static NSString *statusIDFA = @"";
 	
-	void init(bool testingAds, bool childDirected, bool enableRDP, bool requestIDFA)
+	//https://support.google.com/admob/answer/10115027?hl=en&sjid=6409788409933810109-AP
+	//everything is fucked up: in EEA and UK, need to show GDRP message and then, if approved, IDFA message
+	void init(bool testingAds, bool childDirected, bool enableRDP)
 	{
+		//NSLog(@"Info init");
+		UIViewController *_root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+		
+		//> copy/pasted from here: https://developers.google.com/admob/ios/privacy#objective-c
+		// Create a UMPRequestParameters object.
+		UMPRequestParameters *parameters = [[UMPRequestParameters alloc] init];
+		// Set tag for under age of consent. NO means users are not under age
+		// of consent.
+		//>> don't use this if debugging GDPR
+		parameters.tagForUnderAgeOfConsent = (childDirected == true ? YES : NO);
+		//<<
+		
+		//>> use this to debug GDPR
+		/*[UMPConsentInformation.sharedInstance reset];
+		UMPDebugSettings *debugSettings = [[UMPDebugSettings alloc] init];
+		debugSettings.testDeviceIdentifiers = @[ @"[TEST_DEVICE_ID]" ];
+		debugSettings.geography = UMPDebugGeographyEEA;
+		parameters.debugSettings = debugSettings;*/
+		//<<
+		
+		//NSLog(@"Info request");
+		// Request an update for the consent information.
+		[UMPConsentInformation.sharedInstance
+			requestConsentInfoUpdateWithParameters:parameters
+				completionHandler:^(NSError *_Nullable requestConsentError)
+				{
+					//whether it is failed or not, we initialize admob anyway, because cmon
+					if(requestConsentError)
+					{
+						// Consent gathering failed.
+						//NSLog(@"Error: %@", requestConsentError.localizedDescription);
+						onStatus(CONSENT_FAILED, [[requestConsentError localizedDescription] UTF8String]);
+						//init admob anyway and show IDFA
+						//initMobileAds(testingAds, childDirected, enableRDP, true);
+					}
+
+					[UMPConsentForm loadAndPresentIfRequiredFromViewController:_root
+						completionHandler:^(NSError *loadAndPresentError)
+						{
+							if(loadAndPresentError)
+							{
+								// Consent gathering failed.
+								//NSLog(@"Error: %@", loadAndPresentError.localizedDescription);
+								onStatus(CONSENT_FAILED, [[loadAndPresentError localizedDescription] UTF8String]);
+							}
+
+							// Consent has been gathered.
+							//NSLog(@"Info can show 1");
+							if(UMPConsentInformation.sharedInstance.canRequestAds)
+							{
+								if(hasConsentForPuprpose(0) == 1) //consent given, not a best way to check it, but don't know any other ways
+									initMobileAds(testingAds, childDirected, enableRDP, true);
+								else
+									initMobileAds(testingAds, childDirected, enableRDP, false);
+              }
+						}
+					];
+				}
+		];
+		
+		// Check if you can initialize the Google Mobile Ads SDK in parallel
+		// while checking for new consent information. Consent obtained in
+		// the previous session can be used to request ads.
+		//NSLog(@"Info can show 2");
+		if(UMPConsentInformation.sharedInstance.canRequestAds)
+		{
+			if(hasConsentForPuprpose(0) == 1) //consent given, not a best way to check it, but don't know any other ways
+				initMobileAds(testingAds, childDirected, enableRDP, true);
+			else
+				initMobileAds(testingAds, childDirected, enableRDP, false);
+		}
+		//<
+  }
+	
+	void initMobileAds(bool testingAds, bool childDirected, bool enableRDP, bool requestIDFA)
+	{
+		if(_inited == 1)
+			return;
+		
+		_inited = 1;
+		
 		//NSLog(@"Init1 %d %d %d %d", testingAds, childDirected, enableRDP, requestIDFA);
 		
 		//> set testing devices
-        if(testingAds == true)
-		{	
+    if(testingAds == true)
+		{
 			//> from here: https://stackoverflow.com/questions/24760150/how-to-get-a-hashed-device-id-for-testing-admob-on-ios
 			NSString *UDIDString = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
 			const char *cStr = [UDIDString UTF8String];
@@ -385,7 +473,7 @@ namespace admobex
 			//NSLog(@"Test device %@, %@", UDIDString, deviceId);
 			
 			GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[deviceId, GADSimulatorID];
-        }
+    }
 		//<
 		
 		//> set COPPA
@@ -403,7 +491,7 @@ namespace admobex
 			[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"gad_rdp"];
 		}
 		//<
-
+		
 		//> iOS14+ perosnalized ads dialog
 		if(requestIDFA == true)
 		{
@@ -415,19 +503,19 @@ namespace admobex
 				{
 					/*switch(status)
 					{
-					  case ATTrackingManagerAuthorizationStatusAuthorized:
+						case ATTrackingManagerAuthorizationStatusAuthorized:
 						//NSLog(@"IDFA authorized!");
 						statusIDFA = @(IDFA_AUTORIZED);
 						break;
-					  case ATTrackingManagerAuthorizationStatusDenied:
+						case ATTrackingManagerAuthorizationStatusDenied:
 						//NSLog(@"IDFA denied!");
 						statusIDFA = @(IDFA_DENIED);
 						break;
-					  case ATTrackingManagerAuthorizationStatusNotDetermined:
+						case ATTrackingManagerAuthorizationStatusNotDetermined:
 						//NSLog(@"IDFA not determined!");
 						statusIDFA = @(IDFA_NOT_DETERMINED);
 						break;
-					  case ATTrackingManagerAuthorizationStatusRestricted:
+						case ATTrackingManagerAuthorizationStatusRestricted:
 						//NSLog(@"IDFA restricted!");
 						statusIDFA = @(IDFA_RESTRICTED);
 						break;
@@ -435,7 +523,7 @@ namespace admobex
 					
 					[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 					{
-						onStatus(INIT_OK, nil); //it's crasing here if use statusIDFA...
+						onStatus(INIT_OK, nil); //it's crashing here if use statusIDFA...
 					}];
 				}];
 				
@@ -453,9 +541,62 @@ namespace admobex
 		{
 			onStatus(INIT_OK, nil);
 		}];
-    }
+	}
+	
+	int hasConsentForPuprpose(int purpose)
+	{
+		// Example value: "1111111111"
+		NSString *purposeConsents = [NSUserDefaults.standardUserDefaults stringForKey:@"IABTCF_PurposeConsents"];
+		// Purposes are zero-indexed. Index 0 contains information about Purpose 1.
+		//NSLog(@"has consent %@", purposeConsents);
+		if(purposeConsents.length > purpose)
+		{
+			int hasorwhat = [[purposeConsents substringWithRange:NSMakeRange(purpose, 1)] integerValue];
+			return hasorwhat;
+		}
+		
+		return -1;
+	}
+	
+	const char* getConsent()
+	{
+		// Example value: "1111111111"
+		NSString *purposeConsents = [NSUserDefaults.standardUserDefaults stringForKey:@"IABTCF_PurposeConsents"];
+		// Purposes are zero-indexed. Index 0 contains information about Purpose 1.
+		//NSLog(@"get consent %@", purposeConsents);
+		if(purposeConsents.length > 0)
+		{
+			const char *res = [purposeConsents UTF8String];
+			return res;
+		}
+		
+		return "";
+	}
+	
+	int isPrivacyOptionsRequired()
+	{
+		if(UMPConsentInformation.sharedInstance.privacyOptionsRequirementStatus == UMPPrivacyOptionsRequirementStatusRequired)
+			return 1;
+		
+		return 0;
+	}
+	
+	void showPrivacyOptionsForm()
+	{
+		UIViewController *_root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+		
+		[UMPConsentForm presentPrivacyOptionsFormFromViewController:_root
+			completionHandler:^(NSError *_Nullable formError)
+			{
+				if(formError)
+				{
+					onStatus(CONSENT_FAIL, [[formError localizedDescription] UTF8String]);
+				}
+			}
+		];
+	}
 
-    void showBanner(const char *ID, int size, int align)
+  void showBanner(const char *ID, int size, int align)
 	{
 		if(_bannerListener != nil)
 		{
@@ -465,14 +606,14 @@ namespace admobex
 		
 		NSString *SID = [NSString stringWithUTF8String:ID];
        _bannerListener = [[BannerListener alloc] showWithID:SID withSize:size withAlign:align];
-    }
+  }
     
-    void hideBanner()
+  void hideBanner()
 	{
-        [_bannerListener hide];
+		[_bannerListener hide];
 		[_bannerListener release];
 		_bannerListener = nil;
-    }
+	}
 	
 	void loadInterstitial(const char *ID)
 	{
@@ -480,7 +621,7 @@ namespace admobex
 		_interstitialListener = [[InterstitialListener alloc] loadWithAdUnitID:SID];
 	}
 
-    void showInterstitial()
+  void showInterstitial()
 	{
 		if(_interstitialListener != nil)
 		{
@@ -490,7 +631,7 @@ namespace admobex
 		{
 			onStatus(INTERSTITIAL_FAILED_TO_SHOW, "You need to load interstitial ad first!");
 		}
-    }
+  }
 	
 	void loadRewarded(const char *ID)
 	{
@@ -498,7 +639,7 @@ namespace admobex
 		_rewardedListener = [[RewardedListener alloc] loadWithAdUnitID:SID];
 	}
 
-    void showRewarded()
+  void showRewarded()
 	{
 		if(_rewardedListener != nil)
 		{
@@ -508,12 +649,17 @@ namespace admobex
 		{
 			onStatus(REWARDED_FAILED_TO_SHOW, "You need to load rewarded ad first!");
 		}
-    }
+  }
 	
 	void setVolume(float vol)
 	{
 		//NSLog(@"setVolume %f", vol);
-		
-        GADMobileAds.sharedInstance.applicationVolume = vol;
-    }
+		if(vol >= 0)
+		{
+			GADMobileAds.sharedInstance.applicationMuted = NO;
+			GADMobileAds.sharedInstance.applicationVolume = vol;
+		}
+		else
+			GADMobileAds.sharedInstance.applicationMuted = YES;
+  }
 }

@@ -12,6 +12,7 @@
 #import <GoogleMobileAds/GADAudioVideoManager.h>
 #import <GoogleMobileAds/GADInitializationStatus.h>
 #import <GoogleMobileAds/GADRequestConfiguration.h>
+#import <GoogleMobileAds/Mediation/GADVersionNumber.h>
 
 /// A block called with the initialization status when [GADMobileAds startWithCompletionHandler:]
 /// completes or times out.
@@ -27,8 +28,8 @@ typedef void (^GADAdInspectorCompletionHandler)(NSError *_Nullable error);
 /// Returns the shared GADMobileAds instance.
 + (nonnull GADMobileAds *)sharedInstance;
 
-/// Returns the version of the SDK.
-@property(nonatomic, nonnull, readonly) NSString *sdkVersion;
+/// Returns the Google Mobile Ads SDK's version number.
+@property(nonatomic, readonly) GADVersionNumber versionNumber;
 
 /// The application's audio volume. Affects audio volumes of all ads relative to other audio output.
 /// Valid ad volume values range from 0.0 (silent) to 1.0 (current device volume). Defaults to 1.0.
@@ -97,5 +98,11 @@ typedef void (^GADAdInspectorCompletionHandler)(NSError *_Nullable error);
 /// Registers a web view with the Google Mobile Ads SDK to improve in-app ad monetization of ads
 /// within this web view.
 - (void)registerWebView:(nonnull WKWebView *)webView;
+
+#pragma mark Deprecated
+
+/// Returns the version of the SDK.
+@property(nonatomic, nonnull, readonly)
+    NSString *sdkVersion GAD_DEPRECATED_MSG_ATTRIBUTE("Use versionNumber property instead.");
 
 @end

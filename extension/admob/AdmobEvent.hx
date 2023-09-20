@@ -8,8 +8,9 @@ import openfl.events.Event;
  */
 class AdmobEvent extends Event
 {
-	public static var INIT_OK:String = "INIT_OK";
+	public static var INIT_OK:String = "INIT_OK"; //you can request ads after this event
 	public static var INIT_FAIL:String = "INIT_FAIL";
+	public static var CONSENT_FAIL:String = "CONSENT_FAIL"; //happens when there is a problem with GDPR consent form, but I initilize Admob anyway, use it at your own risk :)
 	public static var BANNER_LOADED:String = "BANNER_LOADED";
 	public static var BANNER_FAILED_TO_LOAD:String = "BANNER_FAILED_TO_LOAD";
 	public static var BANNER_OPENED:String = "BANNER_OPENED";
