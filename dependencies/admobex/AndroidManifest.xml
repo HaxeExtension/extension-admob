@@ -4,8 +4,10 @@
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" tools:node="remove" />
 	<uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 	<application android:debuggable="::DEBUG::">
-		<meta-data
-			android:name="com.google.android.gms.ads.APPLICATION_ID"
-			android:value="::ENV_ADMOB_APPID::"/>
+		<meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="::ENV_ADMOB_APPID::"/>
+		<meta-data android:name="com.google.android.gms.ads.flag.OPTIMIZE_INITIALIZATION" android:value="true"/>
+		<meta-data android:name="com.google.android.gms.ads.flag.OPTIMIZE_AD_LOADING" android:value="true"/>
+		<!-- Delay app measurement until MobileAds.initialize() is called. -->
+    <meta-data android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT" android:value="true"/>
 	</application>
 </manifest>

@@ -2,7 +2,7 @@
 <extension>
 	<section if="android">
 		<section unless="openfl-legacy || openfl-next">
-			<echo value="ALERT: Setting GoolePlayServices to the last version on your SDK. Please read how to upgrade and choose your version here: https://github.com/player-03/google-play-services" unless="playServicesVersion" />
+			<!--<echo value="ALERT: Setting GoolePlayServices to the last version on your SDK. Please read how to upgrade and choose your version here: https://github.com/player-03/google-play-services" unless="playServicesVersion" />-->
 			<set name="playServicesVersion" value="+" unless="playServicesVersion" />
 		</section>
 		
@@ -23,6 +23,7 @@
 		<dependency path="frameworks/nanopb.framework" />
 		<dependency path="frameworks/FBLPromises.framework" />
 		<dependency path="frameworks/UserMessagingPlatform.framework" />
+		
 		<dependency name="JavaScriptCore.framework" />
 		<dependency name="AppTrackingTransparency.framework" />
 		<template path="templates" />

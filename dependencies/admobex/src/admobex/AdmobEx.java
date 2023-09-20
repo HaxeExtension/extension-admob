@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
 
@@ -31,6 +32,13 @@ import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 
+import com.google.android.ump.ConsentInformation;
+import com.google.android.ump.ConsentRequestParameters;
+import com.google.android.ump.ConsentDebugSettings;
+import com.google.android.ump.ConsentForm;
+import com.google.android.ump.FormError;
+import com.google.android.ump.UserMessagingPlatform;
+
 import org.haxe.extension.Extension;
 import org.haxe.lime.HaxeObject;
 
@@ -46,7 +54,8 @@ import java.util.Map;
 public class AdmobEx extends Extension
 {
 	public static final String INIT_OK = "INIT_OK";
-	public static final String INIT_FAIL = "INIT_FAIL";
+	//public static final String INIT_FAIL = "INIT_FAIL";
+	public static final String CONSENT_FAIL = "CONSENT_FAIL";
 	public static final String BANNER_LOADED = "BANNER_LOADED";
 	public static final String BANNER_FAILED_TO_LOAD = "BANNER_FAILED_TO_LOAD";
 	public static final String BANNER_OPENED = "BANNER_OPENED";
@@ -74,11 +83,14 @@ public class AdmobEx extends Extension
 	private static final int BANNER_SIZE_MEDIUM_RECTANGLE = 6; //300x250
 	private static final int BANNER_SIZE_WIDE_SKYSCRAPER = 7; //160x600
 	
+	private static int _inited = 0;
 	private static AdView _banner = null;
 	private static RelativeLayout _rl = null;
 	private static AdSize _bannerSize = null;
 	private static InterstitialAd _interstitial = null;
 	private static RewardedAd _rewarded = null;
+	
+	private static ConsentInformation consentInformation = null;
 
 	private static HaxeObject _callback = null;
 
@@ -90,56 +102,131 @@ public class AdmobEx extends Extension
 		{
 			public void run()
 			{
-				RequestConfiguration.Builder configuration = new RequestConfiguration.Builder();
+				//> I'm copy/pasting from here, and this code has lots of bugs, read more on how to debug it on your device: https://developers.google.com/admob/android/privacy
+				//>> use this to debug GDPR
+				/*ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(mainContext)
+					.setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+					.addTestDeviceHashedId("[TEST_DEVICE_ID]")
+					.build();
 
-				//> set testing devices
-				if(testingAds)
-				{
-					List<String> testDeviceIds = new ArrayList<String>();
-					
-					testDeviceIds.add(AdRequest.DEVICE_ID_EMULATOR); //needed???
-					
-					String androidId = Secure.getString(mainActivity.getContentResolver(), Secure.ANDROID_ID);
-					String deviceId = md5(androidId).toUpperCase();
-					testDeviceIds.add(deviceId);
-					
-					configuration.setTestDeviceIds(testDeviceIds);
-					//Log.d("AdmobEx", "TEST DEVICE ID: "+deviceId);
-				}
-				//<
+				ConsentRequestParameters params = new ConsentRequestParameters
+					.Builder()
+					.setConsentDebugSettings(debugSettings)
+					.build();*/
+				//<<
 				
-				//> set COPPA
-				if(childDirected)
-				{
-					//Log.d("AdmobEx", "Enabling COPPA support.");
-					configuration.setTagForChildDirectedTreatment(RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_TRUE);
-				}
-				//<
-				
-				MobileAds.setRequestConfiguration(configuration.build());
-				
-				//> set CCPA
-				if(enableRDP)
-				{
-					//Log.d("AdmobEx", "Enabling RDP.");
-					SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
-					SharedPreferences.Editor editor = sharedPref.edit();
-					editor.putInt("gad_rdp", 1);
-					editor.commit();
-				}
-				//<
+				// Set tag for under age of consent. false means users are not under age
+				// of consent.
+				//>> don't use this if debugging GDPR
+				ConsentRequestParameters params = new ConsentRequestParameters
+					.Builder()
+					.setTagForUnderAgeOfConsent(childDirected)
+					.build();
+				//<<
 
-				MobileAds.initialize(mainContext, new OnInitializationCompleteListener()
-				{
-					@Override
-					public void onInitializationComplete(InitializationStatus initializationStatus)
+				consentInformation = UserMessagingPlatform.getConsentInformation(mainContext);
+				consentInformation.requestConsentInfoUpdate
+				(
+					mainActivity,
+					params,
+					(ConsentInformation.OnConsentInfoUpdateSuccessListener) () ->
 					{
-						//Log.d("AdmobEx", INIT_OK);
-						_callback.call("onStatus", new Object[] {INIT_OK, ""});
+						UserMessagingPlatform.loadAndShowConsentFormIfRequired
+						(
+							mainActivity,
+							(ConsentForm.OnConsentFormDismissedListener) loadAndShowError ->
+							{
+								if(loadAndShowError != null) //don't know the reason, but initialize admob anyway
+								{
+									// Consent gathering failed.
+									//Log.w("AdmobEx", String.format("here %s: %s", loadAndShowError.getErrorCode(), loadAndShowError.getMessage()));
+									_callback.call("onStatus", new Object[] {CONSENT_FAIL, String.format("%s: %s", loadAndShowError.getErrorCode(), loadAndShowError.getMessage())});
+								}
+
+								// Consent has been gathered.
+								//Log.w("AdmobEx", String.format("Consent and privacy status: %s, %s", consentInformation.getConsentStatus(), consentInformation.getPrivacyOptionsRequirementStatus()));
+								initMobileAds(testingAds, childDirected, enableRDP);
+							}
+						);
+					},
+					(ConsentInformation.OnConsentInfoUpdateFailureListener) requestConsentError -> //this can happen when there is no internet, initialize admob anyway
+					{
+						// Consent gathering failed.
+						//Log.w("AdmobEx", String.format("or here %s: %s", requestConsentError.getErrorCode(), requestConsentError.getMessage()));
+						_callback.call("onStatus", new Object[] {CONSENT_FAIL, String.format("%s: %s", requestConsentError.getErrorCode(), requestConsentError.getMessage())});
+						
+						initMobileAds(testingAds, childDirected, enableRDP);
 					}
-				});
+				);
 				
+				// Check if you can initialize the Google Mobile Ads SDK in parallel
+				// while checking for new consent information. Consent obtained in
+				// the previous session can be used to request ads.
+				if(consentInformation.canRequestAds()) //this part makes no sense, cause if it's true, then OnConsentInfoUpdateSuccessListener->OnConsentFormDismissedListener will be ok too and then init will be called twice
+				{
+					//Log.w("AdmobEx", String.format("Consent and privacy status: %s, %s", consentInformation.getConsentStatus(), consentInformation.getPrivacyOptionsRequirementStatus()));
+					initMobileAds(testingAds, childDirected, enableRDP);
+				}
+				//<
+			}
+		});
+	}
+	
+	public static void initMobileAds(final boolean testingAds, final boolean childDirected, final boolean enableRDP)
+	{
+		Log.d("AdmobEx", "init...");
+		if(_inited == 1) //to prevent repeat initialization
+			return;
+			
+		_inited = 1;
+		
+		RequestConfiguration.Builder configuration = new RequestConfiguration.Builder();
+
+		//> set testing devices
+		if(testingAds)
+		{
+			List<String> testDeviceIds = new ArrayList<String>();
+			
+			testDeviceIds.add(AdRequest.DEVICE_ID_EMULATOR); //needed???
+			
+			String androidId = Secure.getString(mainActivity.getContentResolver(), Secure.ANDROID_ID);
+			String deviceId = md5(androidId).toUpperCase();
+			testDeviceIds.add(deviceId);
+			
+			configuration.setTestDeviceIds(testDeviceIds);
+			//Log.d("AdmobEx", "TEST DEVICE ID: "+deviceId);
+		}
+		//<
+		
+		//> set COPPA
+		if(childDirected)
+		{
+			//Log.d("AdmobEx", "Enabling COPPA support.");
+			configuration.setTagForChildDirectedTreatment(RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_TRUE);
+		}
+		//<
+		
+		//> set CCPA
+		if(enableRDP)
+		{
+			//Log.d("AdmobEx", "Enabling RDP.");
+			SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
+			SharedPreferences.Editor editor = sharedPref.edit();
+			editor.putInt("gad_rdp", 1);
+			editor.commit();
+		}
+		//<
+		
+		MobileAds.setRequestConfiguration(configuration.build());
+
+		MobileAds.initialize(mainContext, new OnInitializationCompleteListener()
+		{
+			@Override
+			public void onInitializationComplete(InitializationStatus initializationStatus)
+			{
 				Log.d("AdmobEx", MobileAds.getVersion().toString());
+				//Log.d("AdmobEx", INIT_OK);
+				_callback.call("onStatus", new Object[] {INIT_OK, ""});
 			}
 		});
 	}
@@ -183,7 +270,7 @@ public class AdmobEx extends Extension
 						// Code to be executed when an ad finishes loading.
 						//Log.d("AdmobEx", BANNER_LOADED);
 						_callback.call("onStatus", new Object[] {BANNER_LOADED, ""});
-						_banner.setVisibility(View.VISIBLE); //To fix this problem, if it is still actual: https://groups.google.com/forum/#!topic/google-admob-ads-sdk/avwVXvBt_sM
+						_banner.setVisibility(View.VISIBLE); //To fix this problem, if it is still valid: https://groups.google.com/forum/#!topic/google-admob-ads-sdk/avwVXvBt_sM
 					}
 
 					@Override
@@ -256,9 +343,11 @@ public class AdmobEx extends Extension
 			{
 				AdRequest adRequest = new AdRequest.Builder().build();
 
-				InterstitialAd.load(mainActivity, id, adRequest, new InterstitialAdLoadCallback() {
+				InterstitialAd.load(mainActivity, id, adRequest, new InterstitialAdLoadCallback()
+				{
 					@Override
-					public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+					public void onAdLoaded(@NonNull InterstitialAd interstitialAd)
+					{
 						// The _interstitial reference will be null until
 						// an ad is loaded.
 						_interstitial = interstitialAd;
@@ -293,7 +382,8 @@ public class AdmobEx extends Extension
 					}
 
 					@Override
-					public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+					public void onAdFailedToLoad(@NonNull LoadAdError loadAdError)
+					{
 						// Handle the error
 						//Log.d("AdmobEx", INTERSTITIAL_FAILED_TO_LOAD+loadAdError.getMessage());
 						_interstitial = null;
@@ -308,7 +398,8 @@ public class AdmobEx extends Extension
 	{
 		if(_interstitial != null)
 		{
-			mainActivity.runOnUiThread(new Runnable() {
+			mainActivity.runOnUiThread(new Runnable()
+			{
 				public void run()
 				{
 					_interstitial.show(mainActivity);
@@ -376,12 +467,15 @@ public class AdmobEx extends Extension
 	{
 		if(_rewarded != null)
 		{
-			mainActivity.runOnUiThread(new Runnable() {
+			mainActivity.runOnUiThread(new Runnable()
+			{
 				public void run()
 				{
-					_rewarded.show(mainActivity, new OnUserEarnedRewardListener() {
+					_rewarded.show(mainActivity, new OnUserEarnedRewardListener()
+					{
 						@Override
-						public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+						public void onUserEarnedReward(@NonNull RewardItem rewardItem)
+						{
 							// Handle the reward.
 							int rewardAmount = rewardItem.getAmount();
 							String rewardType = rewardItem.getType();
@@ -398,8 +492,78 @@ public class AdmobEx extends Extension
 	
 	public static void setVolume(final float vol)
 	{
-		mainActivity.runOnUiThread(new Runnable() {
-			public void run() {	MobileAds.setAppVolume(vol); }
+		mainActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				if(vol >= 0)
+				{
+					MobileAds.setAppMuted(false);
+					MobileAds.setAppVolume(vol);
+				}
+				else //muted
+					MobileAds.setAppMuted(true);
+			}
+		});
+	}
+	
+	//https://support.google.com/admob/answer/9760862?hl=en&ref_topic=9756841
+	public static int hasConsentForPuprpose(final int purpose)
+	{
+		//copy/pasting from here: https://developers.google.com/admob/android/privacy/gdpr
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mainContext);
+		// Example value: "1111111111"
+		String purposeConsents = sharedPref.getString("IABTCF_PurposeConsents", "");
+		// Purposes are zero-indexed. Index 0 contains information about Purpose 1.
+		if(purposeConsents.length() > purpose)
+		{
+			//String purposeOneString = purposeConsents.charAt(0); //this line copied from google docs throws error message on build, wtf?
+			int hasorwhat = Character.getNumericValue(purposeConsents.charAt(purpose));
+			return hasorwhat;
+		}
+		
+		return -1;
+	}
+	
+	public static String getConsent()
+	{
+		//copy/pasting from here: https://developers.google.com/admob/android/privacy/gdpr
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mainContext);
+		// Example value: "1111111111"
+		String purposeConsents = sharedPref.getString("IABTCF_PurposeConsents", "");
+		
+		return purposeConsents;
+	}
+	
+	public static int isPrivacyOptionsRequired()
+	{
+		if(consentInformation != null && consentInformation.getPrivacyOptionsRequirementStatus() == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED)
+			return 1;
+	
+		return 0;
+	}
+	
+	public static void showPrivacyOptionsForm()
+	{
+		mainActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				// Present the privacy options form when a user interacts with
+				// your privacy settings button.
+				//Log.d("AdmobEx", "showPrivacyOptionsForm");
+				UserMessagingPlatform.showPrivacyOptionsForm
+				(
+						mainActivity,
+						formError ->
+						{
+							if(formError != null)
+							{
+								_callback.call("onStatus", new Object[] {CONSENT_FAIL, String.format("%s: %s", formError.getErrorCode(), formError.getMessage())});
+							}
+						}
+				);
+			}
 		});
 	}
 	

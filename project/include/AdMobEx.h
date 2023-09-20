@@ -7,7 +7,8 @@
 
 namespace admobex
 {	
-	void init(bool testingAds, bool childDirected, bool enableRDP, bool requestIDFA);
+	void init(bool testingAds, bool childDirected, bool enableRDP);
+	void initMobileAds(bool testingAds, bool childDirected, bool enableRDP, bool requestIDFA);
 	void showBanner(const char *id, int size, int align);
 	void hideBanner();
 	void loadInterstitial(const char *id);
@@ -15,6 +16,11 @@ namespace admobex
 	void loadRewarded(const char* id);
 	void showRewarded();
 	void setVolume(float vol);
+	void setVolume(float vol);
+	int hasConsentForPuprpose(int purpose);
+	const char* getConsent();
+	int isPrivacyOptionsRequired();
+	void showPrivacyOptionsForm();
 }
 
 

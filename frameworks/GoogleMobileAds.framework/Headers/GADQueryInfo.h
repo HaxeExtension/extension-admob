@@ -26,4 +26,12 @@ typedef void (^GADQueryInfoCreationCompletionHandler)(GADQueryInfo *_Nullable qu
                           adFormat:(GADAdFormat)adFormat
                  completionHandler:(nonnull GADQueryInfoCreationCompletionHandler)completionHandler;
 
+/// Creates query info for adUnitID that can be used as input in a Google request. Calls
+/// completionHandler asynchronously on the main thread once query info has been created or when an
+/// error occurs.
++ (void)createQueryInfoWithRequest:(nullable GADRequest *)request
+                          adFormat:(GADAdFormat)adFormat
+                          adUnitID:(nonnull NSString *)adUnitID
+                 completionHandler:(nonnull GADQueryInfoCreationCompletionHandler)completionHandler;
+
 @end

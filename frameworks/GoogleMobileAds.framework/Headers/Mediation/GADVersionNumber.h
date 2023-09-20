@@ -19,3 +19,6 @@ struct GADVersionNumber {
   /// Patch version.
   NSInteger patchVersion;
 };
+
+/// Returns a string representation of the version number.
+NSString *_Nonnull GADGetStringFromVersionNumber(GADVersionNumber version);
