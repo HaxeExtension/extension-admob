@@ -174,7 +174,7 @@ public class AdmobEx extends Extension
 	
 	public static void initMobileAds(final boolean testingAds, final boolean childDirected, final boolean enableRDP)
 	{
-		Log.d("AdmobEx", "init...");
+		//Log.d("AdmobEx", "init...");
 		if(_inited == 1) //to prevent repeat initialization
 			return;
 			
