@@ -96,10 +96,13 @@ private function onLoadInterstitial(ae:AdmobEvent):Void
 ```
 
 Beginning 16 January 2024, Google will require all publishers serving ads to EEA and UK users to use a Google-certified consent management platform (CMP).
-This extension use Google's UMP SDK and shows consent dialog on first app start.
-If user does not consent, there is a high probability that ads will not work.
+This extension uses Google's UMP SDK and shows a consent dialog on the first app start.
+If the user does not consent, there is a high probability that ads will not work.
 
-How to know, if privacy dialog is required (ie user is from UK or EEA):
+After the user makes the choice, the dialog is not shown anymore unless consent has expired.
+You can check if the GDPR dialog is required and show it manually.
+
+How to know, if GDPR dialog is required (ie user is from UK or EEA):
 ```haxe
 if( Admob.isPrivacyOptionsRequired() == 1)
 	//required
@@ -110,11 +113,14 @@ How to know, if user consented to personalized ads:
 if(Admob.getConsent() == Admob.CONSENT_FULL)
 	//constented, ads should work fine
 ```
-Also:
+You can also check consent to each purpose individually:
 ```haxe
 if(Admob.hasConsentForPuprpose(0) == 1)
-	//most likely consented, you should check all the purposes, there are like 10 of them (0-9)
+	//consented to purpose 1, you should check all the purposes, there are like 10 of them (0-9)
 ```
+More details about purposes and how users' consent influences ads:
+https://support.google.com/admob/answer/9760862#consent-policies
+From my experience, unless the user consents to everything ("Consent" at the initial dialog or "Accept all" at the Manage options dialog), ads will not work!
 
 How to show privacy dialog to user again:
 ```haxe
