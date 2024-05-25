@@ -11,6 +11,7 @@
 FOUNDATION_EXPORT const unsigned char GoogleMobileAdsVersionString[];
 
 // Header files.
+#import <GoogleMobileAds/GADAdChoicesPosition.h>
 #import <GoogleMobileAds/GADAdChoicesView.h>
 #import <GoogleMobileAds/GADAdFormat.h>
 #import <GoogleMobileAds/GADAdLoader.h>

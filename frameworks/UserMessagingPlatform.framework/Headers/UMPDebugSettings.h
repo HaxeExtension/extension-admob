@@ -12,7 +12,7 @@ typedef NS_ENUM(NSInteger, UMPDebugGeography) {
 
 /// Array of device identifier strings. Debug features are enabled for devices with these
 /// identifiers. Debug features are always enabled for simulators.
-@property(nonatomic, nullable) NSArray<NSString *> *testDeviceIdentifiers;
+@property(nonatomic, copy, nullable) NSArray<NSString *> *testDeviceIdentifiers;
 
 /// Debug geography.
 @property(nonatomic) UMPDebugGeography geography;

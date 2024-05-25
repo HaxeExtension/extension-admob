@@ -50,13 +50,15 @@ typedef void (^GADInterstitialAdLoadCompletionHandler)(GADInterstitialAd *_Nulla
 
 /// Returns whether the interstitial ad can be presented from the provided root view
 /// controller. Sets the error out parameter if the ad can't be presented. Must be called on the
-/// main thread.
-- (BOOL)canPresentFromRootViewController:(nonnull UIViewController *)rootViewController
+/// main thread. If rootViewController is nil, uses the top view controller of the application's
+/// main window.
+- (BOOL)canPresentFromRootViewController:(nullable UIViewController *)rootViewController
                                    error:(NSError *_Nullable __autoreleasing *_Nullable)error;
 
 /// Presents the interstitial ad. Must be called on the main thread.
 ///
-/// @param rootViewController A view controller to present the ad.
-- (void)presentFromRootViewController:(nonnull UIViewController *)rootViewController;
+/// @param rootViewController A view controller to present the ad. If nil, attempts to present from
+/// the top view controller of the application's main window.
+- (void)presentFromRootViewController:(nullable UIViewController *)rootViewController;
 
 @end

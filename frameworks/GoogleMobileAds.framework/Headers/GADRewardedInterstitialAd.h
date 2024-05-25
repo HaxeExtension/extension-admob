@@ -59,16 +59,18 @@ typedef void (^GADRewardedInterstitialAdLoadCompletionHandler)(
 
 /// Returns whether the rewarded interstitial ad can be presented from the provided root view
 /// controller. Sets the error out parameter if the ad can't be presented. Must be called on the
-/// main thread.
-- (BOOL)canPresentFromRootViewController:(nonnull UIViewController *)rootViewController
+/// main thread. If rootViewController is nil, uses the top view controller of the application's
+/// main window.
+- (BOOL)canPresentFromRootViewController:(nullable UIViewController *)rootViewController
                                    error:(NSError *_Nullable __autoreleasing *_Nullable)error;
 
 /// Presents the rewarded interstitial ad. Must be called on the main thread.
 ///
-/// @param viewController A view controller to present the ad.
+/// @param viewController A view controller to present the ad. If nil, attempts to present from the
+/// top view controller of the application's main window.
 /// @param userDidEarnRewardHandler A handler to execute when the user earns a reward. adReward
 /// contains the reward information.
-- (void)presentFromRootViewController:(nonnull UIViewController *)viewController
+- (void)presentFromRootViewController:(nullable UIViewController *)viewController
              userDidEarnRewardHandler:(nonnull GADUserDidEarnRewardHandler)userDidEarnRewardHandler;
 
 @end

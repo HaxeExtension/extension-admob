@@ -472,7 +472,8 @@ namespace admobex
 			
 			//NSLog(@"Test device %@, %@", UDIDString, deviceId);
 			
-			GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[deviceId, GADSimulatorID];
+			GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[deviceId];
+			//or can use test ad unit IDs: https://developers.google.com/admob/ios/test-ads
     }
 		//<
 		
@@ -480,7 +481,7 @@ namespace admobex
 		if(childDirected == true)
 		{
 			//NSLog(@"Init child");
-			[GADMobileAds.sharedInstance.requestConfiguration tagForChildDirectedTreatment:YES];
+			GADMobileAds.sharedInstance.requestConfiguration.tagForChildDirectedTreatment = @YES;
 		}
 		//<
 		
