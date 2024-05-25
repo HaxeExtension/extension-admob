@@ -3,10 +3,10 @@ Google AdMob OpenFL extension for iOS and Android.<br />
 This extension allows you to integrate Google AdMob with your OpenFL application.
 
 ### Features
-* iOS Mobile Ads SDK 10.10.0 (Xcode version 14.1+,  iOS 11.0+)
+* iOS Mobile Ads SDK 11.5.0 (Xcode 15.1+, iOS 12+)
 * Android Mobile Ads SDK is always the latest automatically (update with SDK Manager)
 * GDPR for EEA and UK, read how to setup here: https://support.google.com/admob/answer/10113207
-* iOS14+ App Tracking Transparency (if iOS14+, app automatically presents user authorization request on first start)
+* App Tracking Transparency (if iOS14+, app automatically presents user authorization request on first start)
 * COPPA, CCPA
 * Banners, Interstitial, Rewarded ads
 * Ads sound volume control
@@ -148,4 +148,4 @@ http://unibrander.com/united-states/479956US/admob.html
 ### License
 The MIT License (MIT) - [LICENSE.md](LICENSE.md)
 
-Copyright &copy; 2023 Pozirk Games (https://www.pozirk.com/)
+Copyright (c) 2024 OpenFL contributors

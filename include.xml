@@ -17,11 +17,6 @@
 	<section if="ios">
 		<ndll name="admobex" />
 		<dependency path="frameworks/GoogleMobileAds.framework" />
-		<dependency path="frameworks/GoogleAppMeasurement.framework" />
-		<dependency path="frameworks/GoogleAppMeasurementIdentitySupport.framework" />
-		<dependency path="frameworks/GoogleUtilities.framework" />
-		<dependency path="frameworks/nanopb.framework" />
-		<dependency path="frameworks/FBLPromises.framework" />
 		<dependency path="frameworks/UserMessagingPlatform.framework" />
 		
 		<dependency name="JavaScriptCore.framework" />

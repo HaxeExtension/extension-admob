@@ -89,20 +89,15 @@ typedef void (^GADAdInspectorCompletionHandler)(NSError *_Nullable error);
 /// to launch Ad Inspector. Set
 /// GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers to enable test mode on
 /// this device.
-/// @param viewController A view controller to present Ad Inspector.
+/// @param viewController A view controller to present Ad Inspector. If nil, uses the top view
+/// controller of the app's main window.
 /// @param completionHandler A handler to execute when Ad Inspector is closed.
-- (void)presentAdInspectorFromViewController:(nonnull UIViewController *)viewController
+- (void)presentAdInspectorFromViewController:(nullable UIViewController *)viewController
                            completionHandler:
                                (nullable GADAdInspectorCompletionHandler)completionHandler;
 
 /// Registers a web view with the Google Mobile Ads SDK to improve in-app ad monetization of ads
 /// within this web view.
 - (void)registerWebView:(nonnull WKWebView *)webView;
-
-#pragma mark Deprecated
-
-/// Returns the version of the SDK.
-@property(nonatomic, nonnull, readonly)
-    NSString *sdkVersion GAD_DEPRECATED_MSG_ATTRIBUTE("Use versionNumber property instead.");
 
 @end
