@@ -387,7 +387,7 @@ namespace admobex
 		//>> use this to debug GDPR
 		/*[UMPConsentInformation.sharedInstance reset];
 		UMPDebugSettings *debugSettings = [[UMPDebugSettings alloc] init];
-		debugSettings.testDeviceIdentifiers = @[ @"[TEST_DEVICE_ID]" ];
+		debugSettings.testDeviceIdentifiers = @[ @"948F6324-7875-4599-93DC-6B4E900F25A7" ];
 		debugSettings.geography = UMPDebugGeographyEEA;
 		parameters.debugSettings = debugSettings;*/
 		//<<
@@ -473,7 +473,6 @@ namespace admobex
 			//NSLog(@"Test device %@, %@", UDIDString, deviceId);
 			
 			GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[deviceId];
-			//or can use test ad unit IDs: https://developers.google.com/admob/ios/test-ads
     }
 		//<
 		
@@ -481,6 +480,7 @@ namespace admobex
 		if(childDirected == true)
 		{
 			//NSLog(@"Init child");
+			//[GADMobileAds.sharedInstance.requestConfiguration tagForChildDirectedTreatment:YES];
 			GADMobileAds.sharedInstance.requestConfiguration.tagForChildDirectedTreatment = @YES;
 		}
 		//<

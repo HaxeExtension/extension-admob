@@ -6,3 +6,12 @@ HOW TO UPDATE IOS VERSION:
 5. Check the SKAdNetwork list here: https://developers.google.com/admob/ios/ios14 and update the current list here, if required: \extension-admob\templates\ios\template\{{app.file}}\extension-admob-Info.plist 
 6. "lime rebuild extension-admob ios -clean"
 7. PROFIT???
+
+GETTING THE FOLLOWING ERROR MESSAGE?
+Could not find or use auto-linked library "swiftCompatibility50"
+
+HOW TO FIX:
+project->build settings->search path->Library Search Paths add Path
+"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)"
+Fixed. No idea why it is happening.
+https://github.com/zalando/SwiftMonkey/issues/80#issuecomment-604994492

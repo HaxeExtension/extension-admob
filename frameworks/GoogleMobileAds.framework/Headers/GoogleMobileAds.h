@@ -14,6 +14,7 @@ FOUNDATION_EXPORT const unsigned char GoogleMobileAdsVersionString[];
 #import <GoogleMobileAds/GADAdChoicesPosition.h>
 #import <GoogleMobileAds/GADAdChoicesView.h>
 #import <GoogleMobileAds/GADAdFormat.h>
+#import <GoogleMobileAds/GADAdLoader+ServerToServer.h>
 #import <GoogleMobileAds/GADAdLoader.h>
 #import <GoogleMobileAds/GADAdLoaderAdTypes.h>
 #import <GoogleMobileAds/GADAdLoaderDelegate.h>
@@ -105,3 +106,11 @@ FOUNDATION_EXPORT const unsigned char GoogleMobileAdsVersionString[];
 #import <GoogleMobileAds/QueryInfo/GADRequest+AdString.h>
 #import <GoogleMobileAds/RTBMediation/GADRTBAdapter.h>
 #import <GoogleMobileAds/RTBMediation/GADRTBRequestParameters.h>
+#import <GoogleMobileAds/Request/GADAppOpenSignalRequest.h>
+#import <GoogleMobileAds/Request/GADBannerSignalRequest.h>
+#import <GoogleMobileAds/Request/GADInterstitialSignalRequest.h>
+#import <GoogleMobileAds/Request/GADNativeSignalRequest.h>
+#import <GoogleMobileAds/Request/GADRewardedInterstitialSignalRequest.h>
+#import <GoogleMobileAds/Request/GADRewardedSignalRequest.h>
+#import <GoogleMobileAds/Request/GADSignal.h>
+#import <GoogleMobileAds/Request/GADSignalRequest.h>

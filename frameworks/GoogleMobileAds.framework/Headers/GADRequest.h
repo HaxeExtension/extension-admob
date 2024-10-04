@@ -63,4 +63,9 @@
 /// Mobile Ads SDK should set this property as "CoolAds".
 @property(nonatomic, copy, nullable) NSString *requestAgent;
 
+#pragma mark Optional Targeting Information
+
+/// Key-value pairs used for custom targeting.
+@property(nonatomic, copy, nullable) NSDictionary<NSString *, NSString *> *customTargeting;
+
 @end

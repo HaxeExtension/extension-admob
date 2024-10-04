@@ -57,10 +57,8 @@ typedef void (^UMPConsentInformationUpdateCompletionHandler)(NSError *_Nullable 
 /// requestConsentInfoUpdateWithParameters:completionHandler: is called.
 @property(nonatomic, readonly) UMPConsentStatus consentStatus;
 
-/// Indicates whether the app has completed the necessary steps for gathering updated user consent.
-/// Returns NO until requestConsentInfoUpdateWithParameters:completionHandler: is called. Returns
-/// YES once requestConsentInfoUpdateWithParameters:completionHandler: is called and when
-/// consentStatus is UMPConsentStatusNotRequired or UMPConsentStatusObtained.
+/// Indicates whether the SDK has gathered consent aligned with the app's configured messages.
+/// Returns NO until requestConsentInfoUpdateWithParameters:completionHandler: is called.
 @property(nonatomic, readonly) BOOL canRequestAds;
 
 /// Consent form status. This value defaults to UMPFormStatusUnknown and requires a call to
