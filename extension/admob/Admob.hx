@@ -17,7 +17,10 @@ class Admob
 	public static inline var BANNER_SIZE_LEADERBOARD:Int = 5; //728x90
 	public static inline var BANNER_SIZE_MEDIUM_RECTANGLE:Int = 6; //300x250
 	public static inline var BANNER_SIZE_WIDE_SKYSCRAPER:Int = 7; //160x600, Android only.
+	//https://support.google.com/admob/answer/9760862#consent-policies
 	public static inline var CONSENT_FULL:String = "1111111111"; //full consent has been granted, admob should have no problems showing ads
+	public static inline var CONSENT_PERSONALIZED:String = "1111001011"; //enough consent has been granted for personalized ads, most likely will never happen, because user has to set all the checkboxes manually, and also for ads to work user has to consent to all the vendors
+	public static inline var CONSENT_NON_PERSONALIZED:String = "1100001011"; //consent to show non-personalized ads was given, there are little chances this can happen, because user has to set all the right checkboxes manually, and also for ads to work user has to consent to all the vendors
 #if ios
 	//https://stackoverflow.com/questions/63499520/app-tracking-transparency-how-does-effect-apps-showing-ads-idfa-ios14/63522856#63522856
 	/*public static inline var IDFA_AUTORIZED:String = "IDFA_AUTORIZED";
@@ -262,6 +265,7 @@ class Admob
 		return hasorwhat;
 	}
 	
+	//check what kind of consent has been granted
 	public static function getConsent():String
 	{
 		var consent:String = "";

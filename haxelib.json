@@ -5,6 +5,6 @@
 	"contributors":["pozirk", "fbricker"],
 	"tags": ["ads","api","google","ad","monetization","admob"],
 	"description": "Google AdMob / OpenFL extension for Android + iOS.",
-	"version": "2.3.0",
-	"releasenote": "Added GDPR support for EEA and UK. Updated SDKs to the latest versions."
+	"version": "2.3.1",
+	"releasenote": "Updated to the latest version of Admob SDK"
 }

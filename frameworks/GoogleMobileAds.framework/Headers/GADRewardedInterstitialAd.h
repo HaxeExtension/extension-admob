@@ -57,6 +57,14 @@ typedef void (^GADRewardedInterstitialAdLoadCompletionHandler)(
                  request:(nullable GADRequest *)request
        completionHandler:(nonnull GADRewardedInterstitialAdLoadCompletionHandler)completionHandler;
 
+/// Loads a rewarded interstitial ad.
+///
+/// @param adResponseString A server-to-server ad response string.
+/// @param completionHandler A handler to execute when the load operation finishes or times out.
++ (void)loadWithAdResponseString:(nonnull NSString *)adResponseString
+               completionHandler:
+                   (nonnull GADRewardedInterstitialAdLoadCompletionHandler)completionHandler;
+
 /// Returns whether the rewarded interstitial ad can be presented from the provided root view
 /// controller. Sets the error out parameter if the ad can't be presented. Must be called on the
 /// main thread. If rootViewController is nil, uses the top view controller of the application's

@@ -164,7 +164,7 @@ public class AdmobEx extends Extension
 				// the previous session can be used to request ads.
 				if(consentInformation.canRequestAds()) //this part makes no sense, cause if it's true, then OnConsentInfoUpdateSuccessListener->OnConsentFormDismissedListener will be ok too and then init will be called twice
 				{
-					//Log.w("AdmobEx", String.format("Consent and privacy status: %s, %s", consentInformation.getConsentStatus(), consentInformation.getPrivacyOptionsRequirementStatus()));
+					//Log.w("AdmobEx", String.format("Consent and privacy status 2: %s, %s", consentInformation.getConsentStatus(), consentInformation.getPrivacyOptionsRequirementStatus()));
 					initMobileAds(testingAds, childDirected, enableRDP);
 				}
 				//<
