@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 
 android {
+	namespace 'com.admobex'
 	sourceSets {
 		main {
 			manifest.srcFile 'AndroidManifest.xml'
