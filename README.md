@@ -115,7 +115,7 @@ if(Admob.getConsent() == Admob.CONSENT_FULL)
 ```
 You can also check consent to each purpose individually:
 ```haxe
-if(Admob.hasConsentForPuprpose(0) == 1)
+if(Admob.hasConsentForPurpose(0) == 1)
 	//consented to purpose 1, you should check all the purposes, there are like 10 of them (0-9)
 ```
 More details about purposes and how users' consent influences ads:

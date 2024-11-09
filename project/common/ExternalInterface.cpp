@@ -79,7 +79,7 @@ DEFINE_PRIM(admobex_set_volume, 1);
 
 static value admobex_has_consent_for_purpose(value purpose)
 {
-	return alloc_int(hasConsentForPuprpose(val_int(purpose)));
+	return alloc_int(hasConsentForPurpose(val_int(purpose)));
 }
 DEFINE_PRIM(admobex_has_consent_for_purpose, 1);
 

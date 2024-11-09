@@ -422,7 +422,7 @@ namespace admobex
 							//NSLog(@"Info can show 1");
 							if(UMPConsentInformation.sharedInstance.canRequestAds)
 							{
-								if(hasConsentForPuprpose(0) == 1) //consent given, not a best way to check it, but don't know any other ways
+								if(hasConsentForPuppose(0) == 1) //consent given, not a best way to check it, but don't know any other ways
 									initMobileAds(testingAds, childDirected, enableRDP, true);
 								else
 									initMobileAds(testingAds, childDirected, enableRDP, false);
@@ -438,7 +438,7 @@ namespace admobex
 		//NSLog(@"Info can show 2");
 		if(UMPConsentInformation.sharedInstance.canRequestAds)
 		{
-			if(hasConsentForPuprpose(0) == 1) //consent given, not a best way to check it, but don't know any other ways
+			if(hasConsentForPurpose(0) == 1) //consent given, not a best way to check it, but don't know any other ways
 				initMobileAds(testingAds, childDirected, enableRDP, true);
 			else
 				initMobileAds(testingAds, childDirected, enableRDP, false);
@@ -544,7 +544,7 @@ namespace admobex
 		}];
 	}
 	
-	int hasConsentForPuprpose(int purpose)
+	int hasConsentForPurpose(int purpose)
 	{
 		// Example value: "1111111111"
 		NSString *purposeConsents = [NSUserDefaults.standardUserDefaults stringForKey:@"IABTCF_PurposeConsents"];

@@ -21,14 +21,14 @@ class Admob
 	public static inline var CONSENT_FULL:String = "1111111111"; //full consent has been granted, admob should have no problems showing ads
 	public static inline var CONSENT_PERSONALIZED:String = "1111001011"; //enough consent has been granted for personalized ads, most likely will never happen, because user has to set all the checkboxes manually, and also for ads to work user has to consent to all the vendors
 	public static inline var CONSENT_NON_PERSONALIZED:String = "1100001011"; //consent to show non-personalized ads was given, there are little chances this can happen, because user has to set all the right checkboxes manually, and also for ads to work user has to consent to all the vendors
-#if ios
+	#if ios
 	//https://stackoverflow.com/questions/63499520/app-tracking-transparency-how-does-effect-apps-showing-ads-idfa-ios14/63522856#63522856
 	/*public static inline var IDFA_AUTORIZED:String = "IDFA_AUTORIZED";
 	public static inline var IDFA_DENIED:String = "IDFA_DENIED";
 	public static inline var IDFA_NOT_DETERMINED:String = "IDFA_NOT_DETERMINED";
 	public static inline var IDFA_RESTRICTED:String = "IDFA_RESTRICTED";
 	public static inline var IDFA_NOT_SUPPORTED:String = "IDFA_NOT_SUPPORTED";*/
-#end
+	#end
 	
 	//constants are taken from https://developer.android.com/reference/android/view/Gravity
 	//you can use your own value for Android, if need more flexibility
@@ -50,7 +50,7 @@ class Admob
 	private static var _loadRewarded:String->Void = function(id:String):Void {};
 	private static var _showRewarded:Void->Void = function():Void {};
 	private static var _setVolume:Float->Void = function(vol:Float):Void {};
-	private static var _hasConsentForPuprpose:Int->Int = function(purpose:Int):Int {return -1;};
+	private static var _hasConsentForPurpose:Int->Int = function(purpose:Int):Int {return -1;};
 	private static var _getConsent:Void->String = function():String {return "";};
 	private static var _isPrivacyOptionsRequired:Void->Int = function():Int {return -1;};
 	private static var _showPrivacyOptionsForm:Void->Void = function():Void {};
@@ -66,7 +66,7 @@ class Admob
 		if(_inited)
 			return;
 		
-#if android
+		#if android
 		try
 		{
 			_initAndroid = JNI.createStaticMethod(EXT_ADMOB_ANDY, "init", "(ZZZLorg/haxe/lime/HaxeObject;)V");
@@ -77,7 +77,7 @@ class Admob
 			_loadRewarded = JNI.createStaticMethod(EXT_ADMOB_ANDY, "loadRewarded", "(Ljava/lang/String;)V");
 			_showRewarded = JNI.createStaticMethod(EXT_ADMOB_ANDY, "showRewarded", "()V");
 			_setVolume = JNI.createStaticMethod(EXT_ADMOB_ANDY, "setVolume", "(F)V");
-			_hasConsentForPuprpose = JNI.createStaticMethod(EXT_ADMOB_ANDY, "hasConsentForPuprpose", "(I)I");
+			_hasConsentForPurpose = JNI.createStaticMethod(EXT_ADMOB_ANDY, "hasConsentForPurpose", "(I)I");
 			_getConsent = JNI.createStaticMethod(EXT_ADMOB_ANDY, "getConsent", "()Ljava/lang/String;");
 			_isPrivacyOptionsRequired = JNI.createStaticMethod(EXT_ADMOB_ANDY, "isPrivacyOptionsRequired", "()I");
 			_showPrivacyOptionsForm = JNI.createStaticMethod(EXT_ADMOB_ANDY, "showPrivacyOptionsForm", "()V");
@@ -89,7 +89,7 @@ class Admob
 			//trace("Android Init Exception: " + e);
 			status.onStatus(AdmobEvent.INIT_FAIL, e);
 		}
-#elseif ios
+		#elseif ios
 		try
 		{
 			_initIos = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_init", 4);
@@ -100,7 +100,7 @@ class Admob
 			_loadRewarded = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_rewarded_load", 1);
 			_showRewarded = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_rewarded_show", 0);
 			_setVolume = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_set_volume", 1);
-			_hasConsentForPuprpose = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_has_consent_for_purpose", 1);
+			_hasConsentForPurpose = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_has_consent_for_purpose", 1);
 			_getConsent = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_get_consent", 0);
 			_isPrivacyOptionsRequired = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_is_privacy_options_required", 0);
 			_showPrivacyOptionsForm = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_show_privacy_options_form", 0);
@@ -112,7 +112,7 @@ class Admob
 			//trace("iOS Init Exception: " + e);
 			status.onStatus(AdmobEvent.INIT_FAIL, e);
 		}
-#end
+		#end
 
 		_inited = true;
 	}
@@ -247,18 +247,18 @@ class Admob
 			status.onStatus(AdmobEvent.WHAT_IS_GOING_ON, "Extension is not initialized!");
 	}
 	
-	public static function hasConsentForPuprpose(purpose:Int = 0):Int
+	public static function hasConsentForPurpose(purpose:Int = 0):Int
 	{
 		var hasorwhat:Int = -1;
 		if(_inited)
 		{
 			try
 			{
-				hasorwhat = _hasConsentForPuprpose(purpose);
+				hasorwhat = _hasConsentForPurpose(purpose);
 			}
 			catch(e:Dynamic)
 			{
-				trace("hasConsentForPuprpose Exception: " + e);
+				trace("hasConsentForPurpose Exception: " + e);
 			}
 		}
 		

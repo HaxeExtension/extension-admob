@@ -508,7 +508,7 @@ public class AdmobEx extends Extension
 	}
 	
 	//https://support.google.com/admob/answer/9760862?hl=en&ref_topic=9756841
-	public static int hasConsentForPuprpose(final int purpose)
+	public static int hasConsentForPurpose(final int purpose)
 	{
 		//copy/pasting from here: https://developers.google.com/admob/android/privacy/gdpr
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mainContext);

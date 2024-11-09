@@ -17,7 +17,7 @@ namespace admobex
 	void showRewarded();
 	void setVolume(float vol);
 	void setVolume(float vol);
-	int hasConsentForPuprpose(int purpose);
+	int hasConsentForPurpose(int purpose);
 	const char* getConsent();
 	int isPrivacyOptionsRequired();
 	void showPrivacyOptionsForm();
