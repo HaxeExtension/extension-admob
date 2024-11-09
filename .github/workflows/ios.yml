@@ -23,7 +23,7 @@ jobs:
           haxelib install hxp --quiet
       - name: Rebuild extension-admob
         run: |
-          haxelib run lime rebuild extension-admob ios -final -eval
+          haxelib run lime rebuild extension-admob ios -final
       - name: Upload Artifact
         uses: actions/upload-artifact@main
         with:
