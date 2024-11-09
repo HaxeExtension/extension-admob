@@ -23,5 +23,8 @@
 		<dependency name="AppTrackingTransparency.framework" />
 		<template path="templates" />
 		<config:ios linker-flags="-ObjC"/>
+		<config:ios linker-flags="-L$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)" />
+    	<config:ios linker-flags="-L$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)" />
+    	<config:ios linker-flags="-L$(inherited)" />
 	</section>
 </extension>
