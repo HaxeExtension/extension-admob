@@ -18,9 +18,12 @@ jobs:
         run: |
           haxelib git hxcpp https://github.com/mcagabe19-stuff/hxcpp --quiet
           haxelib git lime https://github.com/mcagabe19-stuff/lime-8.2.1 --quiet
+          haxelib dev extension-admob ${{ github.workspace }}
+          haxelib install format --quiet
+          haxelib install hxp --quiet
       - name: Rebuild extension-admob
         run: |
-          haxelib run lime rebuild extension-admob -final -eval
+          haxelib run lime rebuild extension-admob ios -final -eval
       - name: Upload Artifact
         uses: actions/upload-artifact@main
         with:
