@@ -422,7 +422,7 @@ namespace admobex
 							//NSLog(@"Info can show 1");
 							if(UMPConsentInformation.sharedInstance.canRequestAds)
 							{
-								if(hasConsentForPuppose(0) == 1) //consent given, not a best way to check it, but don't know any other ways
+								if(hasConsentForPurpose(0) == 1) //consent given, not a best way to check it, but don't know any other ways
 									initMobileAds(testingAds, childDirected, enableRDP, true);
 								else
 									initMobileAds(testingAds, childDirected, enableRDP, false);
