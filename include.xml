@@ -15,7 +15,6 @@
     
     <section if="ios">
         <ndll name="admobex" />
-        <haxeflag name="--macro" value="macros.IOSMacro.setIOSEnvTable()" />
 
         <dependency path="frameworks/GoogleMobileAds.framework" />
         <dependency path="frameworks/UserMessagingPlatform.framework" />
