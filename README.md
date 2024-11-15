@@ -33,25 +33,6 @@ Set the following in your project.xml, replace value with your app id from Admob
 
 For Android:<br />
 You need to install the latest version of Android SDK Platfrom (31+), Android SDK Platfrom-Tools, Android SDK Build-Tools and Google Play services.<br />
-Version of Lime (8.2.0) doesn't support (probably?) latest Gradle version.<br />
-More details here: https://github.com/haxelime/lime/issues/1476
-
-You need to set Gradle version in your project.xml file:
-```xml
-<config:android gradle-version="6.7.1" if="android" />
-<config:android gradle-plugin="4.2.0" if="android" />
-```
-
-And fix some other problems with Lime, open file "\lib\lime\X,X,X\templates\android\template\gradle.properties" and add the following lines in the end of the file:
-```
-android.useAndroidX=true
-android.enableJetifier=true
-```
-
-Also, you may need to set android sdk version to 31 or higher (as some versions of google play services requires that):
-```xml
-<android target-sdk-version="34" if="android" />
-```
 
 ### Sample code
 ```haxe
@@ -126,12 +107,6 @@ How to show privacy dialog to user again:
 ```haxe
 Admob.showPrivacyOptionsForm();
 ```
-
-
-### Not working, eh?
-While I was working on this extension I came across lots of problems/bugs, so those links might help you, please go through them before contacting me:
-1. https://community.openfl.org/t/extension-admob/13242/12
-2. https://github.com/native-toolkit/lime/issues/1476
 
 ### Games with Admob extension
 Google Play: https://play.google.com/store/apps/details?id=air.com.pozirk.allinonesolitaire<br />
