@@ -3,7 +3,7 @@
 
 	<set name="DEBUGEXTRA" value="-debug" if="fulldebug" />
 
-	<files id="iphone">
+	<files id="extension-admob">
 		<compilerflag value="-I${haxelib:extension-admob}/project/admobex/include" />
 		<compilerflag value="-F${haxelib:extension-admob}/frameworks" />
 		<file name="${haxelib:extension-admob}/project/admobex/src/ExternalInterface.cpp"/>
@@ -12,7 +12,7 @@
 	
 	<target id="NDLL" output="${LIBPREFIX}admobex${MSVC_LIB_VERSION}${DEBUGEXTRA}${LIBEXTRA}" tool="linker" toolid="${STD_MODULE_LINK}">
 		<outdir name="${haxelib:extension-admob}/ndll/${BINDIR}" />
-		<files id="iphone" />
+		<files id="extension-admob" />
 	</target>
 	
 	<target id="default">
