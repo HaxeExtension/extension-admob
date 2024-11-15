@@ -2,7 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-
   <key>GADApplicationIdentifier</key>
   <string>::ENV_ADMOB_APPID::</string>
 	
@@ -183,6 +182,5 @@
 			<string>3qcr597p9d.skadnetwork</string>
 		</dict>
 	</array>
-
 </dict>
 </plist>
