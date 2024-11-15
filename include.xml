@@ -22,7 +22,7 @@
         <dependency name="JavaScriptCore.framework" />
         <dependency name="AppTrackingTransparency.framework" />
         <dependency name="GameController.framework" />
-        <dependency name="CoreAudioTypes.framework" />
+        <!--<dependency name="CoreAudioTypes.framework" />-->
 
         <template path="templates" />
 
