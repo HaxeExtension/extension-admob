@@ -1,31 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension>
-	<section if="android">
-		<section unless="openfl-legacy || openfl-next">
-			<!--<echo value="ALERT: Setting GoolePlayServices to the last version on your SDK. Please read how to upgrade and choose your version here: https://github.com/player-03/google-play-services" unless="playServicesVersion" />-->
-			<set name="playServicesVersion" value="+" unless="playServicesVersion" />
-		</section>
-		
-		<section if="openfl-legacy || openfl-next">
-			<set name="google-play-services-basement" />
-			<set name="google-play-services-ads-lite" />
-		</section>
+    <section if="android">
+        <section unless="openfl-legacy || openfl-next">
+            <set name="playServicesVersion" value="+" unless="playServicesVersion" />
+        </section>
+        
+        <section if="openfl-legacy || openfl-next">
+            <set name="google-play-services-basement" />
+            <set name="google-play-services-ads-lite" />
+        </section>
 
-		<dependency name="admobex" path="dependencies/admobex" />
-	</section>
-	
-	<section if="ios">
-		<ndll name="admobex" />
-		<dependency path="frameworks/GoogleMobileAds.framework" />
-		<dependency path="frameworks/UserMessagingPlatform.framework" />
-		
-		<dependency name="JavaScriptCore.framework" />
-		<dependency name="AppTrackingTransparency.framework" />
-		<dependency name="GameController.framework" />
-		<template path="templates" />
-		<config:ios linker-flags="-ObjC"/>
-		<config:ios linker-flags="-L$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)" />
-    	<config:ios linker-flags="-L$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)" />
-    	<config:ios linker-flags="-L$(inherited)" />
-	</section>
+        <dependency name="admobex" path="dependencies/admobex" />
+    </section>
+    
+    <section if="ios">
+        <ndll name="admobex" />
+
+        <dependency path="frameworks/GoogleMobileAds.framework" />
+        <dependency path="frameworks/UserMessagingPlatform.framework" />
+
+        <dependency name="JavaScriptCore.framework" />
+        <dependency name="AppTrackingTransparency.framework" />
+        <dependency name="GameController.framework" />
+        <dependency name="CoreAudioTypes.framework" />
+
+        <dependency name="libswiftCompatibility50.tbd" />
+        <dependency name="libswiftCompatibility51.tbd" />
+        <dependency name="libswiftCompatibility56.tbd" />
+        <dependency name="libswiftCompatibilityConcurrency.tbd" />
+        <dependency name="libswiftCompatibilityDynamicReplacements.tbd" />
+        <dependency name="libswiftCompatibilityPacks.tbd" />
+
+        <template path="templates" />
+
+        <config:ios linker-flags="-ObjC"/>
+    </section>
 </extension>
