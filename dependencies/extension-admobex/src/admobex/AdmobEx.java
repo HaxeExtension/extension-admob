@@ -107,10 +107,10 @@ public class AdmobEx extends Extension {
                 consentInformation.requestConsentInfoUpdate(
                     mainActivity,
                     params,
-                    (ConsentInformation.OnConsentInfoUpdateSuccessListener)() - > {
+                    (ConsentInformation.OnConsentInfoUpdateSuccessListener)() -> {
                         UserMessagingPlatform.loadAndShowConsentFormIfRequired(
                             mainActivity,
-                            (ConsentForm.OnConsentFormDismissedListener) loadAndShowError - > {
+                            (ConsentForm.OnConsentFormDismissedListener) loadAndShowError -> {
                                 if (loadAndShowError != null) // idk the reason, but initialize admob anyway
                                 {
                                     // Consent gathering failed.
@@ -127,7 +127,7 @@ public class AdmobEx extends Extension {
                             }
                         );
                     },
-                    (ConsentInformation.OnConsentInfoUpdateFailureListener) requestConsentError - > //this can happen when there is no internet, initialize admob anyway
+                    (ConsentInformation.OnConsentInfoUpdateFailureListener) requestConsentError -> //this can happen when there is no internet, initialize admob anyway
                     {
                         // Consent gathering failed.
                         //Log.w("AdmobEx", String.format("or here %s: %s", requestConsentError.getErrorCode(), requestConsentError.getMessage()));
@@ -552,7 +552,7 @@ public class AdmobEx extends Extension {
                 //Log.d("AdmobEx", "showPrivacyOptionsForm");
                 UserMessagingPlatform.showPrivacyOptionsForm(
                     mainActivity,
-                    formError - > {
+                    formError -> {
                         if (formError != null) {
                             _callback.call("onStatus", new Object[] {
                                 CONSENT_FAIL,
