@@ -23,6 +23,8 @@
         <dependency name="AppTrackingTransparency.framework" />
         <dependency name="GameController.framework" />
         <!--<dependency name="CoreAudioTypes.framework" />-->
+        <setenv name="LD_RUNPATH_SEARCH_PATHS" value="$(inherited) /usr/lib/swift" />
+        <setenv name="LIBRARY_SEARCH_PATHS" value="$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME) $(inherited)" />
 
         <template path="templates" />
 
