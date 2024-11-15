@@ -1,4 +1,4 @@
-﻿package extension.admob;
+﻿package admob.util;
 
 import openfl.events.Event;
 

@@ -4,7 +4,6 @@
 #ifndef ADMOBEX_H
 #define ADMOBEX_H
 
-
 namespace admobex
 {	
 	void init(bool testingAds, bool childDirected, bool enableRDP);
@@ -22,6 +21,4 @@ namespace admobex
 	int isPrivacyOptionsRequired();
 	void showPrivacyOptionsForm();
 }
-
-
 #endif

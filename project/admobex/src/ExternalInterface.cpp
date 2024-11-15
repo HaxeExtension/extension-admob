@@ -1,12 +1,3 @@
-#ifndef STATIC_LINK
-#define IMPLEMENT_API
-#endif
-
-#if defined(HX_WINDOWS) || defined(HX_MACOS) || defined(HX_LINUX)
-#define NEKO_COMPATIBLE
-#endif
-
-
 #include <hx/CFFI.h>
 
 #include <string>
@@ -102,8 +93,10 @@ static value admobex_show_privacy_options_form()
 }
 DEFINE_PRIM(admobex_show_privacy_options_form, 0);
 
-
-extern "C" int admobex_register_prims () { return 0; }
+extern "C" int admobex_register_prims()
+{
+	return 0;
+}
 
 extern "C" void admobex_main()
 {

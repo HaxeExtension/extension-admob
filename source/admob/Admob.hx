@@ -1,43 +1,45 @@
-package extension.admob;
+package admob;
 
-import extension.admob.AdmobEvent;
-import extension.admob.AdmobStatus;
+import admob.util.AdmobEvent;
+import admob.util.AdmobStatus;
 import haxe.Json;
 import openfl.Lib;
 import lime.system.JNI;
 import openfl.events.EventDispatcher;
 
-class Admob
-{
-	public static inline var BANNER_SIZE_ADAPTIVE:Int = 0; //Anchored adaptive, somewhat default now (a replacement for SMART_BANNER), banner width is fullscreen, height calculated acordingly (might not work well in landscape orientation)
-	public static inline var BANNER_SIZE_BANNER:Int = 1; //320x50
-	public static inline var BANNER_SIZE_FLUID:Int = 2; //Android only. A dynamically sized banner that matches its parent's width and expands/contracts its height to match the ad's content after loading completes.
-	public static inline var BANNER_SIZE_FULL_BANNER:Int = 3; //468x60
-	public static inline var BANNER_SIZE_LARGE_BANNER:Int = 4; //320x100
-	public static inline var BANNER_SIZE_LEADERBOARD:Int = 5; //728x90
-	public static inline var BANNER_SIZE_MEDIUM_RECTANGLE:Int = 6; //300x250
-	public static inline var BANNER_SIZE_WIDE_SKYSCRAPER:Int = 7; //160x600, Android only.
-	//https://support.google.com/admob/answer/9760862#consent-policies
-	public static inline var CONSENT_FULL:String = "1111111111"; //full consent has been granted, admob should have no problems showing ads
-	public static inline var CONSENT_PERSONALIZED:String = "1111001011"; //enough consent has been granted for personalized ads, most likely will never happen, because user has to set all the checkboxes manually, and also for ads to work user has to consent to all the vendors
-	public static inline var CONSENT_NON_PERSONALIZED:String = "1100001011"; //consent to show non-personalized ads was given, there are little chances this can happen, because user has to set all the right checkboxes manually, and also for ads to work user has to consent to all the vendors
+class Admob {
+	public static inline var BANNER_SIZE_ADAPTIVE:Int = 0; // Anchored adaptive, somewhat default now (a replacement for SMART_BANNER), banner width is fullscreen, height calculated acordingly (might not work well in landscape orientation)
+	public static inline var BANNER_SIZE_BANNER:Int = 1; // 320x50
+	public static inline var BANNER_SIZE_FLUID:Int = 2; // Android only. A dynamically sized banner that matches its parent's width and expands/contracts its height to match the ad's content after loading completes.
+	public static inline var BANNER_SIZE_FULL_BANNER:Int = 3; // 468x60
+	public static inline var BANNER_SIZE_LARGE_BANNER:Int = 4; // 320x100
+	public static inline var BANNER_SIZE_LEADERBOARD:Int = 5; // 728x90
+	public static inline var BANNER_SIZE_MEDIUM_RECTANGLE:Int = 6; // 300x250
+	public static inline var BANNER_SIZE_WIDE_SKYSCRAPER:Int = 7; // 160x600, Android only.
+	// https://support.google.com/admob/answer/9760862#consent-policies
+	public static inline var CONSENT_FULL:String = "1111111111"; // full consent has been granted, admob should have no problems showing ads
+	public static inline var CONSENT_PERSONALIZED:String = "1111001011"; // enough consent has been granted for personalized ads, most likely will never happen, because user has to set all the checkboxes manually, and also for ads to work user has to consent to all the vendors
+	public static inline var CONSENT_NON_PERSONALIZED:String = "1100001011"; // consent to show non-personalized ads was given, there are little chances this can happen, because user has to set all the right checkboxes manually, and also for ads to work user has to consent to all the vendors
+
 	#if ios
-	//https://stackoverflow.com/questions/63499520/app-tracking-transparency-how-does-effect-apps-showing-ads-idfa-ios14/63522856#63522856
-	/*public static inline var IDFA_AUTORIZED:String = "IDFA_AUTORIZED";
+	// https://stackoverflow.com/questions/63499520/app-tracking-transparency-how-does-effect-apps-showing-ads-idfa-ios14/63522856#63522856
+	/*
+	public static inline var IDFA_AUTORIZED:String = "IDFA_AUTORIZED";
 	public static inline var IDFA_DENIED:String = "IDFA_DENIED";
 	public static inline var IDFA_NOT_DETERMINED:String = "IDFA_NOT_DETERMINED";
 	public static inline var IDFA_RESTRICTED:String = "IDFA_RESTRICTED";
-	public static inline var IDFA_NOT_SUPPORTED:String = "IDFA_NOT_SUPPORTED";*/
+	public static inline var IDFA_NOT_SUPPORTED:String = "IDFA_NOT_SUPPORTED";
+	*/
 	#end
-	
-	//constants are taken from https://developer.android.com/reference/android/view/Gravity
-	//you can use your own value for Android, if need more flexibility
+
+	// Constants are taken from https://developer.android.com/reference/android/view/Gravity
+	// You can use your own value for Android, if need more flexibility
 	public static inline var BANNER_ALIGN_TOP:Int = 0x00000030 | 0x00000001; // TOP | CENTER_HORIZONTAL;
 	public static inline var BANNER_ALIGN_BOTTOM:Int = 0x00000050 | 0x00000001; // BOTTOM | CENTER_HORIZONTAL;
-	
+
 	private static inline var EXT_ADMOB_ANDY:String = "admobex/AdmobEx";
 	private static inline var EXT_ADMOB_IOS:String = "AdmobEx";
-	
+
 	private static var _inited:Bool = false;
 	public static var status(default, null):AdmobStatus = new AdmobStatus();
 
@@ -50,25 +52,29 @@ class Admob
 	private static var _loadRewarded:String->Void = function(id:String):Void {};
 	private static var _showRewarded:Void->Void = function():Void {};
 	private static var _setVolume:Float->Void = function(vol:Float):Void {};
-	private static var _hasConsentForPurpose:Int->Int = function(purpose:Int):Int {return -1;};
-	private static var _getConsent:Void->String = function():String {return "";};
-	private static var _isPrivacyOptionsRequired:Void->Int = function():Int {return -1;};
+	private static var _hasConsentForPurpose:Int->Int = function(purpose:Int):Int {
+		return -1;
+	};
+	private static var _getConsent:Void->String = function():String {
+		return "";
+	};
+	private static var _isPrivacyOptionsRequired:Void->Int = function():Int {
+		return -1;
+	};
 	private static var _showPrivacyOptionsForm:Void->Void = function():Void {};
 
 	/**
-	   Initialization of Admob extension
-	   @param	testingAds - whether enable testing ads or not
-	   @param	childDirected - COPPA, whether your app is directed for children
-	   @param	enableRDP - Restricted data processing, for California Consumer Privacy Act (CCPA)
+		Initialization of Admob extension
+		@param	testingAds - whether enable testing ads or not
+		@param	childDirected - COPPA, whether your app is directed for children
+		@param	enableRDP - Restricted data processing, for California Consumer Privacy Act (CCPA)
 	**/
-	public static function init(testingAds:Bool = false, childDirected:Bool = false, enableRDP:Bool = false):Void
-	{
-		if(_inited)
+	public static function init(testingAds:Bool = false, childDirected:Bool = false, enableRDP:Bool = false):Void {
+		if (_inited)
 			return;
-		
+
 		#if android
-		try
-		{
+		try {
 			_initAndroid = JNI.createStaticMethod(EXT_ADMOB_ANDY, "init", "(ZZZLorg/haxe/lime/HaxeObject;)V");
 			_showBanner = JNI.createStaticMethod(EXT_ADMOB_ANDY, "showBanner", "(Ljava/lang/String;II)V");
 			_hideBanner = JNI.createStaticMethod(EXT_ADMOB_ANDY, "hideBanner", "()V");
@@ -83,15 +89,12 @@ class Admob
 			_showPrivacyOptionsForm = JNI.createStaticMethod(EXT_ADMOB_ANDY, "showPrivacyOptionsForm", "()V");
 
 			_initAndroid(testingAds, childDirected, enableRDP, status);
-		}
-		catch(e:Dynamic)
-		{
-			//trace("Android Init Exception: " + e);
+		} catch (e:Dynamic) {
+			// trace("Init Exception: " + e);
 			status.onStatus(AdmobEvent.INIT_FAIL, e);
 		}
 		#elseif ios
-		try
-		{
+		try {
 			_initIos = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_init", 4);
 			_showBanner = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_banner_show", 3);
 			_hideBanner = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_banner_hide", 0);
@@ -106,212 +109,148 @@ class Admob
 			_showPrivacyOptionsForm = cpp.Lib.load(EXT_ADMOB_IOS, "admobex_show_privacy_options_form", 0);
 
 			_initIos(testingAds, childDirected, enableRDP, status.onStatus);
-		}
-		catch(e:Dynamic)
-		{
-			//trace("iOS Init Exception: " + e);
+		} catch (e:Dynamic) {
+			// trace("Init Exception: " + e);
 			status.onStatus(AdmobEvent.INIT_FAIL, e);
 		}
 		#end
 
 		_inited = true;
 	}
-	
-	public static function showBanner(id:String, size:Int = Admob.BANNER_SIZE_ADAPTIVE, align:Int = Admob.BANNER_ALIGN_BOTTOM):Void
-	{
-		if(_inited)
-		{
-			try
-			{
+
+	public static function showBanner(id:String, size:Int = Admob.BANNER_SIZE_ADAPTIVE, align:Int = Admob.BANNER_ALIGN_BOTTOM):Void {
+		if (_inited) {
+			try {
 				_showBanner(id, size, align);
-			}
-			catch(e:Dynamic)
-			{
+			} catch (e:Dynamic) {
 				trace("showBanner Exception: " + e);
 				status.onStatus(AdmobEvent.BANNER_FAILED_TO_LOAD, e);
 			}
-		}
-		else
+		} else
 			status.onStatus(AdmobEvent.BANNER_FAILED_TO_LOAD, "Extension is not initialized!");
 	}
 
-	public static function hideBanner():Void
-	{
-		if(_inited)
-		{
-			try
-			{
+	public static function hideBanner():Void {
+		if (_inited) {
+			try {
 				_hideBanner();
-			}
-			catch (e:Dynamic)
-			{
+			} catch (e:Dynamic) {
 				trace("hideBanner Exception: " + e);
 				status.onStatus(AdmobEvent.WHAT_IS_GOING_ON, e);
 			}
-		}
-		else
+		} else
 			status.onStatus(AdmobEvent.WHAT_IS_GOING_ON, "Extension is not initialized!");
 	}
-	
-	public static function loadInterstitial(id:String):Void
-	{
-		if(_inited)
-		{
-			try
-			{
+
+	public static function loadInterstitial(id:String):Void {
+		if (_inited) {
+			try {
 				_loadInterstitial(id);
-			}
-			catch(e:Dynamic)
-			{
+			} catch (e:Dynamic) {
 				trace("loadInterstitial Exception: " + e);
 				status.onStatus(AdmobEvent.INTERSTITIAL_FAILED_TO_LOAD, e);
 			}
-		}
-		else
+		} else
 			status.onStatus(AdmobEvent.INTERSTITIAL_FAILED_TO_LOAD, "Extension is not initialized!");
 	}
-	
-	public static function showInterstitial():Void
-	{
-		if(_inited)
-		{
-			try
-			{
+
+	public static function showInterstitial():Void {
+		if (_inited) {
+			try {
 				_showInterstitial();
-			}
-			catch(e:Dynamic)
-			{
+			} catch (e:Dynamic) {
 				trace("showInterstitial Exception: " + e);
 				status.onStatus(AdmobEvent.INTERSTITIAL_FAILED_TO_SHOW, e);
 			}
-		}
-		else
+		} else
 			status.onStatus(AdmobEvent.INTERSTITIAL_FAILED_TO_SHOW, "Extension is not initialized!");
 	}
-	
-	public static function loadRewarded(id:String):Void
-	{
-		if(_inited)
-		{
-			try
-			{
+
+	public static function loadRewarded(id:String):Void {
+		if (_inited) {
+			try {
 				_loadRewarded(id);
-			}
-			catch(e:Dynamic)
-			{
+			} catch (e:Dynamic) {
 				trace("loadInterstitial Exception: " + e);
 				status.onStatus(AdmobEvent.REWARDED_FAILED_TO_LOAD, e);
 			}
-		}
-		else
+		} else
 			status.onStatus(AdmobEvent.REWARDED_FAILED_TO_LOAD, "Extension is not initialized!");
 	}
 
-	public static function showRewarded():Void
-	{
-		if(_inited)
-		{
-			try
-			{
+	public static function showRewarded():Void {
+		if (_inited) {
+			try {
 				_showRewarded();
-			}
-			catch(e:Dynamic)
-			{
+			} catch (e:Dynamic) {
 				trace("showRewarded Exception: " + e);
 				status.onStatus(AdmobEvent.REWARDED_FAILED_TO_SHOW, e);
 			}
-		}
-		else
+		} else
 			status.onStatus(AdmobEvent.REWARDED_FAILED_TO_SHOW, "Extension is not initialized!");
 	}
-	
+
 	/**
-	   Sets volume for Interstitial and Rewarded ads, if sets to 0 might get less ads, cause some advertisers don't allow muted ads.
-	   @param	vol 0.0 - 1.0 (-1 for muted)
+		Sets volume for Interstitial and Rewarded ads, if sets to 0 might get less ads, cause some advertisers don't allow muted ads.
+		@param	vol 0.0 - 1.0 (-1 for muted)
 	**/
-	public static function setVolume(vol:Float):Void
-	{
-		if(_inited)
-		{
-			try
-			{
+	public static function setVolume(vol:Float):Void {
+		if (_inited) {
+			try {
 				_setVolume(vol);
-			}
-			catch(e:Dynamic)
-			{
-				trace("setVolume Exception: "+e);
+			} catch (e:Dynamic) {
+				trace("setVolume Exception: " + e);
 				status.onStatus(AdmobEvent.WHAT_IS_GOING_ON, e);
 			}
-		}
-		else
+		} else
 			status.onStatus(AdmobEvent.WHAT_IS_GOING_ON, "Extension is not initialized!");
 	}
-	
-	public static function hasConsentForPurpose(purpose:Int = 0):Int
-	{
+
+	public static function hasConsentForPurpose(purpose:Int = 0):Int {
 		var hasorwhat:Int = -1;
-		if(_inited)
-		{
-			try
-			{
+		if (_inited) {
+			try {
 				hasorwhat = _hasConsentForPurpose(purpose);
-			}
-			catch(e:Dynamic)
-			{
+			} catch (e:Dynamic) {
 				trace("hasConsentForPurpose Exception: " + e);
 			}
 		}
-		
+
 		return hasorwhat;
 	}
-	
-	//check what kind of consent has been granted
-	public static function getConsent():String
-	{
+
+	// check what kind of consent has been granted
+	public static function getConsent():String {
 		var consent:String = "";
-		if(_inited)
-		{
-			try
-			{
+		if (_inited) {
+			try {
 				consent = _getConsent();
-			}
-			catch(e:Dynamic)
-			{
+			} catch (e:Dynamic) {
 				trace("getConsent Exception: " + e);
 			}
 		}
-		
+
 		return consent;
 	}
-	
-	public static function isPrivacyOptionsRequired():Int
-	{
+
+	public static function isPrivacyOptionsRequired():Int {
 		var required:Int = -1;
-		if(_inited)
-		{
-			try
-			{
+		if (_inited) {
+			try {
 				required = _isPrivacyOptionsRequired();
-			}
-			catch(e:Dynamic)
-			{
+			} catch (e:Dynamic) {
 				trace("showPrivacyOptions Exception: " + e);
 			}
 		}
-		
+
 		return required;
 	}
-	
-	public static function showPrivacyOptionsForm():Void
-	{
-		if(_inited)
-		{
-			try
-			{
+
+	public static function showPrivacyOptionsForm():Void {
+		if (_inited) {
+			try {
 				_showPrivacyOptionsForm();
-			}
-			catch(e:Dynamic)
-			{
+			} catch (e:Dynamic) {
 				trace("showPrivacyOptions Exception: " + e);
 			}
 		}

@@ -10,11 +10,12 @@
             <set name="google-play-services-ads-lite" />
         </section>
 
-        <dependency name="admobex" path="dependencies/admobex" />
+        <dependency name="extension-admobex" path="dependencies/extension-admobex" />
     </section>
     
     <section if="ios">
         <ndll name="admobex" />
+        <haxeflag name="--macro" value="macros.IOSMacro.setIOSEnvTable()" />
 
         <dependency path="frameworks/GoogleMobileAds.framework" />
         <dependency path="frameworks/UserMessagingPlatform.framework" />
@@ -23,11 +24,11 @@
         <dependency name="AppTrackingTransparency.framework" />
         <dependency name="GameController.framework" />
         <!--<dependency name="CoreAudioTypes.framework" />-->
-        <setenv name="LD_RUNPATH_SEARCH_PATHS" value="$(inherited) /usr/lib/swift" />
-        <setenv name="LIBRARY_SEARCH_PATHS" value="$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME) $(inherited)" />
 
         <template path="templates" />
 
         <config:ios linker-flags="-ObjC"/>
     </section>
+
+    <source path="source" />
 </extension>
