@@ -1,17 +1,16 @@
 package org.haxe.extension;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.provider.Settings.Secure;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
+
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -25,25 +24,49 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
-import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
-import com.google.android.gms.ads.OnUserEarnedRewardListener;
+import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
+
 import com.google.android.ump.ConsentInformation;
 import com.google.android.ump.ConsentRequestParameters;
-import com.google.android.ump.ConsentDebugSettings;
 import com.google.android.ump.ConsentForm;
-import com.google.android.ump.FormError;
 import com.google.android.ump.UserMessagingPlatform;
+
 import org.haxe.extension.Extension;
 import org.haxe.lime.HaxeObject;
+
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/*
+	You can use the Android Extension class in order to hook
+	into the Android activity lifecycle. This is not required
+	for standard Java code, this is designed for when you need
+	deeper integration.
+
+	You can access additional references from the Extension class,
+	depending on your needs:
+
+	- Extension.assetManager (android.content.res.AssetManager)
+	- Extension.callbackHandler (android.os.Handler)
+	- Extension.mainActivity (android.app.Activity)
+	- Extension.mainContext (android.content.Context)
+	- Extension.mainView (android.view.View)
+
+	You can also make references to static or instance methods
+	and properties on Java classes. These classes can be included
+	as single files using <java path="to/File.java" /> within your
+	project, or use the full Android Library Project format (such
+	as this example) in order to include your own AndroidManifest
+	data, additional dependencies, etc.
+
+	These are also optional, though this example shows a static
+	function for performing a single task, like returning a value
+	back to Haxe from Java.
+*/
 public class Admob extends Extension
 {
 	public static final String INIT_OK = "INIT_OK";
