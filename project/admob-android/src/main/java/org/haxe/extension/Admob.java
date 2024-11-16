@@ -87,7 +87,6 @@ public class Admob extends Extension
 	public static final String REWARDED_FAILED_TO_SHOW = "REWARDED_FAILED_TO_SHOW";
 	public static final String REWARDED_SHOWED = "REWARDED_SHOWED";
 	public static final String REWARDED_EARNED = "REWARDED_EARNED";
-	public static final String WHAT_IS_GOING_ON = "WHAT_IS_GOING_ON";
 
 	public static final int BANNER_SIZE_ADAPTIVE = 0; // Anchored adaptive, somewhat default now (a replacement for SMART_BANNER); banner width is fullscreen, height calculated acordingly (might not work well with landscape orientation)
 	public static final int BANNER_SIZE_BANNER = 1; // 320x50
