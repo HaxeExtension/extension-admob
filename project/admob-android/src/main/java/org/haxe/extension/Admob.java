@@ -193,9 +193,7 @@ public class Admob extends Extension
 			{
 				rl = new RelativeLayout(mainActivity);
 				rl.setGravity(align);
-
-				banner = new AdView(mainActivity);
-				banner.setAdUnitId(id);
+				mainActivity.addContentView(rl, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 
 				AdSize adSize = AdSize.INVALID;
 
@@ -229,8 +227,9 @@ public class Admob extends Extension
 						break;
 				}
 
+				banner = new AdView(mainActivity);
+				banner.setAdUnitId(id);
 				banner.setAdSize(adSize);
-
 				banner.setAdListener(new AdListener()
 				{
 					@Override
@@ -265,9 +264,6 @@ public class Admob extends Extension
 						callback.call("onStatus", new Object[] {BANNER_CLOSED, ""});
 					}
 				});
-
-				mainActivity.addContentView(rl, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-
 				rl.addView(banner);
 				rl.bringToFront();
 
