@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension>
     <section if="android">
-        <section unless="openfl-legacy || openfl-next">
-            <set name="playServicesVersion" value="+" unless="playServicesVersion" />
-        </section>
-        
-        <section if="openfl-legacy || openfl-next">
-            <set name="google-play-services-basement" />
-            <set name="google-play-services-ads-lite" />
-        </section>
-
         <dependency name="extension-admobex" path="dependencies/extension-admobex" />
     </section>
-    
+
     <section if="ios">
         <ndll name="admobex" />
 
@@ -23,9 +14,8 @@
         <dependency name="AppTrackingTransparency.framework" />
 
         <template path="templates" />
-
-        <config:ios linker-flags="-ObjC"/>
     </section>
 
     <source path="source" />
+
 </extension>
