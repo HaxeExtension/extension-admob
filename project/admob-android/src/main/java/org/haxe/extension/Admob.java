@@ -156,18 +156,18 @@ public class Admob extends Extension
 		});
 	}
 
-	public static void showBanner(final String id, final int size, final int align) {
-		if (banner != null) {
-			//Log.d("AdmobEx", BANNER_FAILED_TO_LOAD+"Hide previous banner first!");
-			callback.call("onStatus", new Object[] {
-				BANNER_FAILED_TO_LOAD,
-				"Hide previous banner first!"
-			});
+	public static void showBanner(final String id, final int size, final int align)
+	{
+		if (banner != null)
+		{
+			callback.call("onStatus", new Object[] {BANNER_FAILED_TO_LOAD, "Hide previous banner first!"});
 			return;
 		}
 
-		mainActivity.runOnUiThread(new Runnable() {
-			public void run() {
+		mainActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
 				rl = new RelativeLayout(mainActivity);
 				rl.setGravity(align);
 
@@ -175,10 +175,14 @@ public class Admob extends Extension
 				banner.setAdUnitId(id);
 
 				AdSize adSize = AdSize.INVALID;
-				switch (size) {
+
+				switch (size)
+				{
 					case BANNER_SIZE_ADAPTIVE:
-						adSize = getAdSize();
-						break; // Get right size for adaptive banner
+						DisplayMetrics outMetrics = new DisplayMetrics();
+						mainActivity.getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
+						adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainContext, (int)(outMetrics.widthPixels / outMetrics.density));
+						break;
 					case BANNER_SIZE_BANNER:
 						adSize = AdSize.BANNER;
 						break;
@@ -203,169 +207,141 @@ public class Admob extends Extension
 				}
 
 				banner.setAdSize(adSize);
-				banner.setAdListener(new AdListener() {
+
+				banner.setAdListener(new AdListener()
+				{
 					@Override
-					public void onAdLoaded() {
-						// Code to be executed when an ad finishes loading.
-						//Log.d("AdmobEx", BANNER_LOADED);
-						callback.call("onStatus", new Object[] {
-							BANNER_LOADED,
-							""
-						});
-						banner.setVisibility(View.VISIBLE); //To fix this problem, if it is still valid: https://groups.google.com/forum/#!topic/google-admob-ads-sdk/avwVXvBt_sM
+					public void onAdLoaded()
+					{
+						callback.call("onStatus", new Object[] {BANNER_LOADED, ""});
+
+						banner.setVisibility(View.VISIBLE);
 					}
 
 					@Override
-					public void onAdFailedToLoad(LoadAdError adError) {
-						// Code to be executed when an ad request fails.
-						//Log.d("AdmobEx", BANNER_FAILED_TO_LOAD+adError.toString());
-						callback.call("onStatus", new Object[] {
-							BANNER_FAILED_TO_LOAD,
-							adError.toString()
-						});
+					public void onAdFailedToLoad(LoadAdError adError)
+					{
+						callback.call("onStatus", new Object[] {BANNER_FAILED_TO_LOAD, adError.toString()});
 					}
 
 					@Override
-					public void onAdOpened() {
-						// Code to be executed when an ad opens an overlay that
-						// covers the screen.
-						//Log.d("AdmobEx", BANNER_OPENED);
-						callback.call("onStatus", new Object[] {
-							BANNER_OPENED,
-							""
-						}); //ie shown
+					public void onAdOpened()
+					{
+						callback.call("onStatus", new Object[] {BANNER_OPENED, ""});
 					}
 
 					@Override
-					public void onAdClicked() {
-						// Code to be executed when the user clicks on an ad.
-						//Log.d("AdmobEx", BANNER_CLICKED);
-						callback.call("onStatus", new Object[] {
-							BANNER_CLICKED,
-							""
-						});
+					public void onAdClicked()
+					{
+						callback.call("onStatus", new Object[] {BANNER_CLICKED, ""});
 					}
 
 					@Override
-					public void onAdClosed() {
-						// Code to be executed when the user is about to return
-						// to the app after tapping on an ad.
-						//Log.d("AdmobEx", BANNER_CLOSED);
-						callback.call("onStatus", new Object[] {
-							BANNER_CLOSED,
-							""
-						});
+					public void onAdClosed()
+					{
+						callback.call("onStatus", new Object[] {BANNER_CLOSED, ""});
 					}
 				});
 
-				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-				mainActivity.addContentView(rl, params);
+				mainActivity.addContentView(rl, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+
 				rl.addView(banner);
 				rl.bringToFront();
 
-				AdRequest adRequest = new AdRequest.Builder().build();
-				banner.loadAd(adRequest);
+				banner.loadAd(new AdRequest.Builder().build());
 			}
 		});
 	}
 
-	public static void hideBanner() {
-		if (banner != null) {
-			mainActivity.runOnUiThread(new Runnable() {
-				public void run() {
+	public static void hideBanner()
+	{
+		if (banner != null)
+		{
+			mainActivity.runOnUiThread(new Runnable()
+			{
+				public void run()
+				{
 					banner.setVisibility(View.INVISIBLE);
+
 					ViewGroup parent = (ViewGroup) rl.getParent();
 					parent.removeView(rl);
+
 					rl.removeView(banner);
 					banner.destroy();
 					banner = null;
+
 					rl = null;
 				}
 			});
 		}
 	}
 
-	public static void loadInterstitial(final String id) {
-		mainActivity.runOnUiThread(new Runnable() {
-			public void run() {
-				AdRequest adRequest = new AdRequest.Builder().build();
-
-				InterstitialAd.load(mainActivity, id, adRequest, new InterstitialAdLoadCallback() {
+	public static void loadInterstitial(final String id)
+	{
+		mainActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				InterstitialAd.load(mainActivity, id, new AdRequest.Builder().build(), new InterstitialAdLoadCallback()
+				{
 					@Override
-					public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-						// The interstitial reference will be null until
-						// an ad is loaded.
+					public void onAdLoaded(@NonNull InterstitialAd interstitialAd)
+					{
 						interstitial = interstitialAd;
-						interstitial.setFullScreenContentCallback(new FullScreenContentCallback() {
+
+						interstitial.setFullScreenContentCallback(new FullScreenContentCallback()
+						{
 							@Override
-							public void onAdDismissedFullScreenContent() {
-								// Called when fullscreen content is dismissed.
-								//Log.d("AdmobEx", INTERSTITIAL_DISMISSED);
-								callback.call("onStatus", new Object[] {
-									INTERSTITIAL_DISMISSED,
-									""
-								});
+							public void onAdDismissedFullScreenContent()
+							{
+								callback.call("onStatus", new Object[] {INTERSTITIAL_DISMISSED, ""});
 							}
 
 							@Override
-							public void onAdFailedToShowFullScreenContent(AdError adError) {
-								// Called when fullscreen content failed to show.
-								//Log.d("AdmobEx", INTERSTITIAL_FAILED_TO_SHOW+adError.toString());
-								callback.call("onStatus", new Object[] {
-									INTERSTITIAL_FAILED_TO_SHOW,
-									adError.toString()
-								});
+							public void onAdFailedToShowFullScreenContent(AdError adError)
+							{
+								callback.call("onStatus", new Object[] {INTERSTITIAL_FAILED_TO_SHOW, adError.toString()});
 							}
 
 							@Override
-							public void onAdShowedFullScreenContent() {
-								// Called when fullscreen content is shown.
-								// Make sure to set your reference to null so you don't
-								// show it a second time.
-								//Log.d("AdmobEx", INTERSTITIAL_SHOWED);
+							public void onAdShowedFullScreenContent()
+							{
 								interstitial = null;
-								callback.call("onStatus", new Object[] {
-									INTERSTITIAL_SHOWED,
-									""
-								});
+
+								callback.call("onStatus", new Object[] {INTERSTITIAL_SHOWED, ""});
 							}
 						});
 
-						//Log.d("AdmobEx", INTERSTITIAL_LOADED);
-						callback.call("onStatus", new Object[] {
-							INTERSTITIAL_LOADED,
-							""
-						});
+						callback.call("onStatus", new Object[] {INTERSTITIAL_LOADED, ""});
 					}
 
 					@Override
-					public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-						// Handle the error
-						//Log.d("AdmobEx", INTERSTITIAL_FAILED_TO_LOAD+loadAdError.getMessage());
+					public void onAdFailedToLoad(@NonNull LoadAdError loadAdError)
+					{
 						interstitial = null;
-						callback.call("onStatus", new Object[] {
-							INTERSTITIAL_FAILED_TO_LOAD,
-							loadAdError.getMessage()
-						});
+
+						callback.call("onStatus", new Object[] {INTERSTITIAL_FAILED_TO_LOAD, loadAdError.getMessage()});
 					}
 				});
 			}
 		});
 	}
 
-	public static void showInterstitial() {
-		if (interstitial != null) {
-			mainActivity.runOnUiThread(new Runnable() {
-				public void run() {
+	public static void showInterstitial()
+	{
+		if (interstitial != null)
+		{
+			mainActivity.runOnUiThread(new Runnable()
+			{
+				public void run()
+				{
 					interstitial.show(mainActivity);
 				}
 			});
-		} else {
-			//Log.d("AdmobEx", INTERSTITIAL_FAILED_TO_SHOW+"You need to load interstitial ad first!");
-			callback.call("onStatus", new Object[] {
-				INTERSTITIAL_FAILED_TO_SHOW,
-				"You need to load interstitial ad first!"
-			});
+		}
+		else
+		{
+			callback.call("onStatus", new Object[] {INTERSTITIAL_FAILED_TO_SHOW,."You need to load interstitial ad first!"});
 		}
 	}
 
@@ -400,6 +376,7 @@ public class Admob extends Extension
 							public void onAdShowedFullScreenContent()
 							{
 								rewarded = null;
+
 								callback.call("onStatus", new Object[] {REWARDED_SHOWED, ""});
 							}
 						});
@@ -411,6 +388,7 @@ public class Admob extends Extension
 					public void onAdFailedToLoad(@NonNull LoadAdError loadAdError)
 					{
 						rewarded = null;
+
 						callback.call("onStatus", new Object[] {REWARDED_FAILED_TO_LOAD, loadAdError.getMessage()});
 					}
 				});
@@ -492,13 +470,6 @@ public class Admob extends Extension
 				});
 			}
 		});
-	}
-
-	private static AdSize getAdSize()
-	{
-		DisplayMetrics outMetrics = new DisplayMetrics();
-		mainActivity.getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
-		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainContext, (int)(outMetrics.widthPixels / outMetrics.density));
 	}
 
 	private static String md5(String s)
