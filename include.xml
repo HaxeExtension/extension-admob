@@ -4,11 +4,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://lime.openfl.org/project/1.0.4 http://lime.openfl.org/xsd/project-1.0.4.xsd">
 
-	<dependency name="admob" path="project/admob-android" if="android" />
+	<section if="android">
+		<dependency name="admob" path="project/admob-android" />
 
-	<haxelib name="extension-androidtools" if="android" />
+		<haxelib name="extension-androidtools" />
 
-	<config:android extension="org.haxe.extension.Admob" if="android" />
-
-	<config:android target-sdk-version="34" if="android" />
+		<config:android extension="org.haxe.extension.Admob" />
+	</section>
 </extension>
