@@ -8,14 +8,14 @@ import lime.system.JNI; // For JNISafety
 import lime.utils.Log;
 
 /**
- * AdmobAndroid - A class to manage AdMob advertisements on Android devices.
+ * A class to manage AdMob advertisements on Android devices.
  */
 class AdmobAndroid
 {
 	/**
 	 * Event triggered for status updates from AdMob.
 	 */
-	public static var onStatus:Event<(event:String, message:String)->Void> = new Event<(event:String, message:String)->Void>();
+	public static var onStatus:Event<(String->String)->Void> = new Event<(String->String)->Void>();
 
 	@:noCompletion
 	private static var initialized:Bool = false;
