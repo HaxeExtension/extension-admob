@@ -6,5 +6,10 @@
 	"tags": ["ads","api","google","ad","monetization","admob"],
 	"description": "Google AdMob / OpenFL extension for Android + iOS.",
 	"version": "2.3.1",
-	"releasenote": "Updated to the latest version of Admob SDK"
+	"releasenote": "Updated to the latest version of Admob SDK",
+	"dependencies": {
+		"hxcpp": "",
+		"lime": "",
+		"extension-androidtools": ""
+	}
 }
