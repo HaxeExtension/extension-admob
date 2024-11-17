@@ -200,9 +200,7 @@ public class Admob extends Extension
 				switch (size)
 				{
 					case BANNER_SIZE_ADAPTIVE:
-						DisplayMetrics outMetrics = new DisplayMetrics();
-						mainActivity.getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
-						adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainContext, (int)(outMetrics.widthPixels / outMetrics.density));
+						adSize = getAdSize();
 						break;
 					case BANNER_SIZE_BANNER:
 						adSize = AdSize.BANNER;
@@ -512,6 +510,20 @@ public class Admob extends Extension
 		}
 
 		return "";
+	}
+
+	private static AdSize getAdSize()
+	{
+		DisplayMetrics displayMetrics = mainContext.getResources().getDisplayMetrics();
+
+		int adWidthPixels = displayMetrics.widthPixels;
+
+		if (VERSION.SDK_INT >= VERSION_CODES.R)
+			adWidthPixels = mainContext.getWindowManager().getCurrentWindowMetrics().getBounds().width();
+
+		float density = displayMetrics.density;
+		int adWidth = (int) (adWidthPixels / density);
+		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainContext, adWidth);
 	}
 
 	@Override
