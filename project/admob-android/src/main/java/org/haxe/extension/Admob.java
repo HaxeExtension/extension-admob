@@ -359,7 +359,7 @@ public class Admob extends Extension
 		}
 		else
 		{
-			callback.call("onStatus", new Object[] {INTERSTITIAL_FAILED_TO_SHOW,."You need to load interstitial ad first!"});
+			callback.call("onStatus", new Object[] {INTERSTITIAL_FAILED_TO_SHOW, "You need to load interstitial ad first!"});
 		}
 	}
 
