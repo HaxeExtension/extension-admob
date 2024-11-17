@@ -5,12 +5,13 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.provider.Settings.Secure;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
@@ -100,7 +101,7 @@ public class Admob extends Extension
 
 	public static boolean inited = false;
 	public static AdView banner;
-	public static RelativeLayout rl;
+	public static FrameLayout adContainer;
 	public static AdSize bannerSize;
 	public static InterstitialAd interstitial;
 	public static RewardedAd rewarded;
@@ -121,13 +122,13 @@ public class Admob extends Extension
 				consentInformation.requestConsentInfoUpdate(mainActivity, params, (ConsentInformation.OnConsentInfoUpdateSuccessListener)() -> {
 					UserMessagingPlatform.loadAndShowConsentFormIfRequired(mainActivity, (ConsentForm.OnConsentFormDismissedListener) loadAndShowError -> {
 						if (loadAndShowError != null)
-							callback.call("onStatus", new Object[] {CONSENT_FAIL, String.format("%s: %s", loadAndShowError.getErrorCode(), loadAndShowError.getMessage())});
+							callback.call("onStatus", new Object[] { CONSENT_FAIL, String.format("%s: %s", loadAndShowError.getErrorCode(), loadAndShowError.getMessage())});
 
 						initMobileAds(testingAds, childDirected, enableRDP);
 					});
 				}, (ConsentInformation.OnConsentInfoUpdateFailureListener) requestConsentError ->
 				{
-					callback.call("onStatus", new Object[] {CONSENT_FAIL, String.format("%s: %s", requestConsentError.getErrorCode(), requestConsentError.getMessage())});
+					callback.call("onStatus", new Object[] { CONSENT_FAIL, String.format("%s: %s", requestConsentError.getErrorCode(), requestConsentError.getMessage())});
 
 					initMobileAds(testingAds, childDirected, enableRDP);
 				});
@@ -174,7 +175,7 @@ public class Admob extends Extension
 			{
 				Log.d("AdmobEx", MobileAds.getVersion().toString());
 
-				callback.call("onStatus", new Object[] {INIT_OK, ""});
+				callback.call("onStatus", new Object[] { INIT_OK, "" });
 			}
 		});
 	}
@@ -183,7 +184,7 @@ public class Admob extends Extension
 	{
 		if (banner != null)
 		{
-			callback.call("onStatus", new Object[] {BANNER_FAILED_TO_LOAD, "Hide previous banner first!"});
+			callback.call("onStatus", new Object[] { BANNER_FAILED_TO_LOAD, "Hide previous banner first!" });
 			return;
 		}
 
@@ -191,10 +192,6 @@ public class Admob extends Extension
 		{
 			public void run()
 			{
-				rl = new RelativeLayout(mainActivity);
-				rl.setGravity(align);
-				mainActivity.addContentView(rl, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-
 				AdSize adSize = AdSize.INVALID;
 
 				switch (size)
@@ -233,7 +230,7 @@ public class Admob extends Extension
 					@Override
 					public void onAdLoaded()
 					{
-						callback.call("onStatus", new Object[] {BANNER_LOADED, ""});
+						callback.call("onStatus", new Object[] { BANNER_LOADED, "" });
 
 						banner.setVisibility(View.VISIBLE);
 					}
@@ -241,29 +238,34 @@ public class Admob extends Extension
 					@Override
 					public void onAdFailedToLoad(LoadAdError adError)
 					{
-						callback.call("onStatus", new Object[] {BANNER_FAILED_TO_LOAD, adError.toString()});
+						callback.call("onStatus", new Object[] { BANNER_FAILED_TO_LOAD, adError.toString()});
 					}
 
 					@Override
 					public void onAdOpened()
 					{
-						callback.call("onStatus", new Object[] {BANNER_OPENED, ""});
+						callback.call("onStatus", new Object[] { BANNER_OPENED, "" });
 					}
 
 					@Override
 					public void onAdClicked()
 					{
-						callback.call("onStatus", new Object[] {BANNER_CLICKED, ""});
+						callback.call("onStatus", new Object[] { BANNER_CLICKED, "" });
 					}
 
 					@Override
 					public void onAdClosed()
 					{
-						callback.call("onStatus", new Object[] {BANNER_CLOSED, ""});
+						callback.call("onStatus", new Object[] { BANNER_CLOSED, "" });
 					}
 				});
-				rl.addView(banner);
-				rl.bringToFront();
+
+				adContainer.removeAllViews();
+				adContainer.addView(banner);
+
+				FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) adContainer.getLayoutParams();
+				params.gravity = align;
+				adContainer.setLayoutParams(params);
 
 				banner.loadAd(new AdRequest.Builder().build());
 			}
@@ -280,14 +282,11 @@ public class Admob extends Extension
 				{
 					banner.setVisibility(View.INVISIBLE);
 
-					ViewGroup parent = (ViewGroup) rl.getParent();
-					parent.removeView(rl);
+					if (adContainer != null)
+						adContainer.removeAllViews();
 
-					rl.removeView(banner);
 					banner.destroy();
 					banner = null;
-
-					rl = null;
 				}
 			});
 		}
@@ -311,13 +310,13 @@ public class Admob extends Extension
 							@Override
 							public void onAdDismissedFullScreenContent()
 							{
-								callback.call("onStatus", new Object[] {INTERSTITIAL_DISMISSED, ""});
+								callback.call("onStatus", new Object[] { INTERSTITIAL_DISMISSED, "" });
 							}
 
 							@Override
 							public void onAdFailedToShowFullScreenContent(AdError adError)
 							{
-								callback.call("onStatus", new Object[] {INTERSTITIAL_FAILED_TO_SHOW, adError.toString()});
+								callback.call("onStatus", new Object[] { INTERSTITIAL_FAILED_TO_SHOW, adError.toString()});
 							}
 
 							@Override
@@ -325,11 +324,11 @@ public class Admob extends Extension
 							{
 								interstitial = null;
 
-								callback.call("onStatus", new Object[] {INTERSTITIAL_SHOWED, ""});
+								callback.call("onStatus", new Object[] { INTERSTITIAL_SHOWED, "" });
 							}
 						});
 
-						callback.call("onStatus", new Object[] {INTERSTITIAL_LOADED, ""});
+						callback.call("onStatus", new Object[] { INTERSTITIAL_LOADED, "" });
 					}
 
 					@Override
@@ -337,7 +336,7 @@ public class Admob extends Extension
 					{
 						interstitial = null;
 
-						callback.call("onStatus", new Object[] {INTERSTITIAL_FAILED_TO_LOAD, loadAdError.getMessage()});
+						callback.call("onStatus", new Object[] { INTERSTITIAL_FAILED_TO_LOAD, loadAdError.getMessage()});
 					}
 				});
 			}
@@ -358,7 +357,7 @@ public class Admob extends Extension
 		}
 		else
 		{
-			callback.call("onStatus", new Object[] {INTERSTITIAL_FAILED_TO_SHOW, "You need to load interstitial ad first!"});
+			callback.call("onStatus", new Object[] { INTERSTITIAL_FAILED_TO_SHOW, "You need to load interstitial ad first!" });
 		}
 	}
 
@@ -380,13 +379,13 @@ public class Admob extends Extension
 							@Override
 							public void onAdDismissedFullScreenContent()
 							{
-								callback.call("onStatus", new Object[] {REWARDED_DISMISSED, ""});
+								callback.call("onStatus", new Object[] { REWARDED_DISMISSED, "" });
 							}
 
 							@Override
 							public void onAdFailedToShowFullScreenContent(AdError adError)
 							{
-								callback.call("onStatus", new Object[] {REWARDED_FAILED_TO_SHOW, adError.toString()});
+								callback.call("onStatus", new Object[] { REWARDED_FAILED_TO_SHOW, adError.toString()});
 							}
 
 							@Override
@@ -394,11 +393,11 @@ public class Admob extends Extension
 							{
 								rewarded = null;
 
-								callback.call("onStatus", new Object[] {REWARDED_SHOWED, ""});
+								callback.call("onStatus", new Object[] { REWARDED_SHOWED, "" });
 							}
 						});
 
-						callback.call("onStatus", new Object[] {REWARDED_LOADED, ""});
+						callback.call("onStatus", new Object[] { REWARDED_LOADED, "" });
 					}
 
 					@Override
@@ -406,7 +405,7 @@ public class Admob extends Extension
 					{
 						rewarded = null;
 
-						callback.call("onStatus", new Object[] {REWARDED_FAILED_TO_LOAD, loadAdError.getMessage()});
+						callback.call("onStatus", new Object[] { REWARDED_FAILED_TO_LOAD, loadAdError.getMessage()});
 					}
 				});
 			}
@@ -426,7 +425,7 @@ public class Admob extends Extension
 						@Override
 						public void onUserEarnedReward(@NonNull RewardItem rewardItem)
 						{
-							callback.call("onStatus", new Object[] {REWARDED_EARNED, rewardItem.getType() + ":" + String.valueOf(rewardItem.getAmount())});
+							callback.call("onStatus", new Object[] { REWARDED_EARNED, rewardItem.getType() + ":" + String.valueOf(rewardItem.getAmount())});
 						}
 					});
 				}
@@ -434,7 +433,7 @@ public class Admob extends Extension
 		}
 		else
 		{
-			callback.call("onStatus", new Object[] {REWARDED_FAILED_TO_SHOW, "You need to load rewarded ad first!"});
+			callback.call("onStatus", new Object[] { REWARDED_FAILED_TO_SHOW, "You need to load rewarded ad first!" });
 		}
 	}
 
@@ -483,7 +482,7 @@ public class Admob extends Extension
 			{
 				UserMessagingPlatform.showPrivacyOptionsForm(mainActivity, formError -> {
 					if (formError != null)
-						callback.call("onStatus", new Object[] {CONSENT_FAIL, String.format("%s: %s", formError.getErrorCode(), formError.getMessage())});
+						callback.call("onStatus", new Object[] { CONSENT_FAIL, String.format("%s: %s", formError.getErrorCode(), formError.getMessage())});
 				});
 			}
 		});
@@ -526,7 +525,19 @@ public class Admob extends Extension
 		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainContext, adWidth);
 	}
 
-	/*@Override
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+
+		if (adContainer == null)
+		{
+			adContainer = new FrameLayout(mainActivity);
+			mainActivity.addContentView(adContainer, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+		}
+	}
+
+	@Override
 	public void onPause()
 	{
 		if (banner != null)
@@ -554,5 +565,5 @@ public class Admob extends Extension
 		}
 
 		super.onDestroy();
-	}*/
+	}
 }
