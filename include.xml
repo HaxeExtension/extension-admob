@@ -8,5 +8,5 @@
 
 	<haxelib name="extension-androidtools" if="android" />
 
-	<config:android target-sdk-version="33" />
+	<config:android target-sdk-version="34" />
 </extension>
