@@ -97,7 +97,7 @@ public class Admob extends Extension
 	public static final int BANNER_SIZE_MEDIUM_RECTANGLE = 6; // 300x250
 	public static final int BANNER_SIZE_WIDE_SKYSCRAPER = 7; // 160x600
 
-	public static bool inited = false;
+	public static boolean inited = false;
 	public static AdView banner;
 	public static RelativeLayout rl;
 	public static AdSize bannerSize;
@@ -471,7 +471,7 @@ public class Admob extends Extension
 		return PreferenceManager.getDefaultSharedPreferences(mainContext).getString("IABTCF_PurposeConsents", "");
 	}
 
-	public static bool isPrivacyOptionsRequired()
+	public static boolean isPrivacyOptionsRequired()
 	{
 		return consentInformation != null && consentInformation.getPrivacyOptionsRequirementStatus() == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED;
 	}
