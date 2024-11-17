@@ -526,7 +526,7 @@ public class Admob extends Extension
 		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainContext, adWidth);
 	}
 
-	@Override
+	/*@Override
 	public void onPause()
 	{
 		if (banner != null)
@@ -554,5 +554,5 @@ public class Admob extends Extension
 		}
 
 		super.onDestroy();
-	}
+	}*/
 }
