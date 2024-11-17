@@ -1,0 +1,88 @@
+name: Testing
+on:
+  push:
+    branches: main
+    paths-ignore:
+      - 'LICENSE'
+      - 'README.md'
+      - 'haxelib.json'
+      - 'hxformat.json'
+  workflow_dispatch:
+jobs:
+  Android:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: 4.3.6
+
+      - name: Install Haxe Libraries
+        run: |
+          haxelib install lime --quiet --never --skip-dependencies
+          haxelib install extension-androidtools --quiet --never --skip-dependencies
+          haxelib dev extension-admob .
+
+      - name: Setup hxcpp Library
+        run: haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp.git --quiet --never --skip-dependencies && haxelib run lime rebuild hxcpp
+
+      - name: List Installed Haxe Libraries
+        run: haxelib list
+
+      - name: Configure Environment
+        run: |
+          haxelib run lime config ANDROID_SDK $ANDROID_HOME
+          haxelib run lime config ANDROID_NDK_ROOT $ANDROID_NDK_LATEST_HOME
+          haxelib run lime config JAVA_HOME $JAVA_HOME_11_arm64
+          haxelib run lime config ANDROID_SETUP true
+
+      - name: Build
+        run: cd example && haxelib run lime build android -debug
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@main
+        with:
+          name: androidBuild
+          path: example/export/android/bin/app/build/outputs/apk/debug
+          if-no-files-found: warn
+  iOS:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: 4.3.6
+
+      - name: Install Haxe Libraries
+        run: |
+          haxelib install lime --quiet
+          haxelib dev extension-admob .
+
+      - name: Setup hxcpp Library
+        run: haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp.git --quiet --never --skip-dependencies && haxelib run lime rebuild hxcpp
+
+      - name: List Installed Haxe Libraries
+        run: haxelib list
+
+      - name: Build
+        run: cd example && haxelib run lime build ios -nosign -debug
+
+      - name: Create IPA
+        run: |
+          cd example/export/ios/build/Debug-iphoneos
+          mkdir Payload
+          mv *.app Payload
+          zip -r Sample.ipa Payload
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@main
+        with:
+          name: iOSBuild
+          path: example/export/ios/build/Debug-iphoneos/Sample.ipa
+          if-no-files-found: warn
