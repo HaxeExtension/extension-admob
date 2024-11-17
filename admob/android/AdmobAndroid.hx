@@ -1,8 +1,7 @@
-package admob;
+package admob.android;
 
 import admob.AdmobBannerAlign;
 import admob.AdmobBannerSize;
-import admob.AdmobConsent;
 import android.jni.JNICache;
 import lime.app.Event;
 import lime.utils.Log;
