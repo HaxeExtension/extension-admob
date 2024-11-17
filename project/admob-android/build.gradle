@@ -16,6 +16,24 @@ android
 dependencies
 {
 	implementation project(':deps:extension-api')
+
 	implementation('com.google.android.gms:play-services-ads:23.3.0')
+	{
+		exclude group: 'org.jetbrains.kotlin'
+		exclude module: 'kotlin-stdlib'
+		exclude module: 'kotlin-stdlib-jdk7'
+		exclude module: 'kotlin-stdlib-jdk8'
+		exclude module: 'kotlinx-coroutines-core'
+		exclude module: 'kotlinx-coroutines-android'
+	}
+
 	implementation('com.google.android.ump:user-messaging-platform:3.1.0')
+	{
+		exclude group: 'org.jetbrains.kotlin'
+		exclude module: 'kotlin-stdlib'
+		exclude module: 'kotlin-stdlib-jdk7'
+		exclude module: 'kotlin-stdlib-jdk8'
+		exclude module: 'kotlinx-coroutines-core'
+		exclude module: 'kotlinx-coroutines-android'
+	}
 }
