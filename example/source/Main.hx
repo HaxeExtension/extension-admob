@@ -16,13 +16,15 @@ class Main extends lime.app.Application
 
 		Admob.onStatus.add(function(event:String, message:String):Void
 		{
-			if (event == 'INIT_OK')
-				Admob.showBanner(AD_UNIT_ID);
-
 			lime.utils.Log.info('$event:$message');
 		});
 
 		Admob.init(true);
+	}
+
+	public override function onWindowCreate():Void
+	{
+		Admob.showBanner(AD_UNIT_ID);
 	}
 
 	public override function render(context:lime.graphics.RenderContext):Void
