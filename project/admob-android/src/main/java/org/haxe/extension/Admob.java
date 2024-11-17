@@ -2,6 +2,7 @@ package org.haxe.extension;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.provider.Settings.Secure;
 import android.util.DisplayMetrics;
 import android.util.Log;
