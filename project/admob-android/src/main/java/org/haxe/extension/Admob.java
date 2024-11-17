@@ -513,4 +513,34 @@ public class Admob extends Extension
 
 		return "";
 	}
+
+	@Override
+	public void onPause()
+	{
+		if (banner != null)
+			banner.pause();
+
+		super.onPause();
+	}
+
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+
+		if (banner != null)
+			banner.resume();
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		if (banner != null)
+		{
+			banner.destroy();
+			banner = null;
+		}
+
+		super.onDestroy();
+	}
 }
