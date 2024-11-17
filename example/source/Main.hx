@@ -14,7 +14,7 @@ class Main extends lime.app.Application
 	{
 		super();
 
-		Admob.onStatus.add(function(event:Strint, message:String):Void
+		Admob.onStatus.add(function(event:String, message:String):Void
 		{
 			Log.info('$event:$messege');
 		});
@@ -44,7 +44,7 @@ class Main extends lime.app.Application
 				context.flash.graphics.drawRect(0, 0, window.width, window.height);
 			case OPENGL | OPENGLES | WEBGL:
 				context.webgl.clearColor(0.75, 1, 0, 1);
-				context.webgl.clear(gl.COLOR_BUFFER_BIT);
+				context.webgl.clear(context.webgl.COLOR_BUFFER_BIT);
 			default:
 		}
 	}
