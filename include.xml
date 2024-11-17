@@ -5,4 +5,6 @@
 	xsi:schemaLocation="http://lime.openfl.org/project/1.0.4 http://lime.openfl.org/xsd/project-1.0.4.xsd">
 
 	<dependency name="admob" path="project/admob-android" if="android" />
+
+	<haxelib name="extension-androidtools" if="android" />
 </extension>
