@@ -213,6 +213,7 @@ class AdmobAndroid
 /**
  * Internal callback handler for AdMob events.
  */
+@:keep
 @:noCompletion
 private class CallBackHandler #if (lime >= "8.0.0") implements JNISafety #end
 {
