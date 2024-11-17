@@ -1,13 +1,5 @@
 name: Testing
-on:
-  push:
-    branches: main
-    paths-ignore:
-      - 'LICENSE'
-      - 'README.md'
-      - 'haxelib.json'
-      - 'hxformat.json'
-  workflow_dispatch:
+on: workflow_dispatch
 jobs:
   Android:
     runs-on: macos-14
