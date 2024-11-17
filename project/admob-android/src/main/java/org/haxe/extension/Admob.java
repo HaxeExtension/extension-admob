@@ -454,7 +454,7 @@ public class Admob extends Extension
 						@Override
 						public void onUserEarnedReward(RewardItem rewardItem)
 						{
-							super.onUserEarnedReward(rewardItem);
+							// super.onUserEarnedReward(rewardItem);
 
 							callback.call("onStatus", new Object[] { REWARDED_EARNED, rewardItem.getType() + ":" + String.valueOf(rewardItem.getAmount())});
 						}
