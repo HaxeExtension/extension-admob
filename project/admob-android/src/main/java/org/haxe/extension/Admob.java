@@ -193,7 +193,7 @@ public class Admob extends Extension
 			{
 				rl = new RelativeLayout(mainActivity);
 				rl.setGravity(align);
-				mainActivity.addContentView(rl, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+				mainActivity.addContentView(rl, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 
 				AdSize adSize = AdSize.INVALID;
 
