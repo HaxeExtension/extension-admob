@@ -16,7 +16,7 @@ class Main extends lime.app.Application
 
 		Admob.onStatus.add(function(event:String, message:String):Void
 		{
-			Log.info('$event:$messege');
+			lime.utils.Log.info('$event:$messege');
 		});
 
 		Admob.init(true);
