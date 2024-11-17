@@ -4,6 +4,7 @@ import admob.AdmobBannerAlign;
 import admob.AdmobBannerSize;
 import android.jni.JNICache;
 import lime.app.Event;
+import lime.system.JNI; // For JNISafety
 import lime.utils.Log;
 
 /**
