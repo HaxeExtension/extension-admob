@@ -310,7 +310,7 @@ public class Admob extends Extension
 				InterstitialAd.load(mainActivity, id, new AdRequest.Builder().build(), new InterstitialAdLoadCallback()
 				{
 					@Override
-					public void onAdLoaded(@NonNull InterstitialAd interstitialAd)
+					public void onAdLoaded(InterstitialAd interstitialAd)
 					{
 						interstitial = interstitialAd;
 
@@ -349,7 +349,7 @@ public class Admob extends Extension
 					}
 
 					@Override
-					public void onAdFailedToLoad(@NonNull LoadAdError loadAdError)
+					public void onAdFailedToLoad(LoadAdError loadAdError)
 					{
 						super.onAdFailedToLoad(loadAdError);
 
@@ -389,7 +389,7 @@ public class Admob extends Extension
 				RewardedAd.load(mainActivity, id, new AdRequest.Builder().build(), new RewardedAdLoadCallback()
 				{
 					@Override
-					public void onAdLoaded(@NonNull RewardedAd rewardedAd)
+					public void onAdLoaded(RewardedAd rewardedAd)
 					{
 						rewarded = rewardedAd;
 
@@ -406,7 +406,7 @@ public class Admob extends Extension
 							@Override
 							public void onAdFailedToShowFullScreenContent(AdError adError)
 							{
-								super.onAdShowedFullScreenContent(adError);
+								super.onAdFailedToShowFullScreenContent(adError);
 
 								callback.call("onStatus", new Object[] { REWARDED_FAILED_TO_SHOW, adError.toString() });
 							}
@@ -428,7 +428,7 @@ public class Admob extends Extension
 					}
 
 					@Override
-					public void onAdFailedToLoad(@NonNull LoadAdError loadAdError)
+					public void onAdFailedToLoad(LoadAdError loadAdError)
 					{
 						super.onAdFailedToLoad(loadAdError);
 
@@ -452,7 +452,7 @@ public class Admob extends Extension
 					rewarded.show(mainActivity, new OnUserEarnedRewardListener()
 					{
 						@Override
-						public void onUserEarnedReward(@NonNull RewardItem rewardItem)
+						public void onUserEarnedReward(RewardItem rewardItem)
 						{
 							super.onUserEarnedReward(rewardItem);
 
