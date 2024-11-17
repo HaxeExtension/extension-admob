@@ -7,4 +7,6 @@
 	<dependency name="admob" path="project/admob-android" if="android" />
 
 	<haxelib name="extension-androidtools" if="android" />
+
+	<config:android target-sdk-version="33" />
 </extension>
