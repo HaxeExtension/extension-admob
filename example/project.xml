@@ -16,4 +16,6 @@
 	<haxelib name="extension-admob" />
 
 	<haxeflag name="-dce" value="full" />
+
+	<config:android target-sdk-version="34" />
 </project>
