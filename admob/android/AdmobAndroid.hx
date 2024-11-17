@@ -1,5 +1,8 @@
 package admob;
 
+import admob.AdmobBannerAlign;
+import admob.AdmobBannerSize;
+import admob.AdmobConsent;
 import android.jni.JNICache;
 import lime.app.Event;
 import lime.utils.Log;
@@ -22,7 +25,7 @@ class AdmobAndroid
 		initialized = true;
 	}
 
-	public static function showBanner(id:String, size:Int = Admob.BANNER_SIZE_ADAPTIVE, align:Int = Admob.BANNER_ALIGN_BOTTOM):Void
+	public static function showBanner(id:String, size:Int = AdmobBannerSize.ADAPTIVE, align:Int = AdmobBannerAlign.BOTTOM):Void
 	{
 		if (initialized)
 		{
