@@ -15,7 +15,7 @@ class AdmobAndroid
 	/**
 	 * Event triggered for status updates from AdMob.
 	 */
-	public static var onStatus:Event<(String->String)->Void> = new Event<(String->String)->Void>();
+	public static var onStatus:Event<String->String->Void> = new Event<String->String->Void>();
 
 	@:noCompletion
 	private static var initialized:Bool = false;
