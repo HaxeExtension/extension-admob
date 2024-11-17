@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.provider.Settings.Secure;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -11,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
-
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -518,8 +518,8 @@ public class Admob extends Extension
 
 		int adWidthPixels = displayMetrics.widthPixels;
 
-		if (VERSION.SDK_INT >= VERSION_CODES.R)
-			adWidthPixels = mainContext.getWindowManager().getCurrentWindowMetrics().getBounds().width();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+			adWidthPixels = mainActivity.getWindowManager().getCurrentWindowMetrics().getBounds().width();
 
 		float density = displayMetrics.density;
 		int adWidth = (int) (adWidthPixels / density);
