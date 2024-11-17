@@ -8,5 +8,7 @@
 
 	<haxelib name="extension-androidtools" if="android" />
 
-	<config:android target-sdk-version="34" />
+	<config:android extension="org.haxe.extension.Admob" if="android" />
+
+	<config:android target-sdk-version="34" if="android" />
 </extension>
