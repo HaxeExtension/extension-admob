@@ -268,9 +268,10 @@ public class Admob extends Extension
 					}
 				});
 
-				FrameLayout.LayoutParams adParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-				adParams.gravity = align;
-				((ViewGroup) mainView).addView(adView, adParams);
+				RelativeLayout.LayoutParams adParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+				adParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+				adParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+				((RelativeLayout) mainView).addView(adView, adParams);
 
 				adView.loadAd(new AdRequest.Builder().build());
 			}
