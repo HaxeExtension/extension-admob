@@ -11,7 +11,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -100,7 +100,7 @@ public class Admob extends Extension
 
 	public static boolean inited = false;
 	public static AdView adView;
-	public static FrameLayout adContainer;
+	public static RelativeLayout adContainer;
 	public static InterstitialAd interstitial;
 	public static RewardedAd rewarded;
 	public static ConsentInformation consentInformation;
@@ -553,9 +553,9 @@ public class Admob extends Extension
 
 		if (adContainer == null)
 		{
-			adContainer = new FrameLayout(mainActivity);
+			adContainer = new RelativeLayout(mainActivity);
 
-			((ViewGroup) mainView).addView(adContainer, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+			((ViewGroup) mainView).addView(adContainer);
 		}
 	}
 
