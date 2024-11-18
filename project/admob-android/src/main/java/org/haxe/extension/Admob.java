@@ -269,7 +269,7 @@ public class Admob extends Extension
 
 				RelativeLayout.LayoutParams adParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 				adParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-				adParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+				// adParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 				((RelativeLayout) mainView).addView(adView, adParams);
 
 				adView.loadAd(new AdRequest.Builder().build());
