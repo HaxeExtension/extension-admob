@@ -1,6 +1,7 @@
 package;
 
 import admob.Admob;
+import admob.AdmobEvent;
 
 /**
  * The entry point of the application.
@@ -16,7 +17,7 @@ class Main extends lime.app.Application
 
 		Admob.onStatus.add(function(event:String, message:String):Void
 		{
-			if (event == 'INIT_OK')
+			if (event == AdmobEvent.INIT_OK)
 				Admob.showBanner(AD_UNIT_ID);
 
 			lime.utils.Log.info('$event:$message');
