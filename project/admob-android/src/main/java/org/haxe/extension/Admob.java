@@ -101,7 +101,6 @@ public class Admob extends Extension
 
 	public static boolean inited = false;
 	public static AdView adView;
-	public static FrameLayout adContainer;
 	public static InterstitialAd interstitial;
 	public static RewardedAd rewarded;
 	public static ConsentInformation consentInformation;
@@ -273,8 +272,7 @@ public class Admob extends Extension
 
 				FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 				params.gravity = align;
-				adView.setLayoutParams(params);
-				adContainer.addView(adView);
+				((ViewGroup) mainView).addView(adView, params);
 
 				adView.loadAd(new AdRequest.Builder().build());
 			}
@@ -291,8 +289,8 @@ public class Admob extends Extension
 				{
 					adView.setVisibility(View.INVISIBLE);
 
-					if (adContainer != null)
-						adContainer.removeAllViews();
+					if (adView.getParent() != null)
+						((ViewGroup) mainView).removeView(adView);
 
 					adView.destroy();
 					adView = null;
@@ -554,19 +552,6 @@ public class Admob extends Extension
 		float density = displayMetrics.density;
 		int adWidth = (int) (adWidthPixels / density);
 		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainContext, adWidth);
-	}
-
-	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-
-		if (adContainer == null)
-		{
-			FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-			adContainer = new FrameLayout(mainActivity);
-			mainActivity.addContentView(adContainer, params);
-		}
 	}
 
 	@Override
