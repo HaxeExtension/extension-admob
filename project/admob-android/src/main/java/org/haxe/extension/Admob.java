@@ -11,7 +11,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
@@ -268,9 +268,8 @@ public class Admob extends Extension
 					}
 				});
 
-				RelativeLayout.LayoutParams adParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-				adParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-				adParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+				FrameLayout.LayoutParams adParams = new FrameLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				adParams.gravity = align;
 				((ViewGroup) mainView).addView(adView, adParams);
 
 				adView.loadAd(new AdRequest.Builder().build());
