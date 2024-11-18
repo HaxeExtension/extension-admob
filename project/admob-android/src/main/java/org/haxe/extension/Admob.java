@@ -554,7 +554,8 @@ public class Admob extends Extension
 		if (adContainer == null)
 		{
 			adContainer = new RelativeLayout(mainActivity);
-			mainActivity.addContentView(adContainer);
+
+			mainActivity.addContentView(adContainer, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 		}
 	}
 
