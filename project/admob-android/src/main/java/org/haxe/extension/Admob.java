@@ -268,7 +268,7 @@ public class Admob extends Extension
 					}
 				});
 
-				FrameLayout.LayoutParams adParams = new FrameLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				FrameLayout.LayoutParams adParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 				adParams.gravity = align;
 				((ViewGroup) mainView).addView(adView, adParams);
 
