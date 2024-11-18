@@ -220,11 +220,7 @@ public class Admob extends Extension
 						break;
 				}
 
-				FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-				params.gravity = align;
-
 				adView = new AdView(mainActivity);
-				adView.setLayoutParams(params);
 				adView.setAdUnitId(id);
 				adView.setAdSize(adSize);
 				adView.setAdListener(new AdListener()
@@ -272,7 +268,9 @@ public class Admob extends Extension
 					}
 				});
 
-				((ViewGroup) mainView).addView(adView);
+				FrameLayout.LayoutParams adParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+				adParams.gravity = align;
+				((ViewGroup) mainView).addView(adView, adParams);
 
 				adView.loadAd(new AdRequest.Builder().build());
 			}
