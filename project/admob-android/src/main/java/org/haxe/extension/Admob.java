@@ -267,10 +267,10 @@ public class Admob extends Extension
 					}
 				});
 
-				RelativeLayout.LayoutParams adParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+				RelativeLayout.LayoutParams adParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 				adParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-				// adParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-				((RelativeLayout) mainView).addView(adView, adParams);
+				adParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+				((RelativeLayout) mainView).addView(adView);
 
 				adView.loadAd(new AdRequest.Builder().build());
 			}
@@ -285,11 +285,7 @@ public class Admob extends Extension
 			{
 				public void run()
 				{
-					adView.setVisibility(View.INVISIBLE);
-
-					if (adView.getParent() != null)
-						((ViewGroup) mainView).removeView(adView);
-
+					((ViewGroup) mainView).removeView(adView);
 					adView.destroy();
 					adView = null;
 				}
