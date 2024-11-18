@@ -11,7 +11,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -100,6 +100,7 @@ public class Admob extends Extension
 
 	public static boolean inited = false;
 	public static AdView adView;
+	public static FrameLayout adContainer;
 	public static InterstitialAd interstitial;
 	public static RewardedAd rewarded;
 	public static ConsentInformation consentInformation;
@@ -189,6 +190,8 @@ public class Admob extends Extension
 		{
 			public void run()
 			{
+				adContainer.setGravity(align);
+
 				AdSize adSize = AdSize.INVALID;
 
 				switch (size)
@@ -266,13 +269,8 @@ public class Admob extends Extension
 						callback.call("onStatus", new Object[] { BANNER_CLOSED, "" });
 					}
 				});
-
-				RelativeLayout.LayoutParams adParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-				adParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-				adParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-				((RelativeLayout) mainView).addView(adView);
-
 				adView.loadAd(new AdRequest.Builder().build());
+				adContainer.addView(adView);
 			}
 		});
 	}
@@ -285,7 +283,7 @@ public class Admob extends Extension
 			{
 				public void run()
 				{
-					((ViewGroup) mainView).removeView(adView);
+					adContainer.removeView(adView);
 					adView.destroy();
 					adView = null;
 				}
@@ -546,6 +544,19 @@ public class Admob extends Extension
 		float density = displayMetrics.density;
 		int adWidth = (int) (adWidthPixels / density);
 		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainContext, adWidth);
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+
+		if (adContainer == null)
+		{
+			adContainer = new FrameLayout(mainActivity);
+
+			((ViewGroup) mainView).addView(adContainer, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+		}
 	}
 
 	@Override
