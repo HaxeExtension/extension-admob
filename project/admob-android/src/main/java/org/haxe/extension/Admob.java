@@ -563,7 +563,7 @@ public class Admob extends Extension
 
 		if (adContainer == null)
 		{
-			FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+			FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 			adContainer = new FrameLayout(mainActivity);
 			mainActivity.addContentView(adContainer, params);
 		}
