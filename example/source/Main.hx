@@ -21,7 +21,10 @@ class Main extends lime.app.Application
 
 			lime.utils.Log.info('$event:$message');
 		});
+	}
 
+	public override function onWindowCreate():Void
+	{
 		Admob.init(true);
 	}
 
