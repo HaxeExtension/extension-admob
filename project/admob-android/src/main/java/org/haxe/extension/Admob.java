@@ -272,8 +272,6 @@ public class Admob extends Extension
 					}
 				});
 
-				adContainer.removeAllViews();
-
 				((ViewGroup) mainView).addView(adView);
 
 				adView.loadAd(new AdRequest.Builder().build());
