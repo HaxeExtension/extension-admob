@@ -1,36 +1,29 @@
 package;
 
-import admob.Admob;
-import admob.AdmobEvent;
-
-/**
- * The entry point of the application.
- */
 class Main extends lime.app.Application
 {
-	// This is an ad unit ID for a test ad. Replace with your own banner ad unit ID.
 	private static final AD_UNIT_ID:String = "ca-app-pub-3940256099942544/9214589741";
 
 	public function new():Void
 	{
 		super();
 
-		Admob.onStatus.add(function(event:String, message:String):Void
+		admob.Admob.onStatus.add(function(event:String, message:String):Void
 		{
-			if (event == AdmobEvent.INIT_OK)
-				Admob.showBanner(AD_UNIT_ID, AdmobBannerSize.BANNER, AdmobBannerAlign.TOP);
+			if (event == admob.AdmobEvent.INIT_OK)
+				admob.Admob.showBanner(AD_UNIT_ID, admob.AdmobBannerSize.BANNER, admob.AdmobBannerAlign.TOP);
 
 			#if android
-			android.widget.Toast.makeText('$event:$message', android.widget.Toast.LENGTH_SHORT);
+			android.widget.Toast.makeText(message.length > 0 ? '$event:$message' : event, android.widget.Toast.LENGTH_SHORT);
 			#else
-			lime.utils.Log.info('$event:$message');
+			lime.utils.Log.info(message.length > 0 ? '$event:$message' : event);
 			#end
 		});
 	}
 
 	public override function onWindowCreate():Void
 	{
-		Admob.init(true);
+		admob.Admob.init(true);
 	}
 
 	public override function render(context:lime.graphics.RenderContext):Void
