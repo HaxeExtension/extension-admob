@@ -500,12 +500,17 @@ public class Admob extends Extension
 
 	private static AdSize getAdSize()
 	{
-		int adWidthPixels = mainContext.getResources().getDisplayMetrics().widthPixels;
+		DisplayMetrics displayMetrics = mainContext.getResources().getDisplayMetrics();
+
+		int adWidthPixels = displayMetrics.widthPixels;
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
 			adWidthPixels = mainActivity.getWindowManager().getCurrentWindowMetrics().getBounds().width();
 
-		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainContext, (int) (adWidthPixels / displayMetrics.density));
+		float density = displayMetrics.density;
+		int adWidth = (int) (adWidthPixels / density);
+
+		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainContext, adWidth);
 	}
 
 	@Override
