@@ -228,8 +228,6 @@ public class Admob extends Extension
 					@Override
 					public void onAdLoaded()
 					{
-						super.onAdLoaded();
-
 						callback.call("onStatus", new Object[] { BANNER_LOADED, "" });
 
 						adView.setVisibility(View.VISIBLE);
@@ -238,32 +236,24 @@ public class Admob extends Extension
 					@Override
 					public void onAdFailedToLoad(LoadAdError adError)
 					{
-						super.onAdFailedToLoad(adError);
-
 						callback.call("onStatus", new Object[] { BANNER_FAILED_TO_LOAD, adError.toString() });
 					}
 
 					@Override
 					public void onAdOpened()
 					{
-						super.onAdOpened();
-
 						callback.call("onStatus", new Object[] { BANNER_OPENED, "" });
 					}
 
 					@Override
 					public void onAdClicked()
 					{
-						super.onAdClicked();
-
 						callback.call("onStatus", new Object[] { BANNER_CLICKED, "" });
 					}
 
 					@Override
 					public void onAdClosed()
 					{
-						super.onAdClosed();
-
 						callback.call("onStatus", new Object[] { BANNER_CLOSED, "" });
 					}
 				});
@@ -307,31 +297,23 @@ public class Admob extends Extension
 							@Override
 							public void onAdDismissedFullScreenContent()
 							{
-								super.onAdDismissedFullScreenContent();
-
 								callback.call("onStatus", new Object[] { INTERSTITIAL_DISMISSED, "" });
 							}
 
 							@Override
 							public void onAdFailedToShowFullScreenContent(AdError adError)
 							{
-								super.onAdFailedToShowFullScreenContent(adError);
-
 								callback.call("onStatus", new Object[] { INTERSTITIAL_FAILED_TO_SHOW, adError.toString() });
 							}
 
 							@Override
 							public void onAdShowedFullScreenContent()
 							{
-								super.onAdShowedFullScreenContent();
-
 								callback.call("onStatus", new Object[] { INTERSTITIAL_SHOWED, "" });
 
 								interstitial = null;
 							}
 						});
-
-						super.onAdLoaded(interstitialAd);
 
 						callback.call("onStatus", new Object[] { INTERSTITIAL_LOADED, "" });
 					}
@@ -339,8 +321,6 @@ public class Admob extends Extension
 					@Override
 					public void onAdFailedToLoad(LoadAdError loadAdError)
 					{
-						super.onAdFailedToLoad(loadAdError);
-
 						callback.call("onStatus", new Object[] { INTERSTITIAL_FAILED_TO_LOAD, loadAdError.getMessage() });
 
 						interstitial = null;
@@ -386,31 +366,23 @@ public class Admob extends Extension
 							@Override
 							public void onAdDismissedFullScreenContent()
 							{
-								super.onAdShowedFullScreenContent();
-
 								callback.call("onStatus", new Object[] { REWARDED_DISMISSED, "" });
 							}
 
 							@Override
 							public void onAdFailedToShowFullScreenContent(AdError adError)
 							{
-								super.onAdFailedToShowFullScreenContent(adError);
-
 								callback.call("onStatus", new Object[] { REWARDED_FAILED_TO_SHOW, adError.toString() });
 							}
 
 							@Override
 							public void onAdShowedFullScreenContent()
 							{
-								super.onAdShowedFullScreenContent();
-
 								callback.call("onStatus", new Object[] { REWARDED_SHOWED, "" });
 
 								rewarded = null;
 							}
 						});
-
-						super.onAdLoaded(rewardedAd);
 
 						callback.call("onStatus", new Object[] { REWARDED_LOADED, "" });
 					}
@@ -418,8 +390,6 @@ public class Admob extends Extension
 					@Override
 					public void onAdFailedToLoad(LoadAdError loadAdError)
 					{
-						super.onAdFailedToLoad(loadAdError);
-
 						callback.call("onStatus", new Object[] { REWARDED_FAILED_TO_LOAD, loadAdError.getMessage() });
 
 						rewarded = null;
@@ -442,8 +412,6 @@ public class Admob extends Extension
 						@Override
 						public void onUserEarnedReward(RewardItem rewardItem)
 						{
-							// super.onUserEarnedReward(rewardItem);
-
 							callback.call("onStatus", new Object[] { REWARDED_EARNED, rewardItem.getType() + ":" + String.valueOf(rewardItem.getAmount())});
 						}
 					});
@@ -532,16 +500,12 @@ public class Admob extends Extension
 
 	private static AdSize getAdSize()
 	{
-		DisplayMetrics displayMetrics = mainContext.getResources().getDisplayMetrics();
-
-		int adWidthPixels = displayMetrics.widthPixels;
+		int adWidthPixels = mainContext.getResources().getDisplayMetrics().widthPixels;
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
 			adWidthPixels = mainActivity.getWindowManager().getCurrentWindowMetrics().getBounds().width();
 
-		float density = displayMetrics.density;
-		int adWidth = (int) (adWidthPixels / density);
-		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainContext, adWidth);
+		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainContext, (int) (adWidthPixels / displayMetrics.density));
 	}
 
 	@Override
