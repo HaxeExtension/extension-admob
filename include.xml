@@ -11,4 +11,14 @@
 
 		<config:android extension="org.haxe.extension.Admob" />
 	</section>
+
+	<section if="ios">
+		<dependency path="project/admob-ios/frameworks/GoogleMobileAds.framework" />
+		<dependency path="project/admob-ios/frameworks/UserMessagingPlatform.framework" />
+		
+		<dependency name="JavaScriptCore.framework" />
+		<dependency name="AppTrackingTransparency.framework" />
+
+		<config:ios linker-flags="-ObjC" />
+	</section>
 </extension>
