@@ -21,7 +21,7 @@ class Main extends lime.app.Application
 				Admob.showBanner(AD_UNIT_ID);
 
 			#if android
-			android.widget.Toast.makeText('$event:$message', android.widget.Toast.LENGTH_LONG);
+			android.widget.Toast.makeText('$event:$message', android.widget.Toast.LENGTH_SHORT);
 			#else
 			lime.utils.Log.info('$event:$message');
 			#end
