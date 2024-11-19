@@ -171,9 +171,7 @@ public class Admob extends Extension
 			@Override
 			public void onInitializationComplete(InitializationStatus initializationStatus)
 			{
-				Log.d("AdmobEx", MobileAds.getVersion().toString());
-
-				callback.call("onStatus", new Object[] { INIT_OK, "" });
+				callback.call("onStatus", new Object[] { INIT_OK, "Version " + MobileAds.getVersion().toString() });
 			}
 		});
 	}
