@@ -18,7 +18,7 @@ class Main extends lime.app.Application
 		Admob.onStatus.add(function(event:String, message:String):Void
 		{
 			if (event == AdmobEvent.INIT_OK)
-				Admob.showBanner(AD_UNIT_ID);
+				Admob.showBanner(AD_UNIT_ID, AdmobBannerSize.BANNER, AdmobBannerAlign.TOP);
 
 			#if android
 			android.widget.Toast.makeText('$event:$message', android.widget.Toast.LENGTH_SHORT);
