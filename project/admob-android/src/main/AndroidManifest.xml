@@ -4,8 +4,11 @@
 
 	<application>
 		<meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="::ENV_ADMOB_APPID::" />
-		<meta-data android:name="com.google.android.gms.ads.flag.OPTIMIZE_INITIALIZATION" android:value="true" />
+
+		<!-- Enable ad loading optimizations to improve speed and performance. -->
 		<meta-data android:name="com.google.android.gms.ads.flag.OPTIMIZE_AD_LOADING" android:value="true" />
+
+		<!-- Delay app measurement until MobileAds.initialize() is called. -->
 		<meta-data android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT" android:value="true" />
 	</application>
 </manifest>
