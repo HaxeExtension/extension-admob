@@ -1,6 +1,8 @@
 #pragma once
 
-void initAdmob(bool testingAds, bool childDirected, bool enableRDP);
+typedef void (*AdmobCallback)(const char *event, const char *value);
+
+void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallback callback);
 void showAdmobBanner(const char *id, int size, int align);
 void hideAdmobBanner();
 void loadAdmobInterstitial(const char *id);
@@ -8,7 +10,7 @@ void showAdmobInterstitial();
 void loadAdmobRewarded(const char *id);
 void showAdmobRewarded();
 void setAdmobVolume(float vol);
-int hasAdmobConsentForPuprpose(int purpose);
+int hasAdmobConsentForPurpose(int purpose);
 const char *getAdmobConsent();
 bool isAdmobPrivacyOptionsRequired();
 void showAdmobPrivacyOptionsForm();
