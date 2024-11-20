@@ -11,6 +11,8 @@
 	</files>
 
 	<files id="admob">
+		<compilerflag value="-I${haxelib:extension-admob}/project/admob-ios/include" />
+
 		<compilerflag value="-F${haxelib:extension-admob}/project/admob-ios/frameworks" />
 
 		<file name="${haxelib:extension-admob}/project/admob-ios/src/admob.mm" />
