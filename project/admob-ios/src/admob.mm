@@ -10,46 +10,6 @@ static GADInterstitialAd *interstitialAd = nil;
 static GADRewardedAd *rewardedAd = nil;
 static AdmobCallback admobCallback = nullptr;
 
-void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallback callback)
-{
-    admobCallback = callback;
-
-    UMPRequestParameters *params = [[UMPRequestParameters alloc] init];
-    params.tagForUnderAgeOfConsent = childDirected;
-    
-    [UMPConsentInformation.sharedInstance requestConsentInfoUpdateWithParameters:params
-        completionHandler:^(NSError * _Nullable error) {
-            if (error) {
-                if (admobCallback) admobCallback("CONSENT_FAIL", "Failed to load consent info.");
-            } else {
-                if (UMPConsentInformation.sharedInstance.formStatus == UMPFormStatusAvailable) {
-                    [UMPConsentForm loadWithCompletionHandler:^(UMPConsentForm *_Nullable form, NSError *_Nullable loadError) {
-                        if (loadError) {
-                            if (admobCallback) admobCallback("CONSENT_FAIL", "Failed to load consent form.");
-                        } else {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [form presentFromViewController:UIApplication.sharedApplication.keyWindow.rootViewController
-                                                    completionHandler:^(NSError * _Nullable error) {
-                                    if (error) {
-                                        if (admobCallback) admobCallback("CONSENT_FAIL", "Consent form error.");
-                                    } else {
-                                        if (admobCallback) admobCallback("CONSENT_FORM_PRESENTED", "Consent form presented successfully.");
-                                    }
-                                }];
-                            });
-                        }
-                    }];
-                } else {
-                    if (admobCallback) admobCallback("INIT_OK", "Consent form not required.");
-                }
-            }
-        }];
-    
-    initMobileAds(testingAds, childDirected, enableRDP, false);
-
-    if (admobCallback) admobCallback("INIT_OK", "AdMob initialized.");
-}
-
 static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP, bool requestIDFA)
 {
     if (testingAds)
@@ -95,6 +55,46 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP, b
     {
         if (admobCallback) admobCallback("INIT_OK", "AdMob initialized.");
     }];
+}
+
+void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallback callback)
+{
+    admobCallback = callback;
+
+    UMPRequestParameters *params = [[UMPRequestParameters alloc] init];
+    params.tagForUnderAgeOfConsent = childDirected;
+    
+    [UMPConsentInformation.sharedInstance requestConsentInfoUpdateWithParameters:params
+        completionHandler:^(NSError * _Nullable error) {
+            if (error) {
+                if (admobCallback) admobCallback("CONSENT_FAIL", "Failed to load consent info.");
+            } else {
+                if (UMPConsentInformation.sharedInstance.formStatus == UMPFormStatusAvailable) {
+                    [UMPConsentForm loadWithCompletionHandler:^(UMPConsentForm *_Nullable form, NSError *_Nullable loadError) {
+                        if (loadError) {
+                            if (admobCallback) admobCallback("CONSENT_FAIL", "Failed to load consent form.");
+                        } else {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [form presentFromViewController:UIApplication.sharedApplication.keyWindow.rootViewController
+                                                    completionHandler:^(NSError * _Nullable error) {
+                                    if (error) {
+                                        if (admobCallback) admobCallback("CONSENT_FAIL", "Consent form error.");
+                                    } else {
+                                        if (admobCallback) admobCallback("CONSENT_FORM_PRESENTED", "Consent form presented successfully.");
+                                    }
+                                }];
+                            });
+                        }
+                    }];
+                } else {
+                    if (admobCallback) admobCallback("INIT_OK", "Consent form not required.");
+                }
+            }
+        }];
+    
+    initMobileAds(testingAds, childDirected, enableRDP, false);
+
+    if (admobCallback) admobCallback("INIT_OK", "AdMob initialized.");
 }
 
 void showAdmobBanner(const char *id, int size, int align)
@@ -256,7 +256,7 @@ const char *getAdmobConsent()
 
 bool isAdmobPrivacyOptionsRequired()
 {
-    return UMPPConsentInformation.sharedInstance.privacyOptionsRequirementStatus == UMPPrivacyOptionsRequirementStatusRequired;
+    return UMPConsentInformation.sharedInstance.privacyOptionsRequirementStatus == UMPPrivacyOptionsRequirementStatusRequired;
 }
 
 void showAdmobPrivacyOptionsForm()
