@@ -2,6 +2,8 @@
 
 #import <GoogleMobileAds/GoogleMobileAds.h>
 #import <UserMessagingPlatform/UserMessagingPlatform.h>
+#import <AppTrackingTransparency/AppTrackingTransparency.h>
+#import <CommonCrypto/CommonDigest.h>
 
 static GADBannerView *bannerView = nil;
 static GADInterstitialAd *interstitialAd = nil;
