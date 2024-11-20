@@ -3,6 +3,7 @@ package admob.ios;
 #if ios
 import admob.AdmobBannerAlign;
 import admob.AdmobBannerSize;
+import haxe.MainLoop;
 import lime.app.Event;
 import lime.utils.Log;
 
@@ -34,7 +35,17 @@ class AdmobIOS
 		if (initialized)
 			return;
 
+		initAdmob(testingAds, childDirected, enableRDP, onAdmobStatus);
+
 		initialized = true;
+	}
+
+	private static function onAdmobStatus(event:cpp.ConstCharStar, value:cpp.ConstCharStar):Void
+	{
+		MainLoop.runInMainThread(function():Void
+		{
+			onStatus.dispatch((event : String), (value : String));
+		});
 	}
 
 	/**
@@ -51,6 +62,8 @@ class AdmobIOS
 			Log.warn('Admob extension isn\'t initialized');
 			return;
 		}
+
+		showAdmobBanner(id, size, align);
 	}
 
 	/**
@@ -63,6 +76,8 @@ class AdmobIOS
 			Log.warn('Admob extension isn\'t initialized');
 			return;
 		}
+
+		hideAdmobBanner();
 	}
 
 	/**
@@ -77,6 +92,8 @@ class AdmobIOS
 			Log.warn('Admob extension isn\'t initialized');
 			return;
 		}
+
+		loadAdmobInterstitial(id);
 	}
 
 	/**
@@ -89,6 +106,8 @@ class AdmobIOS
 			Log.warn('Admob extension isn\'t initialized');
 			return;
 		}
+
+		showAdmobInterstitial();
 	}
 
 	/**
@@ -103,6 +122,8 @@ class AdmobIOS
 			Log.warn('Admob extension isn\'t initialized');
 			return;
 		}
+
+		loadAdmobRewarded(id);
 	}
 
 	/**
@@ -115,6 +136,8 @@ class AdmobIOS
 			Log.warn('Admob extension isn\'t initialized');
 			return;
 		}
+
+		showAdmobRewarded();
 	}
 
 	/**
@@ -129,6 +152,8 @@ class AdmobIOS
 			Log.warn('Admob extension isn\'t initialized');
 			return;
 		}
+
+		setAdmobVolume(vol);
 	}
 
 	/**
@@ -145,7 +170,7 @@ class AdmobIOS
 			return -1;
 		}
 
-		return -1;
+		return hasAdmobConsentForPurpose(purpose);
 	}
 
 	/**
@@ -161,7 +186,7 @@ class AdmobIOS
 			return '';
 		}
 
-		return '';
+		return getAdmobConsent();
 	}
 
 	/**
@@ -177,7 +202,7 @@ class AdmobIOS
 			return false;
 		}
 
-		return false;
+		return isAdmobPrivacyOptionsRequired();
 	}
 
 	/**
@@ -190,6 +215,45 @@ class AdmobIOS
 			Log.warn('Admob extension isn\'t initialized');
 			return;
 		}
+
+		showAdmobPrivacyOptionsForm();
 	}
+
+	@:native('initAdmob')
+	extern public static function initAdmob(testingAds:Bool, childDirected:Bool, enableRDP:Bool,
+		callback:cpp.Callable<(event:cpp.ConstCharStar, value:cpp.ConstCharStar) -> Void>):Void;
+
+	@:native('showAdmobBanner')
+	extern public static function showAdmobBanner(id:cpp.ConstCharStar, size:Int, align:Int):Void;
+
+	@:native('hideAdmobBanner')
+	extern public static function hideAdmobBanner():Void;
+
+	@:native('loadAdmobInterstitial')
+	extern public static function loadAdmobInterstitial(id:cpp.ConstCharStar):Void;
+
+	@:native('showAdmobInterstitial')
+	extern public static function showAdmobInterstitial():Void;
+
+	@:native('loadAdmobRewarded')
+	extern public static function loadAdmobRewarded(id:cpp.ConstCharStar):Void;
+
+	@:native('showAdmobRewarded')
+	extern public static function showAdmobRewarded():Void;
+
+	@:native('setAdmobVolume')
+	extern public static function setAdmobVolume(vol:Single):Void;
+
+	@:native('hasAdmobConsentForPurpose')
+	extern public static function hasAdmobConsentForPurpose(purpose:Int):Int;
+
+	@:native('getAdmobConsent')
+	extern public static function getAdmobConsent():cpp.ConstCharStar;
+
+	@:native('isAdmobPrivacyOptionsRequired')
+	extern public static function isAdmobPrivacyOptionsRequired():Bool;
+
+	@:native('showAdmobPrivacyOptionsForm')
+	extern public static function showAdmobPrivacyOptionsForm():Void;
 }
 #end
