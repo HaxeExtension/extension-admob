@@ -15,9 +15,17 @@
 	<section if="ios">
 		<dependency path="project/admob-ios/frameworks/GoogleMobileAds.framework" />
 		<dependency path="project/admob-ios/frameworks/UserMessagingPlatform.framework" />
-		
+
+		<dependency name="CoreAudioTypes.framework" />
 		<dependency name="JavaScriptCore.framework" />
 		<dependency name="AppTrackingTransparency.framework" />
+
+		<dependency name="libswiftCompatibility50.tbd" />
+		<dependency name="libswiftCompatibility51.tbd" />
+		<dependency name="libswiftCompatibility56.tbd" />
+		<dependency name="libswiftCompatibilityConcurrency.tbd" />
+		<dependency name="libswiftCompatibilityDynamicReplacements.tbd" />
+		<dependency name="libswiftCompatibilityPacks.tbd" />
 
 		<config:ios linker-flags="-ObjC" />
 	</section>
