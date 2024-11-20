@@ -1,5 +1,6 @@
 package admob.android;
 
+#if android
 import admob.AdmobBannerAlign;
 import admob.AdmobBannerSize;
 import android.jni.JNICache;
@@ -231,3 +232,4 @@ private class CallBackHandler #if (lime >= "8.0.0") implements JNISafety #end
 			AdmobAndroid.onStatus.dispatch(status, data);
 	}
 }
+#end
