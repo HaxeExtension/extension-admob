@@ -16,7 +16,6 @@
 		<dependency path="project/admob-ios/frameworks/GoogleMobileAds.framework" />
 		<dependency path="project/admob-ios/frameworks/UserMessagingPlatform.framework" />
 
-		<dependency name="CoreAudioTypes.framework" />
 		<dependency name="JavaScriptCore.framework" />
 		<dependency name="AppTrackingTransparency.framework" />
 
