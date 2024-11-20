@@ -20,10 +20,6 @@
 		<dependency name="JavaScriptCore.framework" />
 		<dependency name="AppTrackingTransparency.framework" />
 
-		<dependency name="libswiftCompatibilityConcurrency.tbd" />
-		<dependency name="libswiftCompatibilityDynamicReplacements.tbd" />
-		<dependency name="libswiftCompatibilityPacks.tbd" />
-
 		<config:ios linker-flags="-ObjC" />
 	</section>
 </extension>
