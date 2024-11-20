@@ -16,7 +16,7 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
     params.tagForUnderAgeOfConsent = childDirected;
     
     [UMPConsentInformation.sharedInstance requestConsentInfoUpdateWithParameters:params
-        completionHandler:^(NSError *_Nullable error) {
+        completionHandler:^(NSError * _Nullable error) {
             if (error) {
                 if (admobCallback) admobCallback("CONSENT_FAIL", "Failed to load consent info.");
             } else {
@@ -27,9 +27,11 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
                         } else {
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 [form presentFromViewController:UIApplication.sharedApplication.keyWindow.rootViewController
-                                                    completionHandler:^(UMPConsentFormPresentationState state, NSError * _Nullable error) {
-                                    if (state == UMPConsentFormPresentationStateDismissed) {
-                                        if (admobCallback) admobCallback("CONSENT_FAIL", "Consent form dismissed.");
+                                                    completionHandler:^(NSError * _Nullable error) {
+                                    if (error) {
+                                        if (admobCallback) admobCallback("CONSENT_FAIL", "Consent form error.");
+                                    } else {
+                                        if (admobCallback) admobCallback("CONSENT_FORM_PRESENTED", "Consent form presented successfully.");
                                     }
                                 }];
                             });
@@ -42,9 +44,6 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
         }];
     
     GADMobileAds.sharedInstance.requestConfiguration.tagForChildDirectedTreatment = @(childDirected);
-    if (testingAds) {
-        GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[ GADSimulatorID ];
-    }
     [GADMobileAds.sharedInstance startWithCompletionHandler:nil];
     
     if (admobCallback) admobCallback("INIT_OK", "AdMob initialized.");
