@@ -1,5 +1,6 @@
 package admob.ios;
 
+#if ios
 import admob.AdmobBannerAlign;
 import admob.AdmobBannerSize;
 import lime.app.Event;
@@ -8,6 +9,9 @@ import lime.utils.Log;
 /**
  * A class to manage AdMob advertisements on iOS devices.
  */
+@:buildXml('<include name="${haxelib:extension-admob}/project/admob-ios/Build.xml" />')
+@:include('admob.h')
+@:keep
 class AdmobIOS
 {
 	/**
@@ -188,3 +192,4 @@ class AdmobIOS
 		}
 	}
 }
+#end
