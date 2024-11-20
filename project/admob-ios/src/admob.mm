@@ -1,4 +1,4 @@
-#import <AdMobEx.h>
+#import <admob.h>
 #import <UIKit/UIKit.h>
 #import <GoogleMobileAds/GoogleMobileAds.h>
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
