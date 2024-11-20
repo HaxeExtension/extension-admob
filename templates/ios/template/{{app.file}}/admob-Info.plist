@@ -6,6 +6,8 @@
 	<string>::ENV_ADMOB_APPID::</string>
 	<key>GADDelayAppMeasurementInit</key>
 	<true/>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>We use tracking to show personalized ads</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>
