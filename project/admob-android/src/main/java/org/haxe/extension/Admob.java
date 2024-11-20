@@ -162,13 +162,10 @@ public class Admob extends Extension
 			{
 				adContainer.setGravity(align);
 
-				AdSize adSize = AdSize.INVALID;
+				AdSize adSize;
 
 				switch (size)
 				{
-					case 0:
-						adSize = AdSize.BANNER;
-						break;
 					case 1:
 						adSize = AdSize.FLUID;
 						break;
@@ -186,6 +183,9 @@ public class Admob extends Extension
 						break;
 					case 6:
 						adSize = AdSize.WIDE_SKYSCRAPER;
+						break;
+					default:
+						adSize = AdSize.BANNER;
 						break;
 				}
 
