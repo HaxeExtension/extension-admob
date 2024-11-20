@@ -11,7 +11,6 @@
 extern "C" void onStatus(const char* code, const char* data);
 
 static const char* INIT_OK = "INIT_OK";
-//static const char* INIT_FAIL = "INIT_FAIL";
 static const char* CONSENT_FAIL = "CONSENT_FAIL";
 static const char* BANNER_LOADED = "BANNER_LOADED";
 static const char* BANNER_FAILED_TO_LOAD = "BANNER_FAILED_TO_LOAD";
@@ -53,9 +52,9 @@ static const char* IDFA_NOT_SUPPORTED = "IDFA_NOT_SUPPORTED";
 
 @interface BannerListener : NSObject <GADBannerViewDelegate>
 
-@property(nonatomic, strong) GADBannerView *_banner;
-@property(nonatomic, strong) UIViewController *_root;
-@property(nonatomic) int _align;
+@property(nonatomic, strong) GADBannerView *banner;
+@property(nonatomic, strong) UIViewController *root;
+@property(nonatomic) int align;
 
 - (id)showWithID:(NSString*)ID withSize:(NSInteger)size withAlign:(NSInteger)align;
 - (void)hide;
@@ -68,86 +67,85 @@ static const char* IDFA_NOT_SUPPORTED = "IDFA_NOT_SUPPORTED";
 - (id)showWithID:(NSString*)ID withSize:(NSInteger)size withAlign:(NSInteger)align
 {
 	self = [super init]; //needed???
+
 	if(!self) return nil;
-	
-	self._root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
-	//self._root = [[[UIApplication sharedApplication] keyWindow] rootViewController];
-	
+
+	self.root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+
 	switch(size)
 	{
 		case BANNER_SIZE_ADAPTIVE:
 		{
-			CGRect frame = self._root.view.frame;
+			CGRect frame = self.root.view.frame;
 			// Here safe area is taken into account, hence the view frame is used after
 			// the view has been laid out.
 			if(@available(iOS 11.0, *))
 			{
-				frame = UIEdgeInsetsInsetRect(self._root.view.frame, self._root.view.safeAreaInsets);
+				frame = UIEdgeInsetsInsetRect(self.root.view.frame, self.root.view.safeAreaInsets);
 			}
 			CGFloat viewWidth = frame.size.width;
 			
-			//self._banner = [[GADBannerView alloc] initWithAdSize:GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)];
+			//self.banner = [[GADBannerView alloc] initWithAdSize:GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)];
 			break;
 		}
 		
 		case BANNER_SIZE_BANNER:
 		{
-			self._banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeBanner];
+			self.banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeBanner];
 			break;
 		}
 		
 		case BANNER_SIZE_FULL_BANNER:
 		{
-			self._banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeFullBanner];
+			self.banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeFullBanner];
 			break;
 		}
 			
 		case BANNER_SIZE_LARGE_BANNER:
 		{
-			self._banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeLargeBanner];
+			self.banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeLargeBanner];
 			break;
 		}
 			
 		case BANNER_SIZE_LEADERBOARD:
 		{
-			self._banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeLeaderboard];
+			self.banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeLeaderboard];
 			break;
 		}
 			
 		case BANNER_SIZE_MEDIUM_RECTANGLE:
 		{
-			self._banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeMediumRectangle];
+			self.banner = [[GADBannerView alloc] initWithAdSize:GADAdSizeMediumRectangle];
 			break;
 		}
 	}
 	
-	self._align = align;
+	self.align = align;
 
-	self._banner.adUnitID = ID;
-	self._banner.rootViewController = self._root;
-	
-	self._banner.delegate = self;
-	[self._banner loadRequest:[GADRequest request]];
-	self._banner.translatesAutoresizingMaskIntoConstraints = NO;
-	[self._root.view addSubview:self._banner];
-	
+	self.banner.adUnitID = ID;
+	self.banner.rootViewController = self.root;
+
+	self.banner.delegate = self;
+	[self.banner loadRequest:[GADRequest request]];
+	self.banner.translatesAutoresizingMaskIntoConstraints = NO;
+	[self.root.view addSubview:self.banner];
+
 	return self;
 }
 
 - (void)hide
 {
-	self._banner.hidden = true;
-	//[self._banner removeFromSuperView];
-	self._banner.delegate = nil;
-	[self._banner release];
+	self.banner.hidden = true;
+	self.banner.delegate = nil;
+	[self.banner release];
 }
 
 - (void)align
 {
-	CGRect bounds = self._root.view.bounds;
+	CGRect bounds = self.root.view.bounds;
 	if(@available(iOS 11.0, *))
 	{
-		CGRect safeAreaFrame = self._root.view.safeAreaLayoutGuide.layoutFrame;
+		CGRect safeAreaFrame = self.root.view.safeAreaLayoutGuide.layoutFrame;
 		if(!CGSizeEqualToSize(CGSizeZero, safeAreaFrame.size))
 		{
 			bounds = safeAreaFrame;
@@ -156,17 +154,17 @@ static const char* IDFA_NOT_SUPPORTED = "IDFA_NOT_SUPPORTED";
 	
 	CGFloat centerX = CGRectGetMidX(bounds);
 	CGPoint bannerPos = CGPointMake(centerX, 0);
-	if(self._align == BANNER_ALIGN_TOP)
+	if(self.align == BANNER_ALIGN_TOP)
 	{
-		CGFloat top = CGRectGetMinY(bounds) + CGRectGetMidY(self._banner.bounds);
+		CGFloat top = CGRectGetMinY(bounds) + CGRectGetMidY(self.banner.bounds);
 		bannerPos = CGPointMake(centerX, top);
-		self._banner.center = bannerPos;
+		self.banner.center = bannerPos;
 	}
 	else
 	{
-		CGFloat bottom = CGRectGetMaxY(bounds) - CGRectGetMidY(self._banner.bounds);
+		CGFloat bottom = CGRectGetMaxY(bounds) - CGRectGetMidY(self.banner.bounds);
 		bannerPos = CGPointMake(centerX, bottom);
-		self._banner.center = bannerPos;
+		self.banner.center = bannerPos;
 	}
 }
 
@@ -177,28 +175,28 @@ static const char* IDFA_NOT_SUPPORTED = "IDFA_NOT_SUPPORTED";
 }
 
 - (void)bannerView:(GADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error {
-  //NSLog(@"bannerView:didFailToReceiveAdWithError: %@", [error localizedDescription]);
-  onStatus(BANNER_FAILED_TO_LOAD, [[error localizedDescription] UTF8String]);
+	//NSLog(@"bannerView:didFailToReceiveAdWithError: %@", [error localizedDescription]);
+	onStatus(BANNER_FAILED_TO_LOAD, [[error localizedDescription] UTF8String]);
 }
 
 - (void)bannerViewDidRecordImpression:(GADBannerView *)banner {
-  //NSLog(@"bannerViewDidRecordImpression");
-  [self align]; //repeat align here because might not alaways work at bannerViewDidReceiveAd
-  onStatus(BANNER_OPENED, nil);
+	//NSLog(@"bannerViewDidRecordImpression");
+	[self align]; //repeat align here because might not alaways work at bannerViewDidReceiveAd
+	onStatus(BANNER_OPENED, nil);
 }
 
 - (void)bannerViewWillPresentScreen:(GADBannerView *)banner {
-  //NSLog(@"bannerViewWillPresentScreen");
-  onStatus(BANNER_CLICKED, nil);
+	//NSLog(@"bannerViewWillPresentScreen");
+	onStatus(BANNER_CLICKED, nil);
 }
 
 - (void)bannerViewWillDismissScreen:(GADBannerView *)banner {
-  //NSLog(@"bannerViewWillDismissScreen");
-  onStatus(BANNER_CLOSED, nil);
+	//NSLog(@"bannerViewWillDismissScreen");
+	onStatus(BANNER_CLOSED, nil);
 }
 
 - (void)bannerViewDidDismissScreen:(GADBannerView *)banner {
-  //NSLog(@"bannerViewDidDismissScreen");
+	//NSLog(@"bannerViewDidDismissScreen");
 }
 
 @end
@@ -221,7 +219,7 @@ static const char* IDFA_NOT_SUPPORTED = "IDFA_NOT_SUPPORTED";
 	
 	self._ad = nil;
 	GADRequest *request = [GADRequest request];
-    [GADInterstitialAd loadWithAdUnitID:ID
+		[GADInterstitialAd loadWithAdUnitID:ID
 		request:request
 		completionHandler:^(GADInterstitialAd *ad, NSError *error)
 		{
@@ -259,20 +257,20 @@ static const char* IDFA_NOT_SUPPORTED = "IDFA_NOT_SUPPORTED";
 /// Tells the delegate that the ad failed to present full screen content.
 - (void)ad:(nonnull id<GADFullScreenPresentingAd>)ad
 didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
-    //NSLog(@"Ad did fail to present full screen content.");
+		//NSLog(@"Ad did fail to present full screen content.");
 	onStatus(INTERSTITIAL_FAILED_TO_SHOW, [[error localizedDescription] UTF8String]);
 }
 
 /// Tells the delegate that the ad presented full screen content.
 - (void)adWillPresentFullScreenContent:(nonnull id<GADFullScreenPresentingAd>)ad {
-    //NSLog(@"Ad did present full screen content.");
+		//NSLog(@"Ad did present full screen content.");
 	onStatus(INTERSTITIAL_SHOWED, nil);
 }
 
 /// Tells the delegate that the ad dismissed full screen content.
 - (void)adDidDismissFullScreenContent:(nonnull id<GADFullScreenPresentingAd>)ad {
-   //NSLog(@"Ad did dismiss full screen content.");
-   onStatus(INTERSTITIAL_DISMISSED, nil);
+	 //NSLog(@"Ad did dismiss full screen content.");
+	 onStatus(INTERSTITIAL_DISMISSED, nil);
 }
 
 @end
@@ -301,9 +299,9 @@ didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
 		{
 			if(error != nil)
 			{
-			  //NSLog(@"Rewarded ad failed to load with error: %@", [error localizedDescription]);
-			  onStatus(REWARDED_FAILED_TO_LOAD, [[error localizedDescription] UTF8String]);
-			  return;
+				//NSLog(@"Rewarded ad failed to load with error: %@", [error localizedDescription]);
+				onStatus(REWARDED_FAILED_TO_LOAD, [[error localizedDescription] UTF8String]);
+				return;
 			}
 			else
 			{
@@ -342,100 +340,68 @@ didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
 /// Tells the delegate that the ad failed to present full screen content.
 - (void)ad:(nonnull id<GADFullScreenPresentingAd>)ad
 didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
-    //NSLog(@"Ad did fail to present full screen content.");
+		//NSLog(@"Ad did fail to present full screen content.");
 	onStatus(REWARDED_FAILED_TO_SHOW, [[error localizedDescription] UTF8String]);
 }
 
 /// Tells the delegate that the ad presented full screen content.
 - (void)adDidPresentFullScreenContent:(nonnull id<GADFullScreenPresentingAd>)ad {
-    //NSLog(@"Ad did present full screen content.");
+		//NSLog(@"Ad did present full screen content.");
 	onStatus(REWARDED_SHOWED, nil);
 }
 
 /// Tells the delegate that the ad dismissed full screen content.
 - (void)adDidDismissFullScreenContent:(nonnull id<GADFullScreenPresentingAd>)ad {
-   //NSLog(@"Ad did dismiss full screen content.");
-   onStatus(REWARDED_DISMISSED, nil);
+	 //NSLog(@"Ad did dismiss full screen content.");
+	 onStatus(REWARDED_DISMISSED, nil);
 }
 
 @end
 
 namespace admob
 {	
-	static BannerListener *_bannerListener;
-	static InterstitialListener *_interstitialListener;
-	static RewardedListener *_rewardedListener;
-	static int _inited = 0;
-	//static NSString *statusIDFA = @"";
-	
-	//https://support.google.com/admob/answer/10115027?hl=en&sjid=6409788409933810109-AP
-	//everything is fucked up: in EEA and UK, need to show GDRP message and then, if approved, IDFA message
+	static BannerListener *bannerListener;
+	static InterstitialListener *interstitialListener;
+	static RewardedListener *rewardedListener;
+	static int inited = 0;
+	static NSString *statusIDFA = @"";
+
 	void init(bool testingAds, bool childDirected, bool enableRDP)
 	{
-		//NSLog(@"Info init");
-		UIViewController *_root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
-		
-		//> copy/pasted from here: https://developers.google.com/admob/ios/privacy#objective-c
-		// Create a UMPRequestParameters object.
+		UIViewController *root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+
 		UMPRequestParameters *parameters = [[UMPRequestParameters alloc] init];
-		// Set tag for under age of consent. NO means users are not under age
-		// of consent.
-		//>> don't use this if debugging GDPR
 		parameters.tagForUnderAgeOfConsent = (childDirected == true ? YES : NO);
-		//<<
-		
-		//>> use this to debug GDPR
-		/*[UMPConsentInformation.sharedInstance reset];
-		UMPDebugSettings *debugSettings = [[UMPDebugSettings alloc] init];
-		debugSettings.testDeviceIdentifiers = @[ @"948F6324-7875-4599-93DC-6B4E900F25A7" ];
-		debugSettings.geography = UMPDebugGeographyEEA;
-		parameters.debugSettings = debugSettings;*/
-		//<<
-		
-		//NSLog(@"Info request");
-		// Request an update for the consent information.
+
 		[UMPConsentInformation.sharedInstance
 			requestConsentInfoUpdateWithParameters:parameters
 				completionHandler:^(NSError *_Nullable requestConsentError)
 				{
-					//whether it is failed or not, we initialize admob anyway, because cmon
 					if(requestConsentError)
 					{
-						// Consent gathering failed.
-						//NSLog(@"Error: %@", requestConsentError.localizedDescription);
 						onStatus(CONSENT_FAILED, [[requestConsentError localizedDescription] UTF8String]);
-						//init admob anyway and show IDFA
-						//initMobileAds(testingAds, childDirected, enableRDP, true);
 					}
 
-					[UMPConsentForm loadAndPresentIfRequiredFromViewController:_root
+					[UMPConsentForm loadAndPresentIfRequiredFromViewController:root
 						completionHandler:^(NSError *loadAndPresentError)
 						{
 							if(loadAndPresentError)
 							{
-								// Consent gathering failed.
-								//NSLog(@"Error: %@", loadAndPresentError.localizedDescription);
 								onStatus(CONSENT_FAILED, [[loadAndPresentError localizedDescription] UTF8String]);
 							}
 
-							// Consent has been gathered.
-							//NSLog(@"Info can show 1");
 							if(UMPConsentInformation.sharedInstance.canRequestAds)
 							{
 								if(hasConsentForPuprpose(0) == 1) //consent given, not a best way to check it, but don't know any other ways
 									initMobileAds(testingAds, childDirected, enableRDP, true);
 								else
 									initMobileAds(testingAds, childDirected, enableRDP, false);
-              }
+							}
 						}
 					];
 				}
 		];
-		
-		// Check if you can initialize the Google Mobile Ads SDK in parallel
-		// while checking for new consent information. Consent obtained in
-		// the previous session can be used to request ads.
-		//NSLog(@"Info can show 2");
+
 		if(UMPConsentInformation.sharedInstance.canRequestAds)
 		{
 			if(hasConsentForPuprpose(0) == 1) //consent given, not a best way to check it, but don't know any other ways
@@ -443,22 +409,17 @@ namespace admob
 			else
 				initMobileAds(testingAds, childDirected, enableRDP, false);
 		}
-		//<
-  }
+	}
 	
 	void initMobileAds(bool testingAds, bool childDirected, bool enableRDP, bool requestIDFA)
 	{
-		if(_inited == 1)
+		if(inited == 1)
 			return;
-		
-		_inited = 1;
-		
-		//NSLog(@"Init1 %d %d %d %d", testingAds, childDirected, enableRDP, requestIDFA);
-		
-		//> set testing devices
-    if(testingAds == true)
+
+		inited = 1;
+
+		if(testingAds == true)
 		{
-			//> from here: https://stackoverflow.com/questions/24760150/how-to-get-a-hashed-device-id-for-testing-admob-on-ios
 			NSString *UDIDString = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
 			const char *cStr = [UDIDString UTF8String];
 			unsigned char digest[16];
@@ -468,125 +429,96 @@ namespace admob
 
 			for(int i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
 				[deviceId appendFormat:@"%02x", digest[i]];
-			//<
-			
-			//NSLog(@"Test device %@, %@", UDIDString, deviceId);
-			
+
 			GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[deviceId];
-    }
-		//<
-		
-		//> set COPPA
+		}
+
 		if(childDirected == true)
 		{
-			//NSLog(@"Init child");
-			//[GADMobileAds.sharedInstance.requestConfiguration tagForChildDirectedTreatment:YES];
 			GADMobileAds.sharedInstance.requestConfiguration.tagForChildDirectedTreatment = @YES;
 		}
-		//<
-		
-		//> set CCPA
+
 		if(enableRDP == true)
 		{
-			//NSLog(@"Init RDP");
 			[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"gad_rdp"];
 		}
-		//<
-		
-		//> iOS14+ perosnalized ads dialog
+
 		if(requestIDFA == true)
 		{
 			if(@available(iOS 14, *))
 			{
-				//NSLog(@"Requesting IDFA");
-				
 				[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status)
 				{
-					/*switch(status)
+					switch(status)
 					{
 						case ATTrackingManagerAuthorizationStatusAuthorized:
-						//NSLog(@"IDFA authorized!");
 						statusIDFA = @(IDFA_AUTORIZED);
 						break;
 						case ATTrackingManagerAuthorizationStatusDenied:
-						//NSLog(@"IDFA denied!");
 						statusIDFA = @(IDFA_DENIED);
 						break;
 						case ATTrackingManagerAuthorizationStatusNotDetermined:
-						//NSLog(@"IDFA not determined!");
 						statusIDFA = @(IDFA_NOT_DETERMINED);
 						break;
 						case ATTrackingManagerAuthorizationStatusRestricted:
-						//NSLog(@"IDFA restricted!");
 						statusIDFA = @(IDFA_RESTRICTED);
 						break;
-					}*/
-					
+					}
+
 					[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 					{
-						onStatus(INIT_OK, nil); //it's crashing here if use statusIDFA...
+						onStatus(INIT_OK, [statusIDFA UTF8String]);
 					}];
 				}];
 				
 				return;
 			}
-			/*else
+			else
 			{
 				statusIDFA = @(IDFA_NOT_SUPPORTED);
-			}*/
+			}
 		}
-		//<
-		
+
 		//if IDFA wasn't requested or not iOS14+
 		[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 		{
-			onStatus(INIT_OK, nil);
+			onStatus(INIT_OK, [statusIDFA UTF8String]);
 		}];
 	}
-	
+
 	int hasConsentForPuprpose(int purpose)
 	{
-		// Example value: "1111111111"
 		NSString *purposeConsents = [NSUserDefaults.standardUserDefaults stringForKey:@"IABTCF_PurposeConsents"];
-		// Purposes are zero-indexed. Index 0 contains information about Purpose 1.
-		//NSLog(@"has consent %@", purposeConsents);
+
 		if(purposeConsents.length > purpose)
 		{
 			int hasorwhat = [[purposeConsents substringWithRange:NSMakeRange(purpose, 1)] integerValue];
 			return hasorwhat;
 		}
-		
+
 		return -1;
 	}
 	
 	const char* getConsent()
 	{
-		// Example value: "1111111111"
 		NSString *purposeConsents = [NSUserDefaults.standardUserDefaults stringForKey:@"IABTCF_PurposeConsents"];
-		// Purposes are zero-indexed. Index 0 contains information about Purpose 1.
-		//NSLog(@"get consent %@", purposeConsents);
+
 		if(purposeConsents.length > 0)
-		{
-			const char *res = [purposeConsents UTF8String];
-			return res;
-		}
-		
+			return [purposeConsents UTF8String];
+
 		return "";
 	}
-	
-	int isPrivacyOptionsRequired()
+
+	bool isPrivacyOptionsRequired()
 	{
-		if(UMPConsentInformation.sharedInstance.privacyOptionsRequirementStatus == UMPPrivacyOptionsRequirementStatusRequired)
-			return 1;
-		
-		return 0;
+		return UMPConsentInformation.sharedInstance.privacyOptionsRequirementStatus == UMPPrivacyOptionsRequirementStatusRequired;
 	}
 	
 	void showPrivacyOptionsForm()
 	{
-		UIViewController *_root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
-		
-		[UMPConsentForm presentPrivacyOptionsFormFromViewController:_root
+		UIViewController *root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+
+		[UMPConsentForm presentPrivacyOptionsFormFromViewController:root
 			completionHandler:^(NSError *_Nullable formError)
 			{
 				if(formError)
@@ -597,60 +529,60 @@ namespace admob
 		];
 	}
 
-  void showBanner(const char *ID, int size, int align)
+	void showBanner(const char *ID, int size, int align)
 	{
-		if(_bannerListener != nil)
+		if(bannerListener != nil)
 		{
 			onStatus(BANNER_FAILED_TO_LOAD, "Hide previous banner first!");
 			return;
 		}
-		
+
 		NSString *SID = [NSString stringWithUTF8String:ID];
-       _bannerListener = [[BannerListener alloc] showWithID:SID withSize:size withAlign:align];
-  }
-    
-  void hideBanner()
+			 bannerListener = [[BannerListener alloc] showWithID:SID withSize:size withAlign:align];
+	}
+		
+	void hideBanner()
 	{
-		[_bannerListener hide];
-		[_bannerListener release];
-		_bannerListener = nil;
+		[bannerListener hide];
+		[bannerListener release];
+		bannerListener = nil;
 	}
 	
 	void loadInterstitial(const char *ID)
 	{
 		NSString *SID = [NSString stringWithUTF8String:ID];
-		_interstitialListener = [[InterstitialListener alloc] loadWithAdUnitID:SID];
+		interstitialListener = [[InterstitialListener alloc] loadWithAdUnitID:SID];
 	}
 
-  void showInterstitial()
+	void showInterstitial()
 	{
-		if(_interstitialListener != nil)
+		if(interstitialListener != nil)
 		{
-			[_interstitialListener show];
+			[interstitialListener show];
 		}
 		else
 		{
 			onStatus(INTERSTITIAL_FAILED_TO_SHOW, "You need to load interstitial ad first!");
 		}
-  }
-	
+	}
+
 	void loadRewarded(const char *ID)
 	{
 		NSString *SID = [NSString stringWithUTF8String:ID];
-		_rewardedListener = [[RewardedListener alloc] loadWithAdUnitID:SID];
+		rewardedListener = [[RewardedListener alloc] loadWithAdUnitID:SID];
 	}
 
-  void showRewarded()
+	void showRewarded()
 	{
-		if(_rewardedListener != nil)
+		if(rewardedListener != nil)
 		{
-			[_rewardedListener show];
+			[rewardedListener show];
 		}
 		else
 		{
 			onStatus(REWARDED_FAILED_TO_SHOW, "You need to load rewarded ad first!");
 		}
-  }
+	}
 
 	void setVolume(float vol)
 	{
@@ -661,5 +593,5 @@ namespace admob
 		}
 		else
 			GADMobileAds.sharedInstance.applicationMuted = YES;
-  }
+	}
 }
