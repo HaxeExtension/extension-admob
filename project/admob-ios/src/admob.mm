@@ -43,10 +43,56 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
             }
         }];
     
-    GADMobileAds.sharedInstance.requestConfiguration.tagForChildDirectedTreatment = @(childDirected);
-    [GADMobileAds.sharedInstance startWithCompletionHandler:nil];
-    
+    initMobileAds(testingAds, childDirected, enableRDP, false);
+
     if (admobCallback) admobCallback("INIT_OK", "AdMob initialized.");
+}
+
+static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP, bool requestIDFA)
+{
+    if (testingAds)
+    {
+        NSString *UDIDString = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+        const char *cStr = [UDIDString UTF8String];
+        unsigned char digest[16];
+        CC_MD5(cStr, strlen(cStr), digest);
+
+        NSMutableString *deviceId = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
+        for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
+            [deviceId appendFormat:@"%02x", digest[i]];
+
+        GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[deviceId];
+    }
+
+    if (childDirected)
+    {
+        GADMobileAds.sharedInstance.requestConfiguration.tagForChildDirectedTreatment = @YES;
+    }
+
+    if (enableRDP)
+    {
+        [NSUserDefaults.standardUserDefaults setBool:YES forKey:@"gad_rdp"];
+    }
+
+    if (requestIDFA)
+    {
+        if (@available(iOS 14, *))
+        {
+            [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status)
+            {
+                [[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
+                {
+                    if (admobCallback) admobCallback("INIT_OK", "AdMob initialized.");
+                }];
+            }];
+            return;
+        }
+    }
+
+    [[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
+    {
+        if (admobCallback) admobCallback("INIT_OK", "AdMob initialized.");
+    }];
 }
 
 void showAdmobBanner(const char *id, int size, int align)
@@ -208,7 +254,7 @@ const char *getAdmobConsent()
 
 bool isAdmobPrivacyOptionsRequired()
 {
-    return UMPConsentInformation.sharedInstance.privacyOptionsRequirementStatus == UMPPrivacyOptionsRequirementStatusRequired;
+    return UMPPConsentInformation.sharedInstance.privacyOptionsRequirementStatus == UMPPrivacyOptionsRequirementStatusRequired;
 }
 
 void showAdmobPrivacyOptionsForm()
