@@ -1,0 +1,26 @@
+BasedOnStyle: llvm
+IndentWidth: 8
+TabWidth: 8
+UseTab: Always
+BreakBeforeBraces: Allman
+AllowShortFunctionsOnASingleLine: Empty
+ColumnLimit: 140
+AccessModifierOffset: -8
+AlignAfterOpenBracket: Align
+AlignOperands: true
+AlignTrailingComments: true
+BinPackParameters: false
+BinPackArguments: false
+BraceWrapping:
+  AfterFunction: true
+  AfterClass: true
+  AfterEnum: true
+  AfterControlStatement: true
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+IncludeIsMainRegex: '.*'
+IncludeBlocks: Preserve
+IncludeCategories:
+  - Regex: '^<(W|w)indows.h>'
+    Priority: 1
