@@ -11,7 +11,7 @@ import lime.utils.Log;
  * A class to manage AdMob advertisements on iOS devices.
  */
 @:buildXml('<include name="${haxelib:extension-admob}/project/admob-ios/Build.xml" />')
-@:include('admob.h')
+@:headerInclude('admob.h')
 @:keep
 class AdmobIOS
 {
