@@ -41,10 +41,10 @@ class AdmobIOS
 	 * Shows a banner ad.
 	 *
 	 * @param id The banner ad ID.
-	 * @param size The banner size (default: adaptive).
+	 * @param size The banner size (default: banner).
 	 * @param align The banner alignment (default: top).
 	 */
-	public static function showBanner(id:String, size:Int = AdmobBannerSize.ADAPTIVE, align:Int = AdmobBannerAlign.TOP):Void
+	public static function showBanner(id:String, size:Int = AdmobBannerSize.BANNER, align:Int = AdmobBannerAlign.TOP):Void
 	{
 		if (!initialized)
 		{
