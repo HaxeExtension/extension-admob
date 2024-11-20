@@ -188,19 +188,40 @@ void setAdmobVolume(float vol)
 
 int hasAdmobConsentForPurpose(int purpose)
 {
-    return 1;
+    NSString *purposeConsents = [NSUserDefaults.standardUserDefaults stringForKey:@"IABTCF_PurposeConsents"];
+
+    if (purposeConsents.length > purpose)
+        return [[purposeConsents substringWithRange:NSMakeRange(purpose, 1)] integerValue];
+
+    return -1;
 }
 
 const char *getAdmobConsent()
 {
-    return "CONSENTED";
+    NSString *purposeConsents = [NSUserDefaults.standardUserDefaults stringForKey:@"IABTCF_PurposeConsents"];
+
+    if (purposeConsents.length > 0)
+        return [purposeConsents UTF8String];
+
+    return "";
 }
 
 bool isAdmobPrivacyOptionsRequired()
 {
-    return false;
+    return UMPConsentInformation.sharedInstance.privacyOptionsRequirementStatus == UMPPrivacyOptionsRequirementStatusRequired;
 }
 
 void showAdmobPrivacyOptionsForm()
 {
+    UIViewController *rootVC = UIApplication.sharedApplication.keyWindow.rootViewController;
+
+    [UMPConsentForm presentPrivacyOptionsFormFromViewController:rootVC
+        completionHandler:^(NSError *_Nullable formError)
+        {
+            if (formError && admobCallback)
+            {
+                admobCallback("CONSENT_FAIL", [[formError localizedDescription] UTF8String]);
+            }
+        }
+    ];
 }
