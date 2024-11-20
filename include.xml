@@ -20,7 +20,6 @@
 		<dependency name="JavaScriptCore.framework" />
 		<dependency name="AppTrackingTransparency.framework" />
 
-		<dependency name="libswiftCompatibility50.tbd" />
 		<dependency name="libswiftCompatibility51.tbd" />
 		<dependency name="libswiftCompatibility56.tbd" />
 		<dependency name="libswiftCompatibilityConcurrency.tbd" />
