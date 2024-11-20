@@ -56,12 +56,53 @@ void showAdmobBanner(const char *id, int size, int align)
 
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *rootVC = UIApplication.sharedApplication.keyWindow.rootViewController;
-        bannerView = [[GADBannerView alloc] initWithAdSize:GADAdSizeBanner];
+
+        GADAdSize adSize;
+
+        switch (size)
+        {
+            case 1:
+                adSize = GADAdSizeFluid;
+                break;
+            case 2:
+                adSize = GADAdSizeFullBanner;
+                break;
+            case 3:
+                adSize = GADAdSizeLargeBanner;
+                break;
+            case 4:
+                adSize = GADAdSizeLeaderboard;
+                break;
+            case 5:
+                adSize = GADAdSizeMediumRectangle;
+                break;
+            default:
+                adSize = GADAdSizeBanner;
+                break;
+        }
+
+        bannerView = [[GADBannerView alloc] initWithAdSize:adSize];
         bannerView.adUnitID = [NSString stringWithUTF8String:id];
         bannerView.rootViewController = rootVC;
         [rootVC.view addSubview:bannerView];
-        
+
+        CGRect screenBounds = UIScreen.mainScreen.bounds;
+
+        CGFloat bannerWidth = bannerView.bounds.size.width;
+        CGFloat bannerHeight = bannerView.bounds.size.height;
+
+        switch (align)
+        {
+            case 1:
+                bannerView.center = CGPointMake(screenBounds.size.width / 2, bannerHeight / 2);
+                break;
+            default:
+                bannerView.center = CGPointMake(screenBounds.size.width / 2, screenBounds.size.height - bannerHeight / 2);
+                break;
+        }
+
         GADRequest *request = [GADRequest request];
+
         [bannerView loadRequest:request];
         
         if (admobCallback) admobCallback("BANNER_LOADED", "Banner request loaded.");
