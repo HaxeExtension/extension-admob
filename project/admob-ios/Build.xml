@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+	<pragma once="true" />
+
+	<files id="haxe">
+		<compilerflag value="-I${haxelib:extension-admob}/project/admob-ios/include" />
+	</files>
+
+	<files id="__main__">
+		<compilerflag value="-I${haxelib:extension-admob}/project/admob-ios/include" />
+	</files>
+
+	<files id="admob">
+		<compilerflag value="-F${haxelib:extension-admob}/project/admob-ios/frameworks" />
+
+		<file name="${haxelib:extension-admob}/project/admob-ios/src/admob.mm" />
+	</files>
+
+	<target id="haxe">
+		<files id="admob" />
+	</target>
+</xml>
