@@ -1,4 +1,5 @@
 #include "admob.h"
+
 #import <GoogleMobileAds/GoogleMobileAds.h>
 
 static GADBannerView *bannerView = nil;
