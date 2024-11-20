@@ -1,4 +1,4 @@
-package admob.android;
+package admob.ios;
 
 import admob.AdmobBannerAlign;
 import admob.AdmobBannerSize;
@@ -8,7 +8,7 @@ import lime.utils.Log;
 /**
  * A class to manage AdMob advertisements on iOS devices.
  */
-class AdmobAndroid
+class AdmobIOS
 {
 	/**
 	 * Event triggered for status updates from AdMob.
