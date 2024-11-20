@@ -35,7 +35,7 @@ class AdmobIOS
 		if (initialized)
 			return;
 
-		initAdmob(testingAds, childDirected, enableRDP, onAdmobStatus);
+		initAdmob(testingAds, childDirected, enableRDP, cpp.Callable.fromStaticFunction(onAdmobStatus));
 
 		initialized = true;
 	}
