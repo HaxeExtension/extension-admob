@@ -13,8 +13,15 @@
 	</section>
 
 	<section if="ios">
-		<dependency path="project/admob-ios/frameworks/GoogleMobileAds.framework" />
-		<dependency path="project/admob-ios/frameworks/UserMessagingPlatform.framework" />
+		<section unless="simulator">
+			<dependency path="project/admob-ios/frameworks/arm64/GoogleMobileAds.framework" />
+			<dependency path="project/admob-ios/frameworks/arm64/UserMessagingPlatform.framework" />
+		</section>
+
+		<section if="simulator">
+			<dependency path="project/admob-ios/frameworks/arm64_x86_64-simulator/GoogleMobileAds.framework" />
+			<dependency path="project/admob-ios/frameworks/arm64_x86_64-simulator/UserMessagingPlatform.framework" />
+		</section>
 
 		<dependency name="JavaScriptCore.framework" />
 		<dependency name="AppTrackingTransparency.framework" />
