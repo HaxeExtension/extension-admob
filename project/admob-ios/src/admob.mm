@@ -10,6 +10,43 @@ static GADInterstitialAd *interstitialAd = nil;
 static GADRewardedAd *rewardedAd = nil;
 static AdmobCallback admobCallback = nullptr;
 
+@interface BannerViewDelegate : NSObject <GADBannerViewDelegate>
+@end
+
+@implementation BannerViewDelegate
+
+- (void)bannerViewDidReceiveAd:(GADBannerView *)bannerView
+{
+    if (admobCallback) admobCallback("BANNER_LOADED", "Banner loaded successfully.");
+}
+
+- (void)bannerView:(GADBannerView *)bannerView didFailToReceiveAdWithError:(NSError *)error
+{
+    if (admobCallback) admobCallback("BANNER_FAILED", [[error localizedDescription] UTF8String]);
+}
+
+- (void)bannerViewDidRecordClick:(GADBannerView *)bannerView
+{
+    if (admobCallback) admobCallback("BANNER_CLICKED", "Banner clicked.");
+}
+
+- (void)bannerViewWillPresentScreen:(GADBannerView *)bannerView
+{
+    if (admobCallback) admobCallback("BANNER_OPENED", "Banner is opening.");
+}
+
+- (void)bannerViewWillDismissScreen:(GADBannerView *)bannerView
+{
+    if (admobCallback) admobCallback("BANNER_WILL_CLOSE", "Banner will close.");
+}
+
+- (void)bannerViewDidDismissScreen:(GADBannerView *)bannerView
+{
+    if (admobCallback) admobCallback("BANNER_CLOSED", "Banner closed.");
+}
+
+@end
+
 static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP, bool requestIDFA)
 {
     if (testingAds)
@@ -132,6 +169,7 @@ void showAdmobBanner(const char *id, int size, int align)
         bannerView = [[GADBannerView alloc] initWithAdSize:adSize];
         bannerView.adUnitID = [NSString stringWithUTF8String:id];
         bannerView.rootViewController = rootVC;
+        bannerView.delegate = (id<GADBannerViewDelegate>)rootVC;
         [rootVC.view addSubview:bannerView];
 
         CGRect screenBounds = UIScreen.mainScreen.bounds;
@@ -152,8 +190,6 @@ void showAdmobBanner(const char *id, int size, int align)
         GADRequest *request = [GADRequest request];
 
         [bannerView loadRequest:request];
-
-        if (admobCallback) admobCallback("BANNER_LOADED", "Banner request loaded.");
     });
 }
 
