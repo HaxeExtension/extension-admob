@@ -11,22 +11,6 @@ static GADRewardedAd *rewardedAd = nil;
 static AdmobCallback admobCallback = nullptr;
 static int currentAlign = 0;
 
-@interface BannerHelper : NSObject
-+ (void)handleOrientationChange;
-@end
-
-@implementation BannerHelper
-+ (void)handleOrientationChange
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (bannerView)
-        {
-            alignBanner(bannerView, currentAlign);
-        }
-    });
-}
-@end
-
 static void alignBanner(GADBannerView *bannerView, int align)
 {
     if (!bannerView)
@@ -46,6 +30,22 @@ static void alignBanner(GADBannerView *bannerView, int align)
             break;
     }
 }
+
+@interface BannerHelper : NSObject
++ (void)handleOrientationChange;
+@end
+
+@implementation BannerHelper
++ (void)handleOrientationChange
+{
+    if (bannerView)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            alignBanner(bannerView, currentAlign);
+        });
+    }
+}
+@end
 
 @interface BannerViewDelegate : NSObject <GADBannerViewDelegate>
 @end
