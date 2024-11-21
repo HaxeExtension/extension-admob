@@ -63,7 +63,7 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 
     UMPRequestParameters *params = [[UMPRequestParameters alloc] init];
     params.tagForUnderAgeOfConsent = childDirected;
-    
+
     [UMPConsentInformation.sharedInstance requestConsentInfoUpdateWithParameters:params
         completionHandler:^(NSError * _Nullable error) {
             if (error) {
@@ -91,7 +91,7 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
                 }
             }
         }];
-    
+
     initMobileAds(testingAds, childDirected, enableRDP, false);
 
     if (admobCallback) admobCallback("INIT_OK", "AdMob initialized.");
@@ -152,7 +152,7 @@ void showAdmobBanner(const char *id, int size, int align)
         GADRequest *request = [GADRequest request];
 
         [bannerView loadRequest:request];
-        
+
         if (admobCallback) admobCallback("BANNER_LOADED", "Banner request loaded.");
     });
 }
@@ -202,11 +202,17 @@ void loadAdmobRewarded(const char *id)
     NSString *adUnitID = [NSString stringWithUTF8String:id];
     GADRequest *request = [GADRequest request];
 
-    [GADRewardedAd loadWithAdUnitID:adUnitID request:request completionHandler:^(GADRewardedAd *ad, NSError *error) {
-        if (error) {
+    [GADRewardedAd loadWithAdUnitID:adUnitID
+                            request:request
+                  completionHandler:^(GADRewardedAd *ad, NSError *error)
+    {
+        if (error)
+        {
             rewardedAd = nil;
-            if (admobCallback) admobCallback("REWARDED_FAILED_TO_LOAD", "Failed to load rewarded ad.");
-        } else {
+            if (admobCallback) admobCallback("REWARDED_FAILED_TO_LOAD", [[error localizedDescription] UTF8String]);
+        }
+        else
+        {
             rewardedAd = ad;
             if (admobCallback) admobCallback("REWARDED_LOADED", "Rewarded ad loaded.");
         }
@@ -216,14 +222,23 @@ void loadAdmobRewarded(const char *id)
 void showAdmobRewarded()
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (rewardedAd != nil) {
+        if (rewardedAd != nil)
+        {
             UIViewController *rootVC = UIApplication.sharedApplication.keyWindow.rootViewController;
-            [rewardedAd presentFromRootViewController:rootVC userDidEarnRewardHandler:^{
+            [rewardedAd presentFromRootViewController:rootVC
+                           userDidEarnRewardHandler:^
+            {
                 GADAdReward *reward = rewardedAd.adReward;
-                if (admobCallback) admobCallback("REWARDED_EARNED", "Reward earned.");
+                if (admobCallback)
+                {
+                    NSString *rewardMessage = [NSString stringWithFormat:@"Reward earned: %@, Amount: %@", reward.type, reward.amount];
+                    admobCallback("REWARDED_EARNED", [rewardMessage UTF8String]);
+                }
             }];
             if (admobCallback) admobCallback("REWARDED_SHOWED", "Rewarded ad displayed.");
-        } else {
+        }
+        else
+        {
             if (admobCallback) admobCallback("REWARDED_FAILED_TO_SHOW", "Rewarded ad not ready.");
         }
     });
