@@ -5,6 +5,8 @@ import lime.system.JNI;
 
 /**
  * A utility class for caching JNI method and field references.
+ *
+ * @see https://github.com/MAJigsaw77/extension-androidtools/blob/main/android/jni/JNICache.hx
  */
 class JNICache
 {
