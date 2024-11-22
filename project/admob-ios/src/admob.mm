@@ -257,8 +257,7 @@ void showAdmobBanner(const char *id, int size, int align)
 							  [BannerHelper handleOrientationChange];
 							}];
 
-	  GADRequest *request = [GADRequest request];
-	  [bannerView loadRequest:request];
+	  [bannerView loadRequest:[GADRequest request]];
 	});
 }
 
@@ -279,11 +278,8 @@ void hideAdmobBanner()
 
 void loadAdmobInterstitial(const char *id)
 {
-	NSString *adUnitID = [NSString stringWithUTF8String:id];
-	GADRequest *request = [GADRequest request];
-
-	[GADInterstitialAd loadWithAdUnitID:adUnitID
-				    request:request
+	[GADInterstitialAd loadWithAdUnitID:[NSString stringWithUTF8String:id]
+				    request:[GADRequest request]
 			  completionHandler:^(GADInterstitialAd *ad, NSError *error) {
 			    if (error)
 			    {
@@ -307,9 +303,7 @@ void showAdmobInterstitial()
 	dispatch_async(dispatch_get_main_queue(), ^{
 	  if (interstitialAd != nil)
 	  {
-		  UIViewController *rootVC = UIApplication.sharedApplication.keyWindow.rootViewController;
-
-		  [interstitialAd presentFromRootViewController:rootVC];
+		  [interstitialAd presentFromRootViewController:UIApplication.sharedApplication.keyWindow.rootViewController];
 
 		  if (admobCallback)
 			  admobCallback("INTERSTITIAL_SHOWED", "Interstitial displayed.");
