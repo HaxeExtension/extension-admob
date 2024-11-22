@@ -6,9 +6,9 @@
 	<!-- https://developers.google.com/admob/ios/quick-start -->
 	<setenv name="ADMOB_APPID" value="ca-app-pub-3940256099942544~1458002511" if="ios" />
 
-	<meta title="Hello World" package="org.openfl.lime.samples.helloworld" version="1.0.0" company="OpenFL" />
+	<meta title="Extension-Admob Test" package="org.openfl.lime.samples.helloworld" version="1.0.0" company="OpenFL" />
 
-	<app main="Main" path="export" file="HelloWorld" />
+	<app main="Main" path="export" file="EATest" />
 
 	<source path="source" />
 
