@@ -12,9 +12,9 @@
 
 	<source path="source" />
 
-	<haxelib name="extension-admob" />
-	<haxelib name="extension-androidtools" if="android" />
 	<haxelib name="lime" />
+	<haxelib name="extension-androidtools" if="android" />
+	<haxelib name="extension-admob" />
 
 	<haxeflag name="-dce" value="full" />
 
