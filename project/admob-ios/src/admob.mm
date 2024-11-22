@@ -390,7 +390,8 @@ bool isAdmobPrivacyOptionsRequired()
 
 void showAdmobPrivacyOptionsForm()
 {
-	[UMPConsentForm presentPrivacyOptionsFormFromViewController:UIApplication.sharedApplication.keyWindow.rootViewController completionHandler:^(NSError *_Nullable formError) {
+	[UMPConsentForm presentPrivacyOptionsFormFromViewController:UIApplication.sharedApplication.keyWindow.rootViewController completionHandler:^(NSError *_Nullable formError)
+	{
 		if (formError && admobCallback)
 			admobCallback("CONSENT_FAIL", [[formError localizedDescription] UTF8String]);
 	}];
