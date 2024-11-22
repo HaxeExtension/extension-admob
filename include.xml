@@ -10,10 +10,7 @@
 		<config:android extension="org.haxe.extension.Admob" />
 	</section>
 
-	<section if="ios">
-		<dependency name="AppTrackingTransparency.framework" />
-		<dependency name="JavaScriptCore.framework" />
-		
+	<section if="ios">		
 		<section unless="simulator">
 			<dependency path="project/admob-ios/frameworks/arm64/GoogleMobileAds.framework" />
 			<dependency path="project/admob-ios/frameworks/arm64/UserMessagingPlatform.framework" />
@@ -23,6 +20,9 @@
 			<dependency path="project/admob-ios/frameworks/arm64_x86_64-simulator/GoogleMobileAds.framework" />
 			<dependency path="project/admob-ios/frameworks/arm64_x86_64-simulator/UserMessagingPlatform.framework" />
 		</section>
+
+		<dependency name="JavaScriptCore.framework" />
+		<dependency name="AppTrackingTransparency.framework" />
 
 		<template path="templates" />
 
