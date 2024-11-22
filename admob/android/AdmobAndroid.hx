@@ -1,11 +1,10 @@
 package admob.android;
 
 #if android
+import admob.android.util.JNICache;
 import admob.AdmobBannerAlign;
 import admob.AdmobBannerSize;
-import android.jni.JNICache;
 import lime.app.Event;
-import lime.system.JNI; // For JNISafety
 import lime.utils.Log;
 
 /**
@@ -214,15 +213,12 @@ class AdmobAndroid
 /**
  * Internal callback handler for AdMob events.
  */
-@:keep
 @:noCompletion
-private class CallBackHandler #if (lime >= "8.0.0") implements JNISafety #end
+private class CallBackHandler #if (lime >= "8.0.0") implements lime.system.JNI.JNISafety #end
 {
-	public function new():Void
-	{
-		// The void
-	}
+	public function new():Void {}
 
+	@:keep
 	#if (lime >= "8.0.0")
 	@:runOnMainThread
 	#end
