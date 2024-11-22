@@ -72,8 +72,12 @@ To configure **extension-admob** for your project, follow these steps:
 
    - **Interstitial Ad**
      ```haxe
+     admob.Admob.onStatus.add(function(event:String, message:String):Void
+     {
+     	if (event == admob.AdmobEvent.INTERSTITIAL_LOADED)
+     		admob.Admob.showInterstitial();
+     });
      admob.Admob.loadInterstitial("ca-app-pub-XXXX/XXXXXXXXXX");
-     admob.Admob.showInterstitial();
      ```
 
    - **Banner Ad**
@@ -83,6 +87,10 @@ To configure **extension-admob** for your project, follow these steps:
 
    - **Rewarded Ad**
      ```haxe
+     admob.Admob.onStatus.add(function(event:String, message:String):Void
+     {
+     	if (event == admob.AdmobEvent.REWARDED_LOADED)
+     		admob.Admob.showRewarded();
+     });
      admob.Admob.loadRewarded("ca-app-pub-XXXX/XXXXXXXXXX");
-     admob.Admob.showRewarded();
      ```
