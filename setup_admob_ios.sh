@@ -43,6 +43,7 @@ for XCFRAMEWORK_DIR in *.xcframework; do
 done
 
 echo "Cleaning up..."
+
 cd ../../
 rm -rf "$TEMP_DIR"
 rm -f "$ZIP_FILE"
