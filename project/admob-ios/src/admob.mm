@@ -63,7 +63,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 - (void)bannerView:(GADBannerView *)bannerView didFailToReceiveAdWithError:(NSError *)error
 {
 	if (admobCallback)
-		admobCallback("BANNER_FAILED", [[error localizedDescription] UTF8String]);
+		admobCallback("BANNER_FAILED", [[NSString stringWithFormat:@"Error Code: %ld, Description: %@", (long)error.code, error.localizedDescription] UTF8String])
 }
 
 - (void)bannerViewDidRecordClick:(GADBannerView *)bannerView
@@ -122,10 +122,10 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 		if (@available(iOS 14, *))
 		{
 			[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
-			      [[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status) {
-				      if (admobCallback)
-					      admobCallback("INIT_OK", "AdMob initialized.");
-			      }];
+				  [[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status) {
+					  if (admobCallback)
+						  admobCallback("INIT_OK", "AdMob initialized.");
+				  }];
 			}];
 
 			return;
@@ -152,7 +152,10 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 		if (error)
 		{
 			if (admobCallback)
-				admobCallback("CONSENT_FAIL", "Failed to load consent info.");
+			{
+				NSString *errorDetails = [NSString stringWithFormat:@"Consent Info Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code];
+				admobCallback("CONSENT_FAIL", [errorDetails UTF8String]);
+			}
 		}
 		else
 		{
@@ -163,7 +166,10 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 					if (loadError)
 					{
 						if (admobCallback)
-							admobCallback("CONSENT_FAIL", "Failed to load consent form.");
+						{
+							NSString *errorDetails = [NSString stringWithFormat:@"Consent Form Load Error: %@ (Code: %ld)", loadError.localizedDescription, (long)loadError.code];
+							admobCallback("CONSENT_FAIL", [errorDetails UTF8String]);
+						}
 					}
 					else
 					{
@@ -173,7 +179,10 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 								if (error)
 								{
 									if (admobCallback)
-										admobCallback("CONSENT_FAIL", "Consent form error.");
+									{
+										NSString *errorDetails = [NSString stringWithFormat:@"Consent Form Presentation Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code];
+										admobCallback("CONSENT_FAIL", [errorDetails UTF8String]);
+									}
 								}
 								else
 								{
@@ -192,11 +201,6 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 			}
 		}
 	}];
-
-	initMobileAds(testingAds, childDirected, enableRDP);
-
-	if (admobCallback)
-		admobCallback("INIT_OK", "AdMob initialized.");
 }
 
 void showAdmobBanner(const char *id, int size, int align)
@@ -247,7 +251,8 @@ void showAdmobBanner(const char *id, int size, int align)
 
 		alignBanner(bannerView, align);
 
-		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidChangeStatusBarOrientationNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidChangeStatusBarOrientationNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification)
+		{
 			[BannerHelper handleOrientationChange];
 		}];
 
@@ -279,7 +284,10 @@ void loadAdmobInterstitial(const char *id)
 			interstitialAd = nil;
 
 			if (admobCallback)
-				admobCallback("INTERSTITIAL_FAILED_TO_LOAD", "Failed to load interstitial.");
+			{
+				NSString *errorDetails = [NSString stringWithFormat:@"Interstitial Load Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code];
+				admobCallback("INTERSTITIAL_FAILED_TO_LOAD", [errorDetails UTF8String]);
+			}
 		}
 		else
 		{
@@ -321,7 +329,10 @@ void loadAdmobRewarded(const char *id)
 			rewardedAd = nil;
 
 			if (admobCallback)
-				admobCallback("REWARDED_FAILED_TO_LOAD", [[error localizedDescription] UTF8String]);
+			{
+				NSString *errorDetails = [NSString stringWithFormat:@"Rewarded Ad Load Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code];
+				admobCallback("REWARDED_FAILED_TO_LOAD", [errorDetails UTF8String]);
+			}
 		}
 		else
 		{
