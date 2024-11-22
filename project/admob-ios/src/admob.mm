@@ -1,4 +1,4 @@
-#include "admob.h"
+#include "admob.hpp"
 
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
 #import <CommonCrypto/CommonDigest.h>
