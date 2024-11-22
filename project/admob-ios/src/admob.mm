@@ -95,7 +95,138 @@ static void alignBanner(GADBannerView *bannerView, int align)
 
 @end
 
+@interface InterstitialListener : NSObject <GADFullScreenContentDelegate>
+
+@property(nonatomic, strong) GADInterstitialAd *_ad;
+
+- (void)loadWithAdUnitID:(const char *)adUnitID;
+- (void)show;
+
+@end
+
+@implementation InterstitialListener
+
+- (void)loadWithAdUnitID:(const char *)adUnitID
+{
+	self._ad = nil;
+
+	[GADInterstitialAd loadWithAdUnitID:[NSString stringWithUTF8String:adUnitID] request:[GADRequest request] completionHandler:^(GADInterstitialAd *ad, NSError *error)
+	{
+		if (error)
+		{
+			if (admobCallback)
+				admobCallback("INTERSTITIAL_FAILED_TO_LOAD", [[error localizedDescription] UTF8String]);
+		}
+		else
+		{
+			self._ad = ad;
+			self._ad.fullScreenContentDelegate = self;
+
+			if (admobCallback)
+				admobCallback("INTERSTITIAL_LOADED", "Interstitial loaded successfully.");
+		}
+	}];
+}
+
+- (void)show
+{
+	if (self._ad != nil && [self._ad canPresentFromRootViewController:[UIApplication.sharedApplication.keyWindow rootViewController] error:nil])
+	{
+		[self._ad presentFromRootViewController:[UIApplication.sharedApplication.keyWindow rootViewController]];
+
+		if (admobCallback)
+			admobCallback("INTERSTITIAL_SHOWED", "Interstitial displayed.");
+	}
+	else
+	{
+		if (admobCallback)
+			admobCallback("INTERSTITIAL_FAILED_TO_SHOW", "Interstitial ad not ready.");
+	}
+}
+
+- (void)adDidDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad
+{
+	if (admobCallback)
+		admobCallback("INTERSTITIAL_DISMISSED", "Interstitial ad dismissed.");
+}
+
+- (void)ad:(id<GADFullScreenPresentingAd>)ad didFailToPresentFullScreenContentWithError:(NSError *)error
+{
+	if (admobCallback)
+		admobCallback("INTERSTITIAL_FAILED_TO_SHOW", [[error localizedDescription] UTF8String]);
+}
+
+@end
+
+@interface RewardedListener : NSObject <GADFullScreenContentDelegate>
+
+@property(nonatomic, strong) GADRewardedAd *_ad;
+
+- (void)loadWithAdUnitID:(const char *)adUnitID;
+- (void)show;
+
+@end
+
+@implementation RewardedListener
+
+- (void)loadWithAdUnitID:(const char *)adUnitID
+{
+	self._ad = nil;
+
+	[GADRewardedAd loadWithAdUnitID:[NSString stringWithUTF8String:adUnitID] request:[GADRequest request] completionHandler:^(GADRewardedAd *ad, NSError *error)
+	{
+		if (error)
+		{
+			if (admobCallback)
+				admobCallback("REWARDED_FAILED_TO_LOAD", [[error localizedDescription] UTF8String]);
+		}
+		else
+		{
+			self._ad = ad;
+			self._ad.fullScreenContentDelegate = self;
+
+			if (admobCallback)
+				admobCallback("REWARDED_LOADED", "Rewarded ad loaded successfully.");
+		}
+	}];
+}
+
+- (void)show
+{
+	if (self._ad != nil && [self._ad canPresentFromRootViewController:[UIApplication.sharedApplication.keyWindow rootViewController] error:nil])
+	{
+		[self._ad presentFromRootViewController:[UIApplication.sharedApplication.keyWindow rootViewController] userDidEarnRewardHandler:^{
+			if (admobCallback)
+				admobCallback("REWARDED_EARNED", [[NSString stringWithFormat:@"%@:%@", self._ad.adReward.type, self._ad.adReward.amount] UTF8String]);
+		}];
+
+		if (admobCallback)
+			admobCallback("REWARDED_SHOWED", "Rewarded ad displayed.");
+	}
+	else
+	{
+		if (admobCallback)
+			admobCallback("REWARDED_FAILED_TO_SHOW", "Rewarded ad not ready.");
+	}
+}
+
+- (void)adDidDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad
+{
+	if (admobCallback)
+		admobCallback("REWARDED_DISMISSED", "Rewarded ad dismissed.");
+}
+
+- (void)ad:(id<GADFullScreenPresentingAd>)ad didFailToPresentFullScreenContentWithError:(NSError *)error
+{
+	if (admobCallback)
+		admobCallback("REWARDED_FAILED_TO_SHOW", [[error localizedDescription] UTF8String]);
+}
+
+@end
+
 static BannerViewDelegate *bannerDelegate = nil;
+static InterstitialListener *interstitialListener = nil;
+static RewardedListener *rewardedListener = nil;
 
 static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 {
@@ -122,24 +253,24 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 
 	if (@available(iOS 14, *))
 	{
-	if (hasAdmobConsentForPurpose(0) == 1)
-	{
-		[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+		if (hasAdmobConsentForPurpose(0) == 1)
+		{
+			[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+				[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status) {
+					if (admobCallback)
+						admobCallback("INIT_OK", "AdMob initialized.");
+				}];
+			}];
+
+			return;
+		}
+		else
+		{
 			[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status) {
 				if (admobCallback)
 					admobCallback("INIT_OK", "AdMob initialized.");
 			}];
-		}];
-
-		return;
-	}
-	else
-	{
-		[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status) {
-			if (admobCallback)
-				admobCallback("INIT_OK", "AdMob initialized.");
-		}];
-	}
+		}
 	}
 	else
 	{
@@ -278,82 +409,37 @@ void hideAdmobBanner()
 
 void loadAdmobInterstitial(const char *id)
 {
-	[GADInterstitialAd loadWithAdUnitID:[NSString stringWithUTF8String:id] request:[GADRequest request] completionHandler:^(GADInterstitialAd *ad, NSError *error)
-	{
-		if (error)
-		{
-			interstitialAd = nil;
+	if (!interstitialListener)
+		interstitialListener = [[InterstitialListener alloc] init];
 
-			if (admobCallback)
-				admobCallback("INTERSTITIAL_FAILED_TO_LOAD", [[NSString stringWithFormat:@"Interstitial Load Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code] UTF8String]);
-		}
-		else
-		{
-			interstitialAd = ad;
-
-			if (admobCallback)
-				admobCallback("INTERSTITIAL_LOADED", "Interstitial loaded.");
-		}
-	}];
+	[interstitialListener loadWithAdUnitID:id];
 }
 
 void showAdmobInterstitial()
 {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		if (interstitialAd != nil)
-		{
-			[interstitialAd presentFromRootViewController:UIApplication.sharedApplication.keyWindow.rootViewController];
-
-			if (admobCallback)
-				admobCallback("INTERSTITIAL_SHOWED", "Interstitial displayed.");
-		}
-		else
-		{
-			if (admobCallback)
-				admobCallback("INTERSTITIAL_FAILED_TO_SHOW", "Interstitial not ready.");
-		}
+		if (interstitialListener)
+			[interstitialListener show];
+		else if (admobCallback)
+			admobCallback("INTERSTITIAL_FAILED_TO_SHOW", "Interstitial listener is not initialized.");
 	});
 }
 
 void loadAdmobRewarded(const char *id)
 {
-	[GADRewardedAd loadWithAdUnitID:[NSString stringWithUTF8String:id] request:[GADRequest request] completionHandler:^(GADRewardedAd *ad, NSError *error)
-	{
-		if (error)
-		{
-			rewardedAd = nil;
+	if (!rewardedListener)
+		rewardedListener = [[RewardedListener alloc] init];
 
-			if (admobCallback)
-				admobCallback("REWARDED_FAILED_TO_LOAD", [[NSString stringWithFormat:@"Rewarded Ad Load Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code] UTF8String]);
-		}
-		else
-		{
-			rewardedAd = ad;
-
-			if (admobCallback)
-				admobCallback("REWARDED_LOADED", "Rewarded ad loaded.");
-		}
-	}];
+	[rewardedListener loadWithAdUnitID:id];
 }
 
 void showAdmobRewarded()
 {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		if (rewardedAd != nil)
-		{
-			[rewardedAd presentFromRootViewController:UIApplication.sharedApplication.keyWindow.rootViewController userDidEarnRewardHandler:^{
-				if (admobCallback)
-					admobCallback("REWARDED_EARNED", [[NSString stringWithFormat:@"%@:%@", rewardedAd.adReward.type, rewardedAd.adReward.amount] UTF8String]);
-			}];
-
-			if (admobCallback)
-				admobCallback("REWARDED_SHOWED", "Rewarded ad displayed.");
-		}
-		else
-		{
-			if (admobCallback)
-				admobCallback("REWARDED_FAILED_TO_SHOW", "Rewarded ad not ready.");
-		}
+		if (rewardedListener)
+			[rewardedListener show];
+		else if (admobCallback)
+			admobCallback("REWARDED_FAILED_TO_SHOW", "Rewarded listener is not initialized.");
 	});
 }
 
