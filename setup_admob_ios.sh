@@ -6,6 +6,7 @@ TEMP_DIR="temp_admob_sdk"
 ZIP_FILE="googlemobileadssdkios.zip"
 EXTRACTED_DIR="GoogleMobileAdsSdkiOS-11.12.0"
 
+rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 mkdir -p "$TEMP_DIR"
 
