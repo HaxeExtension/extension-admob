@@ -7,8 +7,6 @@
 	<section if="android">
 		<dependency name="admob" path="project/admob-android" />
 
-		<haxelib name="extension-androidtools" />
-
 		<config:android extension="org.haxe.extension.Admob" />
 	</section>
 
