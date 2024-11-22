@@ -12,7 +12,6 @@ import lime.utils.Log;
  */
 @:buildXml('<include name="${haxelib:extension-admob}/project/admob-ios/Build.xml" />')
 @:headerInclude('admob.hpp')
-@:keep
 class AdmobIOS
 {
 	/**
