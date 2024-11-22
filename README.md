@@ -94,3 +94,15 @@ To configure **extension-admob** for your project, follow these steps:
      });
      admob.Admob.loadRewarded("ca-app-pub-XXXX/XXXXXXXXXX");
      ```
+
+### Disclaimer
+
+[Google](http://unibrander.com/united-states/140279US/google.html) is a registered trademark of Google Inc.
+
+[AdMob](http://unibrander.com/united-states/479956US/admob.html) is a registrered trademark of Google Inc.
+
+### License
+
+The MIT License (MIT) - [LICENSE.md](LICENSE.md)
+
+Copyright (c) 2024 Pozirk Games contributors
