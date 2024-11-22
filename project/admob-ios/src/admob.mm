@@ -117,19 +117,16 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 	if (enableRDP)
 		[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"gad_rdp"];
 
-	if (hasAdmobConsentForPurpose(0) == 1)
+	if (@available(iOS 14, *) && hasAdmobConsentForPurpose(0) == 1)
 	{
-		if (@available(iOS 14, *))
-		{
-			[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
-				  [[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status) {
-					  if (admobCallback)
-						  admobCallback("INIT_OK", "AdMob initialized.");
-				  }];
+		[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+			[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status) {
+				if (admobCallback)
+					admobCallback("INIT_OK", "AdMob initialized.");
 			}];
+		}];
 
-			return;
-		}
+		return;
 	}
 	else
 	{
