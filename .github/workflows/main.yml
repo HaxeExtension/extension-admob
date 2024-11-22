@@ -15,7 +15,6 @@ jobs:
       - name: Install Haxe Libraries
         run: |
           haxelib install lime --quiet --never --skip-dependencies
-          haxelib install extension-androidtools --quiet --never --skip-dependencies
           haxelib dev extension-admob .
 
       - name: Setup hxcpp Library
@@ -53,7 +52,7 @@ jobs:
 
       - name: Install Haxe Libraries
         run: |
-          haxelib install lime --quiet
+          haxelib install lime --quiet --never --skip-dependencies
           haxelib dev extension-admob .
 
       - name: Setup hxcpp Library
