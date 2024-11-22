@@ -23,7 +23,6 @@
 			<dependency path="project/admob-ios/frameworks/arm64_x86_64-simulator/UserMessagingPlatform.framework" />
 		</section>
 
-		<dependency name="JavaScriptCore.framework" />
 		<dependency name="AppTrackingTransparency.framework" />
 
 		<template path="templates" />
