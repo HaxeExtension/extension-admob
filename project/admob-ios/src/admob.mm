@@ -166,10 +166,7 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 					if (loadError)
 					{
 						if (admobCallback)
-						{
-							NSString *errorDetails = [NSString stringWithFormat:@"Consent Form Load Error: %@ (Code: %ld)", loadError.localizedDescription, (long)loadError.code];
 							admobCallback("CONSENT_FAIL", [errorDetails UTF8String]);
-						}
 					}
 					else
 					{
@@ -179,10 +176,7 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 								if (error)
 								{
 									if (admobCallback)
-									{
-										NSString *errorDetails = [NSString stringWithFormat:@"Consent Form Presentation Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code];
-										admobCallback("CONSENT_FAIL", [errorDetails UTF8String]);
-									}
+										admobCallback("CONSENT_FAIL", [[NSString stringWithFormat:@"Consent Form Presentation Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code] UTF8String]);
 								}
 								else
 								{
@@ -284,10 +278,7 @@ void loadAdmobInterstitial(const char *id)
 			interstitialAd = nil;
 
 			if (admobCallback)
-			{
-				NSString *errorDetails = [NSString stringWithFormat:@"Interstitial Load Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code];
-				admobCallback("INTERSTITIAL_FAILED_TO_LOAD", [errorDetails UTF8String]);
-			}
+				admobCallback("INTERSTITIAL_FAILED_TO_LOAD", [[NSString stringWithFormat:@"Interstitial Load Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code] UTF8String]);
 		}
 		else
 		{
@@ -329,10 +320,7 @@ void loadAdmobRewarded(const char *id)
 			rewardedAd = nil;
 
 			if (admobCallback)
-			{
-				NSString *errorDetails = [NSString stringWithFormat:@"Rewarded Ad Load Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code];
-				admobCallback("REWARDED_FAILED_TO_LOAD", [errorDetails UTF8String]);
-			}
+				admobCallback("REWARDED_FAILED_TO_LOAD", [[NSString stringWithFormat:@"Rewarded Ad Load Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code] UTF8String]);
 		}
 		else
 		{
