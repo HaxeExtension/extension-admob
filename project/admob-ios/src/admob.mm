@@ -207,105 +207,105 @@ void showAdmobBanner(const char *id, int size, int align)
 	currentAlign = align;
 
 	dispatch_async(dispatch_get_main_queue(), ^{
-	  UIViewController *rootVC = UIApplication.sharedApplication.keyWindow.rootViewController;
+		UIViewController *rootVC = UIApplication.sharedApplication.keyWindow.rootViewController;
 
-	  GADAdSize adSize;
+		GADAdSize adSize;
 
-	  switch (size)
-	  {
-	  case 1:
-		  adSize = GADAdSizeFluid;
-		  break;
-	  case 2:
-		  adSize = GADAdSizeFullBanner;
-		  break;
-	  case 3:
-		  adSize = GADAdSizeLargeBanner;
-		  break;
-	  case 4:
-		  adSize = GADAdSizeLeaderboard;
-		  break;
-	  case 5:
-		  adSize = GADAdSizeMediumRectangle;
-		  break;
-	  default:
-		  adSize = GADAdSizeBanner;
-		  break;
-	  }
+		switch (size)
+		{
+		case 1:
+			adSize = GADAdSizeFluid;
+			break;
+		case 2:
+			adSize = GADAdSizeFullBanner;
+			break;
+		case 3:
+			adSize = GADAdSizeLargeBanner;
+			break;
+		case 4:
+			adSize = GADAdSizeLeaderboard;
+			break;
+		case 5:
+			adSize = GADAdSizeMediumRectangle;
+			break;
+		default:
+			adSize = GADAdSizeBanner;
+			break;
+		}
 
-	  bannerView = [[GADBannerView alloc] initWithAdSize:adSize];
-	  bannerView.adUnitID = [NSString stringWithUTF8String:id];
-	  bannerView.rootViewController = rootVC;
+		bannerView = [[GADBannerView alloc] initWithAdSize:adSize];
+		bannerView.adUnitID = [NSString stringWithUTF8String:id];
+		bannerView.rootViewController = rootVC;
 
-	  if (bannerDelegate == nil)
-		  bannerDelegate = [[BannerViewDelegate alloc] init];
+		if (bannerDelegate == nil)
+			bannerDelegate = [[BannerViewDelegate alloc] init];
 
-	  bannerView.backgroundColor = UIColor.clearColor;
-	  bannerView.delegate = bannerDelegate;
-	  [rootVC.view addSubview:bannerView];
+		bannerView.backgroundColor = UIColor.clearColor;
+		bannerView.delegate = bannerDelegate;
 
-	  alignBanner(bannerView, align);
+		[rootVC.view addSubview:bannerView];
 
-	  [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidChangeStatusBarOrientationNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
-		[BannerHelper handleOrientationChange];
-	  }];
+		alignBanner(bannerView, align);
 
-	  [bannerView loadRequest:[GADRequest request]];
+		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidChangeStatusBarOrientationNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+			[BannerHelper handleOrientationChange];
+		}];
+
+		[bannerView loadRequest:[GADRequest request]];
 	});
 }
 
 void hideAdmobBanner()
 {
 	dispatch_async(dispatch_get_main_queue(), ^{
-	  if (bannerView != nil)
-	  {
-		  [bannerView removeFromSuperview];
+		if (bannerView != nil)
+		{
+			[bannerView removeFromSuperview];
 
-		  bannerView = nil;
+			bannerView = nil;
 
-		  if (admobCallback)
-			  admobCallback("BANNER_CLOSED", "Banner removed.");
-	  }
+			if (admobCallback)
+				admobCallback("BANNER_CLOSED", "Banner removed.");
+		}
 	});
 }
 
 void loadAdmobInterstitial(const char *id)
 {
-	[GADInterstitialAd loadWithAdUnitID:[NSString stringWithUTF8String:id]
-				    request:[GADRequest request]
-			  completionHandler:^(GADInterstitialAd *ad, NSError *error) {
-			    if (error)
-			    {
-				    interstitialAd = nil;
+	[GADInterstitialAd loadWithAdUnitID:[NSString stringWithUTF8String:id] request:[GADRequest request] completionHandler:^(GADInterstitialAd *ad, NSError *error)
+	{
+		if (error)
+		{
+			interstitialAd = nil;
 
-				    if (admobCallback)
-					    admobCallback("INTERSTITIAL_FAILED_TO_LOAD", "Failed to load interstitial.");
-			    }
-			    else
-			    {
-				    interstitialAd = ad;
+			if (admobCallback)
+				admobCallback("INTERSTITIAL_FAILED_TO_LOAD", "Failed to load interstitial.");
+		}
+		else
+		{
+			interstitialAd = ad;
 
-				    if (admobCallback)
-					    admobCallback("INTERSTITIAL_LOADED", "Interstitial loaded.");
-			    }
-			  }];
+			if (admobCallback)
+				admobCallback("INTERSTITIAL_LOADED", "Interstitial loaded.");
+		}
+	}];
 }
 
 void showAdmobInterstitial()
 {
 	dispatch_async(dispatch_get_main_queue(), ^{
-	  if (interstitialAd != nil)
-	  {
-		  [interstitialAd presentFromRootViewController:UIApplication.sharedApplication.keyWindow.rootViewController];
+		if (interstitialAd != nil)
+		{
+			[interstitialAd presentFromRootViewController:UIApplication.sharedApplication.keyWindow.rootViewController];
 
-		  if (admobCallback)
-			  admobCallback("INTERSTITIAL_SHOWED", "Interstitial displayed.");
-	  }
-	  else
-	  {
-		  if (admobCallback)
-			  admobCallback("INTERSTITIAL_FAILED_TO_SHOW", "Interstitial not ready.");
-	  }
+			if (admobCallback)
+				admobCallback("INTERSTITIAL_SHOWED", "Interstitial displayed.");
+		}
+		else
+		{
+			if (admobCallback)
+				admobCallback("INTERSTITIAL_FAILED_TO_SHOW", "Interstitial not ready.");
+		}
 	});
 }
 
@@ -314,50 +314,47 @@ void loadAdmobRewarded(const char *id)
 	NSString *adUnitID = [NSString stringWithUTF8String:id];
 	GADRequest *request = [GADRequest request];
 
-	[GADRewardedAd loadWithAdUnitID:adUnitID
-				request:request
-		      completionHandler:^(GADRewardedAd *ad, NSError *error) {
-			if (error)
-			{
-				rewardedAd = nil;
+	[GADRewardedAd loadWithAdUnitID:adUnitID request:request completionHandler:^(GADRewardedAd *ad, NSError *error)
+	{
+		if (error)
+		{
+			rewardedAd = nil;
 
-				if (admobCallback)
-					admobCallback("REWARDED_FAILED_TO_LOAD", [[error localizedDescription] UTF8String]);
-			}
-			else
-			{
-				rewardedAd = ad;
+			if (admobCallback)
+				admobCallback("REWARDED_FAILED_TO_LOAD", [[error localizedDescription] UTF8String]);
+		}
+		else
+		{
+			rewardedAd = ad;
 
-				if (admobCallback)
-					admobCallback("REWARDED_LOADED", "Rewarded ad loaded.");
-			}
-		      }];
+			if (admobCallback)
+				admobCallback("REWARDED_LOADED", "Rewarded ad loaded.");
+		}
+	}];
 }
 
 void showAdmobRewarded()
 {
 	dispatch_async(dispatch_get_main_queue(), ^{
-	  if (rewardedAd != nil)
-	  {
-		  UIViewController *rootVC = UIApplication.sharedApplication.keyWindow.rootViewController;
-		  [rewardedAd presentFromRootViewController:rootVC
-				   userDidEarnRewardHandler:^{
-				     if (admobCallback)
-				     {
-					     GADAdReward *reward = rewardedAd.adReward;
-					     NSString *rewardMessage = [NSString stringWithFormat:@"%@:%@", reward.type, reward.amount];
-					     admobCallback("REWARDED_EARNED", [rewardMessage UTF8String]);
-				     }
-				   }];
+		if (rewardedAd != nil)
+		{
+			[rewardedAd presentFromRootViewController:UIApplication.sharedApplication.keyWindow.rootViewController userDidEarnRewardHandler:^{
+				if (admobCallback)
+				{
+					GADAdReward *reward = rewardedAd.adReward;
+					NSString *rewardMessage = [NSString stringWithFormat:@"%@:%@", reward.type, reward.amount];
+					admobCallback("REWARDED_EARNED", [rewardMessage UTF8String]);
+				}
+			}];
 
-		  if (admobCallback)
-			  admobCallback("REWARDED_SHOWED", "Rewarded ad displayed.");
-	  }
-	  else
-	  {
-		  if (admobCallback)
-			  admobCallback("REWARDED_FAILED_TO_SHOW", "Rewarded ad not ready.");
-	  }
+			if (admobCallback)
+				admobCallback("REWARDED_SHOWED", "Rewarded ad displayed.");
+		}
+		else
+		{
+			if (admobCallback)
+				admobCallback("REWARDED_FAILED_TO_SHOW", "Rewarded ad not ready.");
+		}
 	});
 }
 
