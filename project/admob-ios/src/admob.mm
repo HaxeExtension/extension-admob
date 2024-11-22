@@ -43,7 +43,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 	if (bannerView)
 	{
 		dispatch_async(dispatch_get_main_queue(), ^{
-		  alignBanner(bannerView, currentAlign);
+  			alignBanner(bannerView, currentAlign);
 		});
 	}
 }
@@ -94,7 +94,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 
 static BannerViewDelegate *bannerDelegate = nil;
 
-static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP, bool requestIDFA)
+static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 {
 	if (testingAds)
 	{
@@ -104,6 +104,7 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP, b
 		CC_MD5(cStr, strlen(cStr), digest);
 
 		NSMutableString *deviceId = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
+
 		for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
 			[deviceId appendFormat:@"%02x", digest[i]];
 
@@ -111,34 +112,32 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP, b
 	}
 
 	if (childDirected)
-	{
 		GADMobileAds.sharedInstance.requestConfiguration.tagForChildDirectedTreatment = @YES;
-	}
 
 	if (enableRDP)
-	{
 		[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"gad_rdp"];
-	}
 
-	if (requestIDFA)
+	if (hasAdmobConsentForPurpose(0) == 1)
 	{
 		if (@available(iOS 14, *))
 		{
-			[ATTrackingManager
-			    requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+			[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
 			      [[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status) {
-				if (admobCallback)
-					admobCallback("INIT_OK", "AdMob initialized.");
+				      if (admobCallback)
+					      admobCallback("INIT_OK", "AdMob initialized.");
 			      }];
-			    }];
+			}];
+
 			return;
 		}
 	}
-
-	[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status) {
-	  if (admobCallback)
-		  admobCallback("INIT_OK", "AdMob initialized.");
-	}];
+	else
+	{
+		[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status) {
+			if (admobCallback)
+				admobCallback("INIT_OK", "AdMob initialized.");
+		}];
+	}
 }
 
 void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallback callback)
@@ -148,58 +147,53 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 	UMPRequestParameters *params = [[UMPRequestParameters alloc] init];
 	params.tagForUnderAgeOfConsent = childDirected;
 
-	[UMPConsentInformation.sharedInstance
-	    requestConsentInfoUpdateWithParameters:params
-				 completionHandler:^(NSError *_Nullable error) {
-				   if (error)
-				   {
-					   if (admobCallback)
-						   admobCallback("CONSENT_FAIL", "Failed to load consent info.");
-				   }
-				   else
-				   {
-					   if (UMPConsentInformation.sharedInstance.formStatus == UMPFormStatusAvailable)
-					   {
-						   [UMPConsentForm loadWithCompletionHandler:^(UMPConsentForm *_Nullable form,
-											       NSError *_Nullable loadError) {
-						     if (loadError)
-						     {
-							     if (admobCallback)
-								     admobCallback("CONSENT_FAIL", "Failed to load consent form.");
-						     }
-						     else
-						     {
-							     dispatch_async(dispatch_get_main_queue(), ^{
-							       [form presentFromViewController:UIApplication.sharedApplication.keyWindow
-												   .rootViewController
-									     completionHandler:^(NSError *_Nullable error) {
-									       if (error)
-									       {
-										       if (admobCallback)
-											       admobCallback("CONSENT_FAIL",
-													     "Consent form error.");
-									       }
-									       else
-									       {
-										       if (admobCallback)
-											       admobCallback(
-												   "CONSENT_FORM_PRESENTED",
-												   "Consent form presented successfully.");
-									       }
-									     }];
-							     });
-						     }
-						   }];
-					   }
-					   else
-					   {
-						   if (admobCallback)
-							   admobCallback("INIT_OK", "Consent form not required.");
-					   }
-				   }
-				 }];
+	[UMPConsentInformation.sharedInstance requestConsentInfoUpdateWithParameters:params completionHandler:^(NSError *_Nullable error)
+	{
+		if (error)
+		{
+			if (admobCallback)
+				admobCallback("CONSENT_FAIL", "Failed to load consent info.");
+		}
+		else
+		{
+			if (UMPConsentInformation.sharedInstance.formStatus == UMPFormStatusAvailable)
+			{
+				[UMPConsentForm loadWithCompletionHandler:^(UMPConsentForm *_Nullable form, NSError *_Nullable loadError)
+				{
+					if (loadError)
+					{
+						if (admobCallback)
+							admobCallback("CONSENT_FAIL", "Failed to load consent form.");
+					}
+					else
+					{
+						dispatch_async(dispatch_get_main_queue(), ^{
+							[form presentFromViewController:UIApplication.sharedApplication.keyWindow.rootViewController completionHandler:^(NSError *_Nullable error)
+							{
+								if (error)
+								{
+									if (admobCallback)
+										admobCallback("CONSENT_FAIL", "Consent form error.");
+								}
+								else
+								{
+									if (admobCallback)
+										admobCallback("CONSENT_FORM_PRESENTED", "Consent form presented successfully.");
+								}
+							}];
+						});
+					}
+				}];
+			}
+			else
+			{
+				if (admobCallback)
+					admobCallback("INIT_OK", "Consent form not required.");
+			}
+		}
+	}];
 
-	initMobileAds(testingAds, childDirected, enableRDP, false);
+	initMobileAds(testingAds, childDirected, enableRDP);
 
 	if (admobCallback)
 		admobCallback("INIT_OK", "AdMob initialized.");
