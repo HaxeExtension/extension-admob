@@ -17,6 +17,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 		return;
 
 	UIEdgeInsets safeAreaInsets = UIApplication.sharedApplication.keyWindow.safeAreaInsets;
+
 	CGRect screenBounds = UIScreen.mainScreen.bounds;
 	CGFloat bannerWidth = bannerView.bounds.size.width;
 	CGFloat bannerHeight = bannerView.bounds.size.height;
@@ -245,17 +246,15 @@ void showAdmobBanner(const char *id, int size, int align)
 	  if (bannerDelegate == nil)
 		  bannerDelegate = [[BannerViewDelegate alloc] init];
 
+	  bannerView.backgroundColor = UIColor.clearColor;
 	  bannerView.delegate = bannerDelegate;
-
 	  [rootVC.view addSubview:bannerView];
+
 	  alignBanner(bannerView, align);
 
-	  [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidChangeStatusBarOrientationNotification
-							    object:nil
-							     queue:[NSOperationQueue mainQueue]
-							usingBlock:^(NSNotification *notification) {
-							  [BannerHelper handleOrientationChange];
-							}];
+	  [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidChangeStatusBarOrientationNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+		[BannerHelper handleOrientationChange];
+	  }];
 
 	  [bannerView loadRequest:[GADRequest request]];
 	});
@@ -400,13 +399,8 @@ bool isAdmobPrivacyOptionsRequired()
 
 void showAdmobPrivacyOptionsForm()
 {
-	UIViewController *rootVC = UIApplication.sharedApplication.keyWindow.rootViewController;
-
-	[UMPConsentForm presentPrivacyOptionsFormFromViewController:rootVC
-						  completionHandler:^(NSError *_Nullable formError) {
-						    if (formError && admobCallback)
-						    {
-							    admobCallback("CONSENT_FAIL", [[formError localizedDescription] UTF8String]);
-						    }
-						  }];
+	[UMPConsentForm presentPrivacyOptionsFormFromViewController:UIApplication.sharedApplication.keyWindow.rootViewController completionHandler:^(NSError *_Nullable formError) {
+		if (formError && admobCallback)
+			admobCallback("CONSENT_FAIL", [[formError localizedDescription] UTF8String]);
+	}];
 }
