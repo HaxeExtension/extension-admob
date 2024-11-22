@@ -114,4 +114,4 @@ To configure **extension-admob** for your project, follow these steps:
 
 The MIT License (MIT) - [LICENSE.md](LICENSE.md)
 
-Copyright (c) 2024 Pozirk Games contributors
+Copyright (c) 2023 Pozirk Games contributors
