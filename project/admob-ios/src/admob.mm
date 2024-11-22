@@ -16,6 +16,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 	if (!bannerView)
 		return;
 
+	UIEdgeInsets safeAreaInsets = UIApplication.sharedApplication.keyWindow.safeAreaInsets;
 	CGRect screenBounds = UIScreen.mainScreen.bounds;
 	CGFloat bannerWidth = bannerView.bounds.size.width;
 	CGFloat bannerHeight = bannerView.bounds.size.height;
@@ -23,10 +24,10 @@ static void alignBanner(GADBannerView *bannerView, int align)
 	switch (align)
 	{
 	case 1:
-		bannerView.center = CGPointMake(screenBounds.size.width / 2, bannerHeight / 2);
+		bannerView.center = CGPointMake(screenBounds.size.width / 2, safeAreaInsets.top + bannerHeight / 2);
 		break;
 	default:
-		bannerView.center = CGPointMake(screenBounds.size.width / 2, screenBounds.size.height - bannerHeight / 2);
+		bannerView.center = CGPointMake(screenBounds.size.width / 2, screenBounds.size.height - safeAreaInsets.bottom - bannerHeight / 2);
 		break;
 	}
 }
