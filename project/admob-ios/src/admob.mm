@@ -16,7 +16,10 @@ static void alignBanner(GADBannerView *bannerView, int align)
 	if (!bannerView)
 		return;
 
-	UIEdgeInsets safeAreaInsets = UIApplication.sharedApplication.keyWindow.safeAreaInsets;
+	UIEdgeInsets safeAreaInsets = UIEdgeInsetsZero;
+
+	if (@available(iOS 11.0, *))
+		safeAreaInsets = UIApplication.sharedApplication.keyWindow.safeAreaInsets;
 
 	CGRect screenBounds = UIScreen.mainScreen.bounds;
 	CGFloat bannerWidth = bannerView.bounds.size.width;
@@ -63,7 +66,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 - (void)bannerView:(GADBannerView *)bannerView didFailToReceiveAdWithError:(NSError *)error
 {
 	if (admobCallback)
-		admobCallback("BANNER_FAILED", [[NSString stringWithFormat:@"Error Code: %ld, Description: %@", (long)error.code, error.localizedDescription] UTF8String])
+		admobCallback("BANNER_FAILED", [[NSString stringWithFormat:@"Error Code: %ld, Description: %@", (long)error.code, error.localizedDescription] UTF8String]);
 }
 
 - (void)bannerViewDidRecordClick:(GADBannerView *)bannerView
@@ -117,7 +120,9 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 	if (enableRDP)
 		[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"gad_rdp"];
 
-	if (@available(iOS 14, *) && hasAdmobConsentForPurpose(0) == 1)
+	if (@available(iOS 14, *))
+	{
+	if (hasAdmobConsentForPurpose(0) == 1)
 	{
 		[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
 			[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status) {
@@ -127,6 +132,14 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 		}];
 
 		return;
+	}
+	else
+	{
+		[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status) {
+			if (admobCallback)
+				admobCallback("INIT_OK", "AdMob initialized.");
+		}];
+	}
 	}
 	else
 	{
@@ -149,10 +162,7 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 		if (error)
 		{
 			if (admobCallback)
-			{
-				NSString *errorDetails = [NSString stringWithFormat:@"Consent Info Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code];
-				admobCallback("CONSENT_FAIL", [errorDetails UTF8String]);
-			}
+				admobCallback("CONSENT_FAIL", [[NSString stringWithFormat:@"Consent Info Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code] UTF8String]);
 		}
 		else
 		{
@@ -163,7 +173,7 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 					if (loadError)
 					{
 						if (admobCallback)
-							admobCallback("CONSENT_FAIL", [errorDetails UTF8String]);
+							admobCallback("CONSENT_FAIL", [[NSString stringWithFormat:@"Consent Form Load Error: %@ (Code: %ld)", loadError.localizedDescription, (long)loadError.code] UTF8String]);
 					}
 					else
 					{
@@ -307,10 +317,7 @@ void showAdmobInterstitial()
 
 void loadAdmobRewarded(const char *id)
 {
-	NSString *adUnitID = [NSString stringWithUTF8String:id];
-	GADRequest *request = [GADRequest request];
-
-	[GADRewardedAd loadWithAdUnitID:adUnitID request:request completionHandler:^(GADRewardedAd *ad, NSError *error)
+	[GADRewardedAd loadWithAdUnitID:[NSString stringWithUTF8String:id] request:[GADRequest request] completionHandler:^(GADRewardedAd *ad, NSError *error)
 	{
 		if (error)
 		{
@@ -336,11 +343,7 @@ void showAdmobRewarded()
 		{
 			[rewardedAd presentFromRootViewController:UIApplication.sharedApplication.keyWindow.rootViewController userDidEarnRewardHandler:^{
 				if (admobCallback)
-				{
-					GADAdReward *reward = rewardedAd.adReward;
-					NSString *rewardMessage = [NSString stringWithFormat:@"%@:%@", reward.type, reward.amount];
-					admobCallback("REWARDED_EARNED", [rewardMessage UTF8String]);
-				}
+					admobCallback("REWARDED_EARNED", [[NSString stringWithFormat:@"%@:%@", rewardedAd.adReward.type, rewardedAd.adReward.amount] UTF8String]);
 			}];
 
 			if (admobCallback)
