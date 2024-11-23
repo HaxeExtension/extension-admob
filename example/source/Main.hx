@@ -2,7 +2,7 @@ package;
 
 class Main extends lime.app.Application
 {
-	private static final AD_UNIT_ID:String = "ca-app-pub-3940256099942544/9214589741";
+	private static final AD_UNIT_ID:String = "ca-app-pub-3940256099942544/1033173712";
 
 	public function new():Void
 	{
@@ -11,7 +11,9 @@ class Main extends lime.app.Application
 		admob.Admob.onStatus.add(function(event:String, message:String):Void
 		{
 			if (event == admob.AdmobEvent.INIT_OK)
-				admob.Admob.showBanner(AD_UNIT_ID, admob.AdmobBannerSize.BANNER, admob.AdmobBannerAlign.TOP);
+				admob.Admob.loadInterstitial(AD_UNIT_ID);
+			else if (event == admob.AdmobEvent.INTERSTITIAL_LOADED)
+				admob.Admob.showInterstitial();
 
 			#if android
 			android.widget.Toast.makeText(message.length > 0 ? '$event:$message' : event, android.widget.Toast.LENGTH_SHORT);
