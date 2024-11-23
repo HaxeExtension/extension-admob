@@ -33,6 +33,7 @@ import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.ump.ConsentInformation;
 import com.google.android.ump.ConsentRequestParameters;
 import com.google.android.ump.ConsentForm;
+import com.google.android.ump.FormError;
 import com.google.android.ump.UserMessagingPlatform;
 
 import org.haxe.extension.Extension;
@@ -86,25 +87,50 @@ public class Admob extends Extension
 		{
 			public void run()
 			{
-				ConsentRequestParameters params = new ConsentRequestParameters.Builder().setTagForUnderAgeOfConsent(childDirected).build();
+				ConsentRequestParameters params = new ConsentRequestParameters.Builder()
+					.setTagForUnderAgeOfConsent(childDirected)
+					.build();
 
 				consentInformation = UserMessagingPlatform.getConsentInformation(mainContext);
-				consentInformation.requestConsentInfoUpdate(mainActivity, params, (ConsentInformation.OnConsentInfoUpdateSuccessListener)() -> {
-					UserMessagingPlatform.loadAndShowConsentFormIfRequired(mainActivity, (ConsentForm.OnConsentFormDismissedListener) loadAndShowError -> {
-						if (loadAndShowError != null)
-							callback.call("onStatus", new Object[] { "CONSENT_FAIL", String.format("%s: %s", loadAndShowError.getErrorCode(), loadAndShowError.getMessage())});
+				consentInformation.requestConsentInfoUpdate(mainActivity, params, new ConsentInformation.OnConsentInfoUpdateSuccessListener()
+				{
+					@Override
+					public void onConsentInfoUpdateSuccess()
+					{
+						if (consentInformation.isConsentFormAvailable())
+						{
+							UserMessagingPlatform.loadAndShowConsentFormIfRequired(mainActivity, new UserMessagingPlatform.OnConsentFormLoadSuccessListener()
+							{
+								@Override
+								public void onConsentFormLoadSuccess()
+								{
+									initMobileAds(testingAds, childDirected, enableRDP);
+								}
+							}, new UserMessagingPlatform.OnConsentFormLoadFailureListener()
+							{
+								@Override
+								public void onConsentFormLoadFailure(FormError loadAndShowError)
+								{
+									if (callback != null) {
+										callback.call("onStatus", new Object[]{"CONSENT_FAIL", loadAndShowError.getMessage()});
+									}
+
+									initMobileAds(testingAds, childDirected, enableRDP);
+								}
+							});
+						}
+					}
+				}, new ConsentInformation.OnConsentInfoUpdateFailureListener()
+				{
+					@Override
+					public void onConsentInfoUpdateFailure(FormError requestConsentError)
+					{
+						if (callback != null)
+							callback.call("onStatus", new Object[]{"CONSENT_FAIL", requestConsentError.getMessage()});
 
 						initMobileAds(testingAds, childDirected, enableRDP);
-					});
-				}, (ConsentInformation.OnConsentInfoUpdateFailureListener) requestConsentError ->
-				{
-					callback.call("onStatus", new Object[] { "CONSENT_FAIL", String.format("%s: %s", requestConsentError.getErrorCode(), requestConsentError.getMessage())});
-
-					initMobileAds(testingAds, childDirected, enableRDP);
+					}
 				});
-
-				if (consentInformation.canRequestAds())
-					initMobileAds(testingAds, childDirected, enableRDP);
 			}
 		});
 	}
