@@ -103,8 +103,19 @@ public class Admob extends Extension
 								@Override
 								public void onConsentFormLoadSuccess(ConsentForm consentForm)
 								{
-									if (callback != null)
-										callback.call("onStatus", new Object[]{"CONSENT_SUCCESS", "Consent form loaded."});
+									consentForm.show(mainActivity, new ConsentForm.OnConsentFormDismissedListener()
+									{
+										@Override
+										public void onConsentFormDismissed(FormError formError)
+										{
+											if (formError == null && callback != null)
+												callback.call("onStatus", new Object[]{"CONSENT_SUCCESS", "Consent form dismissed successfully."});
+											else if (callback != null)
+												callback.call("onStatus", new Object[]{"CONSENT_DISMISS_ERROR", formError.getMessage()});
+
+											initMobileAds(testingAds, childDirected, enableRDP);
+										}
+									});
 								}
 							}, new UserMessagingPlatform.OnConsentFormLoadFailureListener()
 							{
@@ -113,6 +124,8 @@ public class Admob extends Extension
 								{
 									if (callback != null)
 										callback.call("onStatus", new Object[]{"CONSENT_FAIL", loadError.getMessage()});
+
+									initMobileAds(testingAds, childDirected, enableRDP);
 								}
 							});
 						}
@@ -120,9 +133,9 @@ public class Admob extends Extension
 						{
 							if (callback != null)
 								callback.call("onStatus", new Object[]{"CONSENT_NOT_REQUIRED", "Consent form not available."});
-						}
 
-						initMobileAds(testingAds, childDirected, enableRDP);
+							initMobileAds(testingAds, childDirected, enableRDP);
+						}
 					}
 				}, new ConsentInformation.OnConsentInfoUpdateFailureListener()
 				{
