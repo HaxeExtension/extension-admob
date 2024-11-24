@@ -111,7 +111,7 @@ public class Admob extends Extension
 											if (formError == null && callback != null)
 												callback.call("onStatus", new Object[]{"CONSENT_SUCCESS", "Consent form dismissed successfully."});
 											else if (callback != null)
-												callback.call("onStatus", new Object[]{"CONSENT_DISMISS_ERROR", formError.getMessage()});
+												callback.call("onStatus", new Object[]{"CONSENT_FAIL", formError.getMessage()});
 
 											initMobileAds(testingAds, childDirected, enableRDP);
 										}
