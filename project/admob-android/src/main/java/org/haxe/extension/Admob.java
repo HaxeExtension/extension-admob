@@ -94,7 +94,6 @@ public class Admob extends Extension
 				consentInformation = UserMessagingPlatform.getConsentInformation(mainContext);
 				consentInformation.requestConsentInfoUpdate(mainActivity, params, new ConsentInformation.OnConsentInfoUpdateSuccessListener()
 				{
-					@Override
 					public void onConsentInfoUpdateSuccess()
 					{
 						if (consentInformation.isConsentFormAvailable())
@@ -127,7 +126,6 @@ public class Admob extends Extension
 					}
 				}, new ConsentInformation.OnConsentInfoUpdateFailureListener()
 				{
-					@Override
 					public void onConsentInfoUpdateFailure(FormError requestError)
 					{
 						if (callback != null)
