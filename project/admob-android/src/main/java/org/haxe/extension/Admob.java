@@ -109,9 +109,9 @@ public class Admob extends Extension
 										public void onConsentFormDismissed(FormError formError)
 										{
 											if (formError == null && callback != null)
-												callback.call("onStatus", new Object[]{"CONSENT_SUCCESS", "Consent form dismissed successfully."});
+												callback.call("onStatus", new Object[]{ "CONSENT_SUCCESS", "Consent form dismissed successfully." });
 											else if (callback != null)
-												callback.call("onStatus", new Object[]{"CONSENT_FAIL", formError.getMessage()});
+												callback.call("onStatus", new Object[]{ "CONSENT_FAIL", formError.getMessage() });
 
 											initMobileAds(testingAds, childDirected, enableRDP);
 										}
@@ -123,7 +123,7 @@ public class Admob extends Extension
 								public void onConsentFormLoadFailure(FormError loadError)
 								{
 									if (callback != null)
-										callback.call("onStatus", new Object[]{"CONSENT_FAIL", loadError.getMessage()});
+										callback.call("onStatus", new Object[]{ "CONSENT_FAIL", loadError.getMessage() });
 
 									initMobileAds(testingAds, childDirected, enableRDP);
 								}
@@ -132,7 +132,7 @@ public class Admob extends Extension
 						else
 						{
 							if (callback != null)
-								callback.call("onStatus", new Object[]{"CONSENT_NOT_REQUIRED", "Consent form not required or available."});
+								callback.call("onStatus", new Object[]{ "CONSENT_NOT_REQUIRED", "Consent form not required or available." });
 
 							initMobileAds(testingAds, childDirected, enableRDP);
 						}
@@ -142,7 +142,7 @@ public class Admob extends Extension
 					public void onConsentInfoUpdateFailure(FormError requestError)
 					{
 						if (callback != null)
-							callback.call("onStatus", new Object[]{"CONSENT_FAIL", requestError.getMessage()});
+							callback.call("onStatus", new Object[]{ "CONSENT_FAIL", requestError.getMessage() });
 
 						initMobileAds(testingAds, childDirected, enableRDP);
 					}
@@ -185,7 +185,7 @@ public class Admob extends Extension
 			public void onInitializationComplete(InitializationStatus initializationStatus)
 			{
 				if (callback != null) 
-					callback.call("onStatus", new Object[]{"INIT_OK", "Version " + MobileAds.getVersion()});
+					callback.call("onStatus", new Object[]{ "INIT_OK", "AdMob initialized." });
 			}
 		});
 	}
