@@ -96,7 +96,7 @@ public class Admob extends Extension
 				{
 					public void onConsentInfoUpdateSuccess()
 					{
-						if (consentInformation.isConsentFormAvailable())
+						if (consentInformation.isConsentFormAvailable() && consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.REQUIRED)
 						{
 							UserMessagingPlatform.loadConsentForm(mainActivity, new UserMessagingPlatform.OnConsentFormLoadSuccessListener()
 							{
@@ -132,7 +132,7 @@ public class Admob extends Extension
 						else
 						{
 							if (callback != null)
-								callback.call("onStatus", new Object[]{"CONSENT_NOT_REQUIRED", "Consent form not available."});
+								callback.call("onStatus", new Object[]{"CONSENT_NOT_REQUIRED", "Consent form not required or available."});
 
 							initMobileAds(testingAds, childDirected, enableRDP);
 						}
