@@ -190,6 +190,11 @@ public class Admob extends Extension
 		});
 	}
 
+	public static String getVersion()
+	{
+		return MobileAds.getVersion().toString();
+	}
+
 	public static void showBanner(final String id, final int size, final int align)
 	{
 		if (adView != null)
