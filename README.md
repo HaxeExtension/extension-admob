@@ -79,6 +79,11 @@ To configure **extension-admob** for your project, follow these steps:
 8. Load and Show Ads
    Add the following snippets to display ads in your app:
 
+   - **Banner Ad**
+     ```haxe
+     admob.Admob.showBanner("ca-app-pub-XXXX/XXXXXXXXXX");
+     ```
+
    - **Interstitial Ad**
      ```haxe
      admob.Admob.onStatus.add(function(event:String, message:String):Void
@@ -87,11 +92,6 @@ To configure **extension-admob** for your project, follow these steps:
      		admob.Admob.showInterstitial();
      });
      admob.Admob.loadInterstitial("ca-app-pub-XXXX/XXXXXXXXXX");
-     ```
-
-   - **Banner Ad**
-     ```haxe
-     admob.Admob.showBanner("ca-app-pub-XXXX/XXXXXXXXXX");
      ```
 
    - **Rewarded Ad**
