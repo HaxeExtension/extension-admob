@@ -228,6 +228,36 @@ static BannerViewDelegate *bannerDelegate = nil;
 static InterstitialListener *interstitialListener = nil;
 static RewardedListener *rewardedListener = nil;
 
+static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
+{
+	if (testingAds)
+	{
+		NSString *UDIDString = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+		const char *cStr = [UDIDString UTF8String];
+		unsigned char digest[16];
+		CC_MD5(cStr, strlen(cStr), digest);
+
+		NSMutableString *deviceId = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
+
+		for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
+			[deviceId appendFormat:@"%02x", digest[i]];
+
+		GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[ deviceId ];
+	}
+
+	if (childDirected)
+		GADMobileAds.sharedInstance.requestConfiguration.tagForChildDirectedTreatment = @YES;
+
+	if (enableRDP)
+		[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"gad_rdp"];
+
+	[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
+	{
+		if (admobCallback)
+			admobCallback("INIT_OK", "AdMob initialized.");
+	}];
+}
+
 void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallback callback)
 {
 	admobCallback = callback;
@@ -269,36 +299,6 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 		}
 
 		initMobileAds(testingAds, childDirected, enableRDP);
-	}];
-}
-
-void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
-{
-	if (testingAds)
-	{
-		NSString *UDIDString = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-		const char *cStr = [UDIDString UTF8String];
-		unsigned char digest[16];
-		CC_MD5(cStr, strlen(cStr), digest);
-
-		NSMutableString *deviceId = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
-
-		for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
-			[deviceId appendFormat:@"%02x", digest[i]];
-
-		GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[ deviceId ];
-	}
-
-	if (childDirected)
-		GADMobileAds.sharedInstance.requestConfiguration.tagForChildDirectedTreatment = @YES;
-
-	if (enableRDP)
-		[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"gad_rdp"];
-
-	[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
-	{
-		if (admobCallback)
-			admobCallback("INIT_OK", "AdMob initialized.");
 	}];
 }
 
