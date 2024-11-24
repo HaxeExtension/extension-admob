@@ -2,7 +2,11 @@ name: Testing
 on: workflow_dispatch
 jobs:
   Android:
-    runs-on: macos-14
+    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        example: [windows-latest, macos-latest, ubuntu-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -32,16 +36,20 @@ jobs:
           haxelib run lime config ANDROID_SETUP true
 
       - name: Build
-        run: cd example && haxelib run lime build android -debug
+        run: cd examples/${{matrix.example}} && haxelib run lime build android -debug
 
       - name: Upload Artifact
         uses: actions/upload-artifact@main
         with:
           name: androidBuild
-          path: example/export/android/bin/app/build/outputs/apk/debug
+          path: examples/${{matrix.example}}/export/android/bin/app/build/outputs/apk/debug
           if-no-files-found: warn
   iOS:
     runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -66,11 +74,11 @@ jobs:
         run: cd $(haxelib path extension-admob) && chmod +x setup_admob_ios.sh && ./setup_admob_ios.sh && cd ${{ github.workspace }}
 
       - name: Build
-        run: cd example && haxelib run lime build ios -nosign -debug
+        run: cd examples/${{matrix.example}} && haxelib run lime build ios -nosign -debug
 
       - name: Create IPA
         run: |
-          cd example/export/ios/build/Debug-iphoneos
+          cd examples/${{matrix.example}}/export/ios/build/Debug-iphoneos
           mkdir Payload
           mv *.app Payload
           zip -r Sample.ipa Payload
