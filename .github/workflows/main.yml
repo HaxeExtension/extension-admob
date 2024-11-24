@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        example: [windows-latest, macos-latest, ubuntu-latest]
+        example: [banner, interstitial, rewarded]
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -57,7 +57,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        example: [banner, interstitial, rewarded]
     steps:
       - name: Checkout
         uses: actions/checkout@main
