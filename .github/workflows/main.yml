@@ -49,7 +49,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@main
         with:
-          name: androidBuild
+          name: androidBuild-${{matrix.example}}
           path: examples/${{matrix.example}}/export/android/bin/app/build/outputs/apk/debug
           if-no-files-found: warn
   iOS:
@@ -94,6 +94,6 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@main
         with:
-          name: iOSBuild
-          path: example/export/ios/build/Debug-iphoneos/Sample.ipa
+          name: iOSBuild-${{matrix.example}}
+          path: examples/${{matrix.example}}/export/ios/build/Debug-iphoneos/Sample.ipa
           if-no-files-found: warn
