@@ -100,7 +100,6 @@ public class Admob extends Extension
 						{
 							UserMessagingPlatform.loadConsentForm(mainActivity, new UserMessagingPlatform.OnConsentFormLoadSuccessListener()
 							{
-								@Override
 								public void onConsentFormLoadSuccess()
 								{
 									if (callback != null)
@@ -108,7 +107,6 @@ public class Admob extends Extension
 								}
 							}, new UserMessagingPlatform.OnConsentFormLoadFailureListener()
 							{
-								@Override
 								public void onConsentFormLoadFailure(FormError loadError)
 								{
 									if (callback != null)
