@@ -5,10 +5,10 @@
 #import <GoogleMobileAds/GoogleMobileAds.h>
 #import <UserMessagingPlatform/UserMessagingPlatform.h>
 
+static AdmobCallback admobCallback = nullptr;
 static GADBannerView *bannerView = nil;
 static GADInterstitialAd *interstitialAd = nil;
 static GADRewardedAd *rewardedAd = nil;
-static AdmobCallback admobCallback = nullptr;
 static int currentAlign = 0;
 
 static void alignBanner(GADBannerView *bannerView, int align)
@@ -95,7 +95,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 
 @end
 
-@interface InterstitialListener : NSObject <GADFullScreenContentDelegate>
+@interface InterstitialDelegate : NSObject <GADFullScreenContentDelegate>
 
 @property(nonatomic, strong) GADInterstitialAd *_ad;
 
@@ -104,7 +104,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 
 @end
 
-@implementation InterstitialListener
+@implementation InterstitialDelegate
 
 - (void)loadWithAdUnitID:(const char *)adUnitID
 {
@@ -158,7 +158,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 
 @end
 
-@interface RewardedListener : NSObject <GADFullScreenContentDelegate>
+@interface RewardedDelegate : NSObject <GADFullScreenContentDelegate>
 
 @property(nonatomic, strong) GADRewardedAd *_ad;
 
@@ -167,7 +167,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 
 @end
 
-@implementation RewardedListener
+@implementation RewardedDelegate
 
 - (void)loadWithAdUnitID:(const char *)adUnitID
 {
@@ -225,8 +225,8 @@ static void alignBanner(GADBannerView *bannerView, int align)
 @end
 
 static BannerViewDelegate *bannerDelegate = nil;
-static InterstitialListener *interstitialListener = nil;
-static RewardedListener *rewardedListener = nil;
+static InterstitialDelegate *interstitialDelegate = nil;
+static RewardedDelegate *rewardedDelegate = nil;
 
 static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 {
@@ -257,14 +257,38 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 		{
 			[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status)
 			{
+				if (admobCallback)
+				{
+					NSString *statusString;
+				
+					switch (status)
+					{
+						case ATTrackingManagerAuthorizationStatusNotDetermined:
+							statusString = @"NOT_DETERMINED";
+							break;
+						case ATTrackingManagerAuthorizationStatusRestricted:
+							statusString = @"RESTRICTED";
+							break;
+						case ATTrackingManagerAuthorizationStatusDenied:
+							statusString = @"DENIED";
+							break;
+						case ATTrackingManagerAuthorizationStatusAuthorized:
+							statusString = @"AUTHORIZED";
+							break;
+						default:
+							statusString = @"UNKNOWN";
+							break;
+					}
+
+					admobCallback("ATT_STATUS", [statusString UTF8String]);
+				}
+
 				[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 				{
 					if (admobCallback)
 						admobCallback("INIT_OK", [[NSString stringWithFormat:@"%ld.%ld.%ld", (long)GADMobileAds.sharedInstance.versionNumber.majorVersion, (long)GADMobileAds.sharedInstance.versionNumber.minorVersion, (long)GADMobileAds.sharedInstance.versionNumber.patchVersion] UTF8String]);
 				}];
 			}];
-
-			return;
 		}
 		else
 		{
@@ -416,37 +440,37 @@ void hideAdmobBanner()
 
 void loadAdmobInterstitial(const char *id)
 {
-	if (!interstitialListener)
-		interstitialListener = [[InterstitialListener alloc] init];
+	if (!interstitialDelegate)
+		interstitialDelegate = [[InterstitialDelegate alloc] init];
 
-	[interstitialListener loadWithAdUnitID:id];
+	[interstitialDelegate loadWithAdUnitID:id];
 }
 
 void showAdmobInterstitial()
 {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		if (interstitialListener)
-			[interstitialListener show];
+		if (interstitialDelegate)
+			[interstitialDelegate show];
 		else if (admobCallback)
-			admobCallback("INTERSTITIAL_FAILED_TO_SHOW", "Interstitial listener is not initialized.");
+			admobCallback("INTERSTITIAL_FAILED_TO_SHOW", "Interstitial Delegate is not initialized.");
 	});
 }
 
 void loadAdmobRewarded(const char *id)
 {
-	if (!rewardedListener)
-		rewardedListener = [[RewardedListener alloc] init];
+	if (!rewardedDelegate)
+		rewardedDelegate = [[RewardedDelegate alloc] init];
 
-	[rewardedListener loadWithAdUnitID:id];
+	[rewardedDelegate loadWithAdUnitID:id];
 }
 
 void showAdmobRewarded()
 {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		if (rewardedListener)
-			[rewardedListener show];
+		if (rewardedDelegate)
+			[rewardedDelegate show];
 		else if (admobCallback)
-			admobCallback("REWARDED_FAILED_TO_SHOW", "Rewarded listener is not initialized.");
+			admobCallback("REWARDED_FAILED_TO_SHOW", "Rewarded Delegate is not initialized.");
 	});
 }
 
