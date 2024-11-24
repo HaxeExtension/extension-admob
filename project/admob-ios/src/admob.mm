@@ -299,10 +299,12 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 		{
 			if (admobCallback)
 				admobCallback("CONSENT_FAIL", [[NSString stringWithFormat:@"Consent Info Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code] UTF8String]);
+
+			initMobileAds(testingAds, childDirected, enableRDP);
 		}
 		else
 		{
-			if (UMPConsentInformation.sharedInstance.formStatus == UMPFormStatusAvailable)
+			if (UMPConsentInformation.sharedInstance.formStatus == UMPFormStatusAvailable && UMPConsentInformation.sharedInstance.consentStatus == UMPConsentStatusRequired)
 			{
 				[UMPConsentForm loadWithCompletionHandler:^(UMPConsentForm *_Nullable form, NSError *_Nullable loadError)
 				{
@@ -310,22 +312,33 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 					{
 						if (admobCallback)
 							admobCallback("CONSENT_FAIL", [[NSString stringWithFormat:@"Consent Form Load Error: %@ (Code: %ld)", loadError.localizedDescription, (long)loadError.code] UTF8String]);
+
+						initMobileAds(testingAds, childDirected, enableRDP);
 					}
 					else
 					{
-						if (admobCallback)
-							admobCallback("CONSENT_SUCCESS", "Consent form loaded.");
+						dispatch_async(dispatch_get_main_queue(), ^{
+							[form presentFromViewController:UIApplication.sharedApplication.keyWindow.rootViewController completionHandler:^(NSError *_Nullable error)
+							{
+								if (admobCallback && loadError)
+									admobCallback("CONSENT_FAIL", [[NSString stringWithFormat:@"Consent Form Load Error: %@ (Code: %ld)", loadError.localizedDescription, (long)loadError.code] UTF8String]);
+								else if (admobCallback)
+									admobCallback("CONSENT_SUCCESS", "Consent form dismissed successfully.");
+
+								initMobileAds(testingAds, childDirected, enableRDP);
+							}];
+						});
 					}
 				}];
 			}
 			else
 			{
 				if (admobCallback)
-					admobCallback("CONSENT_NOT_REQUIRED", "Consent form not required.");
+					admobCallback("CONSENT_NOT_REQUIRED", "Consent form not required or available.");
+
+				initMobileAds(testingAds, childDirected, enableRDP);
 			}
 		}
-
-		initMobileAds(testingAds, childDirected, enableRDP);
 	}];
 }
 
