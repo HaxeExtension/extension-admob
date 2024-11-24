@@ -71,7 +71,6 @@ import java.util.List;
 */
 public class Admob extends Extension
 {
-	public static boolean inited = false;
 	public static AdView adView;
 	public static RelativeLayout adContainer;
 	public static InterstitialAd interstitial;
@@ -153,11 +152,6 @@ public class Admob extends Extension
 
 	public static void initMobileAds(final boolean testingAds, final boolean childDirected, final boolean enableRDP)
 	{
-		if (inited)
-			return;
-
-		inited = true;
-
 		RequestConfiguration.Builder configuration = new RequestConfiguration.Builder();
 
 		if (testingAds)
