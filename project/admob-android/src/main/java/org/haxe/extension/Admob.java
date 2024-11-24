@@ -101,7 +101,7 @@ public class Admob extends Extension
 							UserMessagingPlatform.loadConsentForm(mainActivity, new UserMessagingPlatform.OnConsentFormLoadSuccessListener()
 							{
 								@Override
-								public void onConsentFormLoadSuccess()
+								public void onConsentFormLoadSuccess(ConsentForm consentForm)
 								{
 									if (callback != null)
 										callback.call("onStatus", new Object[]{"CONSENT_SUCCESS", "Consent form loaded."});
