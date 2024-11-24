@@ -66,7 +66,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 - (void)bannerView:(GADBannerView *)bannerView didFailToReceiveAdWithError:(NSError *)error
 {
 	if (admobCallback)
-		admobCallback("BANNER_FAILED", [[NSString stringWithFormat:@"Error Code: %ld, Description: %@", (long)error.code, error.localizedDescription] UTF8String]);
+		admobCallback("BANNER_FAILED_TO_LOAD", [[NSString stringWithFormat:@"Error Code: %ld, Description: %@", (long)error.code, error.localizedDescription] UTF8String]);
 }
 
 - (void)bannerViewDidRecordClick:(GADBannerView *)bannerView
@@ -79,12 +79,6 @@ static void alignBanner(GADBannerView *bannerView, int align)
 {
 	if (admobCallback)
 		admobCallback("BANNER_OPENED", "Banner is opening.");
-}
-
-- (void)bannerViewWillDismissScreen:(GADBannerView *)bannerView
-{
-	if (admobCallback)
-		admobCallback("BANNER_WILL_CLOSE", "Banner will close.");
 }
 
 - (void)bannerViewDidDismissScreen:(GADBannerView *)bannerView
