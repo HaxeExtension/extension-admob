@@ -275,8 +275,8 @@ public class Admob extends Extension
 							callback.call("onStatus", new Object[] { "BANNER_CLOSED", "" });
 					}
 				});
-				adView.loadAd(new AdRequest.Builder().build());
 				adContainer.addView(adView);
+				adView.loadAd(new AdRequest.Builder().build());
 			}
 		});
 	}
