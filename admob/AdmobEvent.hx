@@ -6,6 +6,9 @@ enum abstract AdmobEvent(String) from String to String
 	final CONSENT_FAIL = 'CONSENT_FAIL';
 	final CONSENT_SUCCESS = 'CONSENT_SUCCESS';
 	final CONSENT_NOT_REQUIRED = 'CONSENT_NOT_REQUIRED';
+	#if ios
+	final ATT_STATUS = 'ATT_STATUS';
+	#end
 	final BANNER_LOADED = 'BANNER_LOADED';
 	final BANNER_FAILED_TO_LOAD = 'BANNER_FAILED_TO_LOAD';
 	final BANNER_OPENED = 'BANNER_OPENED';
