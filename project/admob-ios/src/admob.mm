@@ -260,7 +260,7 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 				[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 				{
 					if (admobCallback)
-						admobCallback("INIT_OK", "AdMob initialized.");
+						admobCallback("INIT_OK", [[NSString stringWithFormat:@"%ld.%ld.%ld", (long)GADMobileAds.sharedInstance.versionNumber.majorVersion, (long)GADMobileAds.sharedInstance.versionNumber.minorVersion, (long)GADMobileAds.sharedInstance.versionNumber.patchVersion] UTF8String]);
 				}];
 			}];
 
@@ -271,7 +271,7 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 			[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 			{
 				if (admobCallback)
-					admobCallback("INIT_OK", "AdMob initialized.");
+					admobCallback("INIT_OK", [[NSString stringWithFormat:@"%ld.%ld.%ld", (long)GADMobileAds.sharedInstance.versionNumber.majorVersion, (long)GADMobileAds.sharedInstance.versionNumber.minorVersion, (long)GADMobileAds.sharedInstance.versionNumber.patchVersion] UTF8String]);
 			}];
 		}
 	}
@@ -280,7 +280,7 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 		[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 		{
 			if (admobCallback)
-				admobCallback("INIT_OK", "AdMob initialized.");
+				admobCallback("INIT_OK", [[NSString stringWithFormat:@"%ld.%ld.%ld", (long)GADMobileAds.sharedInstance.versionNumber.majorVersion, (long)GADMobileAds.sharedInstance.versionNumber.minorVersion, (long)GADMobileAds.sharedInstance.versionNumber.patchVersion] UTF8String]);
 		}];
 	}
 }
@@ -452,7 +452,15 @@ void showAdmobRewarded()
 
 void setAdmobVolume(float vol)
 {
-	GADMobileAds.sharedInstance.applicationVolume = vol;
+	dispatch_async(dispatch_get_main_queue(), ^{
+		if (vol > 0)
+		{
+			GADMobileAds.sharedInstance.applicationMuted = false;
+			GADMobileAds.sharedInstance.applicationVolume = vol;
+		}
+		else
+			GADMobileAds.sharedInstance.applicationMuted = true;
+	});
 }
 
 int hasAdmobConsentForPurpose(int purpose)
