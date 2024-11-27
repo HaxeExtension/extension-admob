@@ -1,7 +1,7 @@
 #include "admob.hpp"
 
+#import <AdSupport/AdSupport.h>
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
-#import <CommonCrypto/CommonDigest.h>
 #import <GoogleMobileAds/GoogleMobileAds.h>
 #import <UserMessagingPlatform/UserMessagingPlatform.h>
 
@@ -286,21 +286,6 @@ static AppOpenAdDelegate *appOpenDelegate = nil;
 
 static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 {
-	if (testingAds)
-	{
-		NSString *UDIDString = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-		const char *cStr = [UDIDString UTF8String];
-		unsigned char digest[16];
-		CC_MD5(cStr, strlen(cStr), digest);
-
-		NSMutableString *deviceId = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
-
-		for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
-			[deviceId appendFormat:@"%02x", digest[i]];
-
-		GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[ deviceId ];
-	}
-
 	if (childDirected)
 		GADMobileAds.sharedInstance.requestConfiguration.tagForChildDirectedTreatment = @YES;
 
@@ -319,21 +304,25 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 				
 					switch (status)
 					{
-						case ATTrackingManagerAuthorizationStatusNotDetermined:
-							statusString = @"NOT_DETERMINED";
-							break;
-						case ATTrackingManagerAuthorizationStatusRestricted:
-							statusString = @"RESTRICTED";
-							break;
-						case ATTrackingManagerAuthorizationStatusDenied:
-							statusString = @"DENIED";
-							break;
-						case ATTrackingManagerAuthorizationStatusAuthorized:
-							statusString = @"AUTHORIZED";
-							break;
-						default:
-							statusString = @"UNKNOWN";
-							break;
+					case ATTrackingManagerAuthorizationStatusNotDetermined:
+						statusString = @"NOT_DETERMINED";
+						break;
+					case ATTrackingManagerAuthorizationStatusRestricted:
+						statusString = @"RESTRICTED";
+						break;
+					case ATTrackingManagerAuthorizationStatusDenied:
+						statusString = @"DENIED";
+						break;
+					case ATTrackingManagerAuthorizationStatusAuthorized:
+						statusString = @"AUTHORIZED";
+
+						if (testingAds)
+							GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[[[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString]];
+
+						break;
+					default:
+						statusString = @"UNKNOWN";
+						break;
 					}
 
 					admobCallback("ATT_STATUS", [statusString UTF8String]);
@@ -357,6 +346,9 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 	}
 	else
 	{
+		if (testingAds && [[ASIdentifierManager sharedManager] isAdvertisingTrackingEnabled])
+			GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[[[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString]];
+
 		[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 		{
 			if (admobCallback)
