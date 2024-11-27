@@ -42,6 +42,8 @@ import org.haxe.extension.Extension;
 import org.haxe.lime.HaxeObject;
 
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,8 +138,22 @@ public class Admob extends Extension
 		if (testingAds)
 		{
 			List<String> testDeviceIds = new ArrayList<>();
-			testDeviceIds.add(AdRequest.DEVICE_ID_EMULATOR);
-			testDeviceIds.add(md5(Secure.getString(mainActivity.getContentResolver(), Secure.ANDROID_ID)).toUpperCase());
+
+			if (Build.FINGERPRINT.startsWith("google/sdk_gphone") || Build.FINGERPRINT.contains("generic") || Build.FINGERPRINT.contains("emulator") || Build.MODEL.contains("Emulator") || Build.MODEL.contains("Android SDK built for x86") || Build.MANUFACTURER.contains("Google") || Build.PRODUCT.contains("sdk_gphone") || Build.BRAND.startsWith("generic") || Build.DEVICE.startsWith("generic"))
+				testDeviceIds.add(AdRequest.DEVICE_ID_EMULATOR);
+
+			try
+			{
+				StringBuilder hexString = new StringBuilder();
+
+				for (byte b : MessageDigest.getInstance("MD5").digest(Secure.getString(mainActivity.getContentResolver(), Secure.ANDROID_ID).getBytes()))
+					hexString.append(String.format("%02x", b));
+
+				testDeviceIds.add(hexString.toString().toUpperCase());
+			}
+			catch (NoSuchAlgorithmException e)
+				e.printStackTrace();
+
 			configuration.setTestDeviceIds(testDeviceIds);
 		}
 
@@ -152,6 +168,7 @@ public class Admob extends Extension
 		}
 
 		MobileAds.setRequestConfiguration(configuration.build());
+
 		MobileAds.initialize(mainContext, new OnInitializationCompleteListener()
 		{
 			@Override
@@ -546,29 +563,6 @@ public class Admob extends Extension
 				});
 			}
 		});
-	}
-
-	private static String md5(String s)
-	{
-		MessageDigest digest;
-
-		try
-		{
-			digest = MessageDigest.getInstance("MD5");
-			digest.update(s.getBytes(), 0, s.length());
-			String hexDigest = new java.math.BigInteger(1, digest.digest()).toString(16);
-
-			if (hexDigest.length() >= 32)
-				return hexDigest;
-			else
-				return "00000000000000000000000000000000".substring(hexDigest.length()) + hexDigest;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		return "";
 	}
 
 	@Override
