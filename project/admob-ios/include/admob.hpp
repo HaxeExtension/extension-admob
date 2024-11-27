@@ -9,6 +9,8 @@ void loadAdmobInterstitial(const char *id);
 void showAdmobInterstitial();
 void loadAdmobRewarded(const char *id);
 void showAdmobRewarded();
+void loadAdmobAppOpen(const char *id);
+void showAdmobAppOpen();
 void setAdmobVolume(float vol);
 int hasAdmobConsentForPurpose(int purpose);
 const char *getAdmobConsent();

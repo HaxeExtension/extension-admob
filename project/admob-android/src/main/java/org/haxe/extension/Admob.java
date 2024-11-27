@@ -21,6 +21,8 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
+import com.google.android.gms.ads.appopen.AppOpenAd;
+import com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
@@ -47,8 +49,11 @@ public class Admob extends Extension
 {
 	public static AdView adView;
 	public static RelativeLayout adContainer;
+
 	public static InterstitialAd interstitial;
 	public static RewardedAd rewarded;
+	public static AppOpenAd appOpen;
+
 	public static ConsentInformation consentInformation;
 	public static HaxeObject callback;
 
@@ -417,6 +422,79 @@ public class Admob extends Extension
 		}
 		else if (callback != null)
 			callback.call("onStatus", new Object[] { "REWARDED_FAILED_TO_SHOW", "You need to load rewarded ad first!" });
+	}
+
+	public static void loadAppOpen(final String id)
+	{
+		mainActivity.runOnUiThread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				AppOpenAd.load(mainContext, id, new AdRequest.Builder().build(), new AppOpenAdLoadCallback()
+				{
+					@Override
+					public void onAdLoaded(AppOpenAd ad)
+					{
+						appOpen = ad;
+						appOpen.setFullScreenContentCallback(new FullScreenContentCallback()
+						{
+							@Override
+							public void onAdDismissedFullScreenContent()
+							{
+								if (callback != null)
+									callback.call("onStatus", new Object[]{ "APP_OPEN_DISMISSED", "" });
+							}
+
+							@Override
+							public void onAdFailedToShowFullScreenContent(AdError adError)
+							{
+								if (callback != null)
+									callback.call("onStatus", new Object[]{ "APP_OPEN_FAILED_TO_SHOW", adError.toString() });
+							}
+
+							@Override
+							public void onAdShowedFullScreenContent()
+							{
+								if (callback != null)
+									callback.call("onStatus", new Object[]{"APP_OPEN_SHOWED", ""});
+
+								appOpen = null;
+							}
+						});
+
+						if (callback != null)
+							callback.call("onStatus", new Object[]{ "APP_OPEN_LOADED", "" });
+					}
+
+					@Override
+					public void onAdFailedToLoad(LoadAdError loadAdError)
+					{
+						if (callback != null)
+							callback.call("onStatus", new Object[]{ "APP_OPEN_FAILED_TO_LOAD", loadAdError.getMessage() });
+
+						appOpen = null;
+					}
+				});
+			}
+		});
+	}
+
+	public static void showAppOpen()
+	{
+		if (appOpen != null)
+		{
+			mainActivity.runOnUiThread(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					appOpen.show(mainActivity);
+				}
+			});
+		}
+		else if (callback != null)
+			callback.call("onStatus", new Object[]{ "APP_OPEN_FAILED_TO_SHOW", "You need to load App Open Ad first!" });
 	}
 
 	public static void setVolume(final float vol)

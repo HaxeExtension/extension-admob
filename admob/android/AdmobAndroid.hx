@@ -131,6 +131,36 @@ class AdmobAndroid
 	}
 
 	/**
+	 * Loads a "app open" ad.
+	 *
+	 * @param id The "app open" ad ID.
+	 */
+	public static function loadAppOpen(id:String):Void
+	{
+		if (!initialized)
+		{
+			Log.warn('Admob extension isn\'t initialized');
+			return;
+		}
+
+		JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadAppOpen', '(Ljava/lang/String;)V')(id);
+	}
+
+	/**
+	 * Displays a loaded "app open" ad.
+	 */
+	public static function showAppOpen():Void
+	{
+		if (!initialized)
+		{
+			Log.warn('Admob extension isn\'t initialized');
+			return;
+		}
+
+		JNICache.createStaticMethod('org/haxe/extension/Admob', 'showAppOpen', '()V')();
+	}
+
+	/**
 	 * Sets the volume for interstitial and rewarded ads.
 	 *
 	 * @param vol The volume level (0.0 - 1.0, or -1 for muted).

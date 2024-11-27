@@ -7,8 +7,6 @@
 
 static AdmobCallback admobCallback = nullptr;
 static GADBannerView *bannerView = nil;
-static GADInterstitialAd *interstitialAd = nil;
-static GADRewardedAd *rewardedAd = nil;
 static int currentAlign = 0;
 
 static void alignBanner(GADBannerView *bannerView, int align)
@@ -218,9 +216,73 @@ static void alignBanner(GADBannerView *bannerView, int align)
 
 @end
 
+@interface AppOpenAdDelegate : NSObject <GADFullScreenContentDelegate>
+
+@property(nonatomic, strong) GADAppOpenAd *_ad;
+
+- (void)loadWithAdUnitID:(const char *)adUnitID;
+- (void)show;
+
+@end
+
+@implementation AppOpenAdDelegate
+
+- (void)loadWithAdUnitID:(const char *)adUnitID
+{
+	self._ad = nil;
+
+	[GADAppOpenAd loadWithAdUnitID:[NSString stringWithUTF8String:adUnitID] request:[GADRequest request] completionHandler:^(GADAppOpenAd *ad, NSError *error)
+	{
+		if (error)
+		{
+			if (admobCallback)
+				admobCallback("APP_OPEN_FAILED_TO_LOAD", [[error localizedDescription] UTF8String]);
+		}
+		else
+		{
+			self._ad = ad;
+			self._ad.fullScreenContentDelegate = self;
+
+			if (admobCallback)
+				admobCallback("APP_OPEN_LOADED", "App Open ad loaded successfully.");
+		}
+	}];
+}
+
+- (void)show
+{
+	if (self._ad != nil && [self._ad canPresentFromRootViewController:[UIApplication.sharedApplication.keyWindow rootViewController] error:nil])
+	{
+		[self._ad presentFromRootViewController:[UIApplication.sharedApplication.keyWindow rootViewController]];
+
+		if (admobCallback)
+			admobCallback("APP_OPEN_SHOWED", "App Open ad displayed.");
+	}
+	else
+	{
+		if (admobCallback)
+			admobCallback("APP_OPEN_FAILED_TO_SHOW", "App Open ad not ready.");
+	}
+}
+
+- (void)adDidDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad
+{
+	if (admobCallback)
+		admobCallback("APP_OPEN_DISMISSED", "App Open ad dismissed.");
+}
+
+- (void)ad:(id<GADFullScreenPresentingAd>)ad didFailToPresentFullScreenContentWithError:(NSError *)error
+{
+	if (admobCallback)
+		admobCallback("APP_OPEN_FAILED_TO_SHOW", [[error localizedDescription] UTF8String]);
+}
+
+@end
+
 static BannerViewDelegate *bannerDelegate = nil;
 static InterstitialDelegate *interstitialDelegate = nil;
 static RewardedDelegate *rewardedDelegate = nil;
+static AppOpenAdDelegate *appOpenDelegate = nil;
 
 static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 {
@@ -465,6 +527,24 @@ void showAdmobRewarded()
 			[rewardedDelegate show];
 		else if (admobCallback)
 			admobCallback("REWARDED_FAILED_TO_SHOW", "Rewarded Delegate is not initialized.");
+	});
+}
+
+void loadAdmobAppOpen(const char *id)
+{
+	if (!appOpenDelegate)
+		appOpenDelegate = [[AppOpenAdDelegate alloc] init];
+
+	[appOpenDelegate loadWithAdUnitID:id];
+}
+
+void showAdmobAppOpen()
+{
+	dispatch_async(dispatch_get_main_queue(), ^{
+		if (appOpenDelegate)
+			[appOpenDelegate show];
+		else if (admobCallback)
+			admobCallback("APP_OPEN_FAILED_TO_SHOW", "Rewarded Delegate is not initialized.");
 	});
 }
 

@@ -1,6 +1,6 @@
 # extension-admob
 
-![](https://img.shields.io/github/repo-size/FunkinDroidTeam/extension-admob) ![](https://badgen.net/github/open-issues/FunkinDroidTeam/extension-admob) ![](https://badgen.net/badge/license/MIT/green)
+![](https://img.shields.io/github/repo-size/MAJigsaw77/extension-admob) ![](https://badgen.net/github/open-issues/MAJigsaw77/extension-admob) ![](https://badgen.net/badge/license/MIT/green)
 
 A Haxe/[Lime](https://lime.openfl.org) extension for integrating [Google AdMob](https://admob.google.com/home) on iOS and Android.
 
@@ -102,6 +102,16 @@ To configure **extension-admob** for your project, follow these steps:
      		admob.Admob.showRewarded();
      });
      admob.Admob.loadRewarded("ca-app-pub-XXXX/XXXXXXXXXX");
+     ```
+
+   - **App Open Ad**
+     ```haxe
+     admob.Admob.onStatus.add(function(event:String, message:String):Void
+     {
+     	if (event == admob.AdmobEvent.APP_OPEN_LOADED)
+     		admob.Admob.showAppOpen();
+     });
+     admob.Admob.loadAppOpen("ca-app-pub-XXXX/XXXXXXXXXX");
      ```
 
 ### Disclaimer

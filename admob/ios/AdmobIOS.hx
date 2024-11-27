@@ -140,6 +140,36 @@ class AdmobIOS
 	}
 
 	/**
+	 * Loads a "app open" ad.
+	 *
+	 * @param id The "app open" ad ID.
+	 */
+	public static function loadAppOpen(id:String):Void
+	{
+		if (!initialized)
+		{
+			Log.warn('Admob extension isn\'t initialized');
+			return;
+		}
+
+		loadAdmobAppOpen(id);
+	}
+
+	/**
+	 * Displays a loaded "app open" ad.
+	 */
+	public static function showAppOpen():Void
+	{
+		if (!initialized)
+		{
+			Log.warn('Admob extension isn\'t initialized');
+			return;
+		}
+
+		showAdmobAppOpen();
+	}
+
+	/**
 	 * Sets the volume for interstitial and rewarded ads.
 	 *
 	 * @param vol The volume level (0.0 - 1.0, or -1 for muted).
@@ -239,6 +269,12 @@ class AdmobIOS
 
 	@:native('showAdmobRewarded')
 	extern public static function showAdmobRewarded():Void;
+
+	@:native('loadAdmobAppOpen')
+	extern public static function loadAdmobAppOpen(id:cpp.ConstCharStar):Void;
+
+	@:native('showAdmobAppOpen')
+	extern public static function showAdmobAppOpen():Void;
 
 	@:native('setAdmobVolume')
 	extern public static function setAdmobVolume(vol:Single):Void;
