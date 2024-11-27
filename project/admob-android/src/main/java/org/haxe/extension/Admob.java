@@ -152,7 +152,9 @@ public class Admob extends Extension
 				testDeviceIds.add(hexString.toString().toUpperCase());
 			}
 			catch (NoSuchAlgorithmException e)
+			{
 				e.printStackTrace();
+			}
 
 			configuration.setTestDeviceIds(testDeviceIds);
 		}
