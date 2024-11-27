@@ -23,6 +23,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
@@ -31,19 +32,15 @@ import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
-
 import com.google.android.ump.ConsentInformation;
 import com.google.android.ump.ConsentRequestParameters;
 import com.google.android.ump.ConsentForm;
 import com.google.android.ump.FormError;
 import com.google.android.ump.UserMessagingPlatform;
-
 import org.haxe.extension.Extension;
 import org.haxe.lime.HaxeObject;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,21 +136,19 @@ public class Admob extends Extension
 		{
 			List<String> testDeviceIds = new ArrayList<>();
 
-			if (Build.FINGERPRINT.startsWith("google/sdk_gphone") || Build.FINGERPRINT.contains("generic") || Build.FINGERPRINT.contains("emulator") || Build.MODEL.contains("Emulator") || Build.MODEL.contains("Android SDK built for x86") || Build.MANUFACTURER.contains("Google") || Build.PRODUCT.contains("sdk_gphone") || Build.BRAND.startsWith("generic") || Build.DEVICE.startsWith("generic"))
-				testDeviceIds.add(AdRequest.DEVICE_ID_EMULATOR);
-
-			try
+			if (!(Build.FINGERPRINT.startsWith("google/sdk_gphone") || Build.FINGERPRINT.contains("generic") || Build.FINGERPRINT.contains("emulator") || Build.MODEL.contains("Emulator") || Build.MODEL.contains("Android SDK built for x86") || Build.MANUFACTURER.contains("Google") || Build.PRODUCT.contains("sdk_gphone") || Build.BRAND.startsWith("generic") || Build.DEVICE.startsWith("generic")))
 			{
-				StringBuilder hexString = new StringBuilder();
+				try
+				{
+					AdvertisingIdClient.Info adInfo = AdvertisingIdClient.getAdvertisingIdInfo(mainContext);
 
-				for (byte b : MessageDigest.getInstance("MD5").digest(Secure.getString(mainActivity.getContentResolver(), Secure.ANDROID_ID).getBytes()))
-					hexString.append(String.format("%02x", b));
-
-				testDeviceIds.add(hexString.toString().toUpperCase());
-			}
-			catch (NoSuchAlgorithmException e)
-			{
-				e.printStackTrace();
+					if (!adInfo.isLimitAdTrackingEnabled())
+						testDeviceIds.add(adInfo.getId().toUpperCase());
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 
 			configuration.setTestDeviceIds(testDeviceIds);
