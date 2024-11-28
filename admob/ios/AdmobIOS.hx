@@ -39,6 +39,7 @@ class AdmobIOS
 		initialized = true;
 	}
 
+	@:noCompletion
 	private static function onAdmobStatus(event:cpp.ConstCharStar, value:cpp.ConstCharStar):Void
 	{
 		MainLoop.runInMainThread(function():Void
