@@ -14,10 +14,10 @@ static void alignBanner(GADBannerView *bannerView, int align)
 	if (!bannerView)
 		return;
 
-	UIEdgeInsets safeAreaInsets = UIEdgeInsetsZero;
+	// UIEdgeInsets safeAreaInsets = UIEdgeInsetsZero;
 
-	if (@available(iOS 11.0, *))
-		safeAreaInsets = UIApplication.sharedApplication.keyWindow.safeAreaInsets;
+	// if (@available(iOS 11.0, *))
+	//     safeAreaInsets = UIApplication.sharedApplication.keyWindow.safeAreaInsets; // This handles the notch-safe area
 
 	CGRect screenBounds = UIScreen.mainScreen.bounds;
 	CGFloat bannerWidth = bannerView.bounds.size.width;
@@ -26,10 +26,12 @@ static void alignBanner(GADBannerView *bannerView, int align)
 	switch (align)
 	{
 	case 1:
-		bannerView.center = screenBounds.size.width > screenBounds.size.height ? CGPointMake(screenBounds.size.width / 2, safeAreaInsets.left + bannerHeight / 2) : CGPointMake(screenBounds.size.width / 2, safeAreaInsets.top + bannerHeight / 2);
+		// bannerView.center = screenBounds.size.width > screenBounds.size.height ? CGPointMake(screenBounds.size.width / 2, safeAreaInsets.left + bannerHeight / 2) : CGPointMake(screenBounds.size.width / 2, safeAreaInsets.top + bannerHeight / 2);
+		bannerView.center = CGPointMake(screenBounds.size.width / 2, bannerHeight / 2);
 		break;
 	default:
-		bannerView.center = screenBounds.size.width > screenBounds.size.height ? CGPointMake(screenBounds.size.width / 2, screenBounds.size.height - safeAreaInsets.right - bannerHeight / 2) : CGPointMake(screenBounds.size.width / 2, screenBounds.size.height - safeAreaInsets.bottom - bannerHeight / 2);
+		// bannerView.center = screenBounds.size.width > screenBounds.size.height ? CGPointMake(screenBounds.size.width / 2, screenBounds.size.height - safeAreaInsets.right - bannerHeight / 2) : CGPointMake(screenBounds.size.width / 2, screenBounds.size.height - safeAreaInsets.bottom - bannerHeight / 2);
+		bannerView.center = CGPointMake(screenBounds.size.width / 2, screenBounds.size.height - bannerHeight / 2);
 		break;
 	}
 }
