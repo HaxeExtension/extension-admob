@@ -579,4 +579,22 @@ public class Admob extends Extension
 			mainActivity.addContentView(adContainer, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 		}
 	}
+
+	@Override
+	public void onPause()
+	{
+		if (adView != null)
+			adView.pause();
+
+		super.onPause();
+	}
+
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+
+		if (adView != null)
+			adView.resume();
+	}
 }
