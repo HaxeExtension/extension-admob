@@ -1,9 +1,19 @@
 {
 	"name": "extension-admob",
-	"url": "https://github.com/HaxeExtension/extension-admob",
+	"url": "https://github.com/MAJigsaw77/extension-admob",
 	"license": "MIT",
-	"contributors":["pozirk", "fbricker"],
-	"tags": ["ads","api","google","ad","monetization","admob"],
+	"contributors": [
+		"MAJigsaw77",
+		"pozirk",
+		"fbricker"
+	],
+	"tags": [
+		"java",
+		"haxe",
+		"jni",
+		"admob",
+		"objcpp"
+	],
 	"description": "Google AdMob / OpenFL extension for Android + iOS.",
 	"version": "2.3.1",
 	"releasenote": "Updated to the latest version of Admob SDK",
