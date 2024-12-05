@@ -4,7 +4,7 @@ URL="https://dl.google.com/googleadmobadssdk/googlemobileadssdkios.zip"
 OUTPUT_DIR="project/admob-ios/frameworks"
 TEMP_DIR="temp_admob_sdk"
 ZIP_FILE="googlemobileadssdkios.zip"
-EXTRACTED_DIR="GoogleMobileAdsSdkiOS-11.12.0"
+EXTRACTED_DIR="GoogleMobileAdsSdkiOS-11.13.0"
 
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
