@@ -79,9 +79,7 @@ jobs:
         run: haxelib list
 
       - name: Setup Admob iOS frameworks
-        run: |
-          haxelib path extension-admob
-          cd $(haxelib path extension-admob) && chmod +x setup_admob_ios.sh && ./setup_admob_ios.sh
+        run: cd $(haxelib libpath extension-admob) && chmod +x setup_admob_ios.sh && ./setup_admob_ios.sh
 
       - name: Build
         run: cd examples/${{matrix.example}} && haxelib run lime build ios -nosign -debug
