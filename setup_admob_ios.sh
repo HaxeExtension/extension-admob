@@ -4,21 +4,23 @@ URL="https://dl.google.com/googleadmobadssdk/googlemobileadssdkios.zip"
 OUTPUT_DIR="project/admob-ios/frameworks"
 TEMP_DIR="temp_admob_sdk"
 ZIP_FILE="googlemobileadssdkios.zip"
-EXTRACTED_DIR="GoogleMobileAdsSdkiOS-11.13.0"
 
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 mkdir -p "$TEMP_DIR"
 
 echo "Downloading AdMob SDK..."
-
 curl -o "$ZIP_FILE" "$URL"
 
 echo "Unzipping the file..."
-
 unzip -q "$ZIP_FILE" -d "$TEMP_DIR"
 
-cd "$TEMP_DIR" || exit 1
+EXTRACTED_DIR=$(find "$TEMP_DIR" -maxdepth 1 -type d -name "GoogleMobileAdsSdkiOS*" | head -n 1)
+if [ -z "$EXTRACTED_DIR" ]; then
+    echo "Error: Extracted directory not found."
+    exit 1
+fi
+
 cd "$EXTRACTED_DIR" || exit 1
 
 for XCFRAMEWORK_DIR in *.xcframework; do
