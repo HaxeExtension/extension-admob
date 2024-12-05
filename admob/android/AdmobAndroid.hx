@@ -10,7 +10,6 @@ import lime.utils.Log;
 /**
  * A class to manage AdMob advertisements on Android devices.
  */
-@:nullSafety
 class AdmobAndroid
 {
 	/**
@@ -245,7 +244,6 @@ class AdmobAndroid
  * Internal callback handler for AdMob events.
  */
 @:noCompletion
-@:nullSafety
 private class CallBackHandler #if (lime >= "8.0.0") implements lime.system.JNI.JNISafety #end
 {
 	public function new():Void {}
