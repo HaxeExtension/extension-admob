@@ -35,9 +35,11 @@ class AdmobAndroid
 		final initJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'init', '(ZZZLorg/haxe/lime/HaxeObject;)V');
 
 		if (initJNI != null)
+		{
 			initJNI(testingAds, childDirected, enableRDP, new CallBackHandler());
 
-		initialized = true;
+			initialized = true;
+		}
 	}
 
 	/**
