@@ -17,11 +17,11 @@ echo "Unzipping the file..."
 
 unzip -q "$ZIP_FILE" -d "$TEMP_DIR"
 
-EXTRACTED_DIR=$(find "$TEMP_DIR" -mindepth 1 -maxdepth 1 -type d -name "GoogleMobileAdsSdkiOS*" | head -n 1)
+EXTRACTED_DIR=$(ls -d "$TEMP_DIR"/GoogleMobileAdsSdkiOS* 2 > /dev/null | head -n 1)
 
 if [ -z "$EXTRACTED_DIR" ]; then
     echo "Error: Extracted directory not found in $TEMP_DIR."
-    ls "$TEMP_DIR"
+    ls -la "$TEMP_DIR"
     exit 1
 fi
 
