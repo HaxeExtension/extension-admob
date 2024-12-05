@@ -32,8 +32,10 @@ class AdmobAndroid
 		if (initialized)
 			return;
 
-		JNICache.createStaticMethod('org/haxe/extension/Admob', 'init',
-			'(ZZZLorg/haxe/lime/HaxeObject;)V')(testingAds, childDirected, enableRDP, new CallBackHandler());
+		final initJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'init', '(ZZZLorg/haxe/lime/HaxeObject;)V');
+
+		if (initJNI != null)
+			initJNI(testingAds, childDirected, enableRDP, new CallBackHandler());
 
 		initialized = true;
 	}
@@ -53,7 +55,10 @@ class AdmobAndroid
 			return;
 		}
 
-		JNICache.createStaticMethod('org/haxe/extension/Admob', 'showBanner', '(Ljava/lang/String;II)V')(id, size, align);
+		final showBannerJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'showBanner', '(Ljava/lang/String;II)V');
+
+		if (showBannerJNI != null)
+			showBannerJNI(id, size, align);
 	}
 
 	/**
@@ -67,7 +72,10 @@ class AdmobAndroid
 			return;
 		}
 
-		JNICache.createStaticMethod('org/haxe/extension/Admob', 'hideBanner', '()V')();
+		final hideBannerJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'hideBanner', '()V');
+
+		if (hideBannerJNI != null)
+			hideBannerJNI();
 	}
 
 	/**
@@ -83,7 +91,10 @@ class AdmobAndroid
 			return;
 		}
 
-		JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadInterstitial', '(Ljava/lang/String;)V')(id);
+		final loadInterstitialJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadInterstitial', '(Ljava/lang/String;)V');
+
+		if (loadInterstitialJNI != null)
+			loadInterstitialJNI(id);
 	}
 
 	/**
@@ -97,7 +108,10 @@ class AdmobAndroid
 			return;
 		}
 
-		JNICache.createStaticMethod('org/haxe/extension/Admob', 'showInterstitial', '()V')();
+		final showInterstitialJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'showInterstitial', '()V');
+
+		if (showInterstitialJNI != null)
+			showInterstitialJNI();
 	}
 
 	/**
@@ -113,7 +127,10 @@ class AdmobAndroid
 			return;
 		}
 
-		JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadRewarded', '(Ljava/lang/String;)V')(id);
+		final loadRewardedJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadRewarded', '(Ljava/lang/String;)V');
+
+		if (loadRewardedJNI != null)
+			loadRewardedJNI(id);
 	}
 
 	/**
@@ -127,7 +144,10 @@ class AdmobAndroid
 			return;
 		}
 
-		JNICache.createStaticMethod('org/haxe/extension/Admob', 'showRewarded', '()V')();
+		final showRewardedJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'showRewarded', '()V');
+
+		if (showRewardedJNI != null)
+			showRewardedJNI();
 	}
 
 	/**
@@ -143,7 +163,10 @@ class AdmobAndroid
 			return;
 		}
 
-		JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadAppOpen', '(Ljava/lang/String;)V')(id);
+		final loadAppOpenJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadAppOpen', '(Ljava/lang/String;)V');
+
+		if (loadAppOpenJNI != null)
+			loadAppOpenJNI(id);
 	}
 
 	/**
@@ -157,7 +180,10 @@ class AdmobAndroid
 			return;
 		}
 
-		JNICache.createStaticMethod('org/haxe/extension/Admob', 'showAppOpen', '()V')();
+		final showAppOpenJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'showAppOpen', '()V');
+
+		if (showAppOpenJNI != null)
+			showAppOpenJNI();
 	}
 
 	/**
@@ -173,7 +199,10 @@ class AdmobAndroid
 			return;
 		}
 
-		JNICache.createStaticMethod('org/haxe/extension/Admob', 'setVolume', '(F)V')(vol);
+		final setVolumeJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'setVolume', '(F)V');
+
+		if (setVolumeJNI != null)
+			setVolumeJNI(vol);
 	}
 
 	/**
@@ -190,7 +219,9 @@ class AdmobAndroid
 			return -1;
 		}
 
-		return JNICache.createStaticMethod('org/haxe/extension/Admob', 'hasConsentForPurpose', '(I)I')(purpose);
+		final hasConsentJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'hasConsentForPurpose', '(I)I');
+
+		return hasConsentJNI != null ? hasConsentJNI(purpose) : -1;
 	}
 
 	/**
@@ -206,7 +237,9 @@ class AdmobAndroid
 			return '';
 		}
 
-		return JNICache.createStaticMethod('org/haxe/extension/Admob', 'getConsent', '()Ljava/lang/String;')();
+		final getConsentJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'getConsent', '()Ljava/lang/String;');
+
+		return getConsentJNI != null ? getConsentJNI() : '';
 	}
 
 	/**
@@ -222,7 +255,9 @@ class AdmobAndroid
 			return false;
 		}
 
-		return JNICache.createStaticMethod('org/haxe/extension/Admob', 'isPrivacyOptionsRequired', '()Z')();
+		final isPrivacyOptionsRequiredJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'isPrivacyOptionsRequired', '()Z');
+
+		return isPrivacyOptionsRequiredJNI != null ? isPrivacyOptionsRequiredJNI() : false;
 	}
 
 	/**
@@ -236,7 +271,10 @@ class AdmobAndroid
 			return;
 		}
 
-		JNICache.createStaticMethod('org/haxe/extension/Admob', 'showPrivacyOptionsForm', '()V')();
+		final showPrivacyOptionsFormJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'showPrivacyOptionsForm', '()V');
+
+		if (showPrivacyOptionsFormJNI != null)
+			showPrivacyOptionsFormJNI();
 	}
 }
 
