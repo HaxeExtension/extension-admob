@@ -552,15 +552,13 @@ void showAdmobAppOpen()
 
 void setAdmobVolume(float vol)
 {
-	dispatch_async(dispatch_get_main_queue(), ^{
-		if (vol > 0)
-		{
-			GADMobileAds.sharedInstance.applicationMuted = false;
-			GADMobileAds.sharedInstance.applicationVolume = vol;
-		}
-		else
-			GADMobileAds.sharedInstance.applicationMuted = true;
-	});
+	if (vol > 0)
+	{
+		GADMobileAds.sharedInstance.applicationMuted = false;
+		GADMobileAds.sharedInstance.applicationVolume = vol;
+	}
+	else
+		GADMobileAds.sharedInstance.applicationMuted = true;
 }
 
 int hasAdmobConsentForPurpose(int purpose)
@@ -590,9 +588,11 @@ bool isAdmobPrivacyOptionsRequired()
 
 void showAdmobPrivacyOptionsForm()
 {
-	[UMPConsentForm presentPrivacyOptionsFormFromViewController:UIApplication.sharedApplication.keyWindow.rootViewController completionHandler:^(NSError *_Nullable formError)
-	{
-		if (formError && admobCallback)
-			admobCallback("CONSENT_FAIL", [[formError localizedDescription] UTF8String]);
-	}];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[UMPConsentForm presentPrivacyOptionsFormFromViewController:UIApplication.sharedApplication.keyWindow.rootViewController completionHandler:^(NSError *_Nullable formError)
+		{
+			 if (formError && admobCallback)
+				 admobCallback("CONSENT_FAIL", [[formError localizedDescription] UTF8String]);
+		}];
+	});
 }
