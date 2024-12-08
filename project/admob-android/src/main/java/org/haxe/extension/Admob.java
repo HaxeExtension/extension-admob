@@ -49,15 +49,13 @@ import java.util.List;
 
 public class Admob extends Extension
 {
-	public static AdView adView;
-	public static RelativeLayout adContainer;
-
-	public static InterstitialAd interstitial;
-	public static RewardedAd rewarded;
-	public static AppOpenAd appOpen;
-
-	public static ConsentInformation consentInformation;
-	public static HaxeObject callback;
+	private static AdView adView;
+	private static RelativeLayout adContainer;
+	private static InterstitialAd interstitial;
+	private static RewardedAd rewarded;
+	private static AppOpenAd appOpen;
+	private static ConsentInformation consentInformation;
+	private static HaxeObject callback;
 
 	public static void init(final boolean testingAds, final boolean childDirected, final boolean enableRDP, HaxeObject callback)
 	{
@@ -67,12 +65,8 @@ public class Admob extends Extension
 		{
 			public void run()
 			{
-				ConsentRequestParameters params = new ConsentRequestParameters.Builder()
-					.setTagForUnderAgeOfConsent(childDirected)
-					.build();
-
 				consentInformation = UserMessagingPlatform.getConsentInformation(mainContext);
-				consentInformation.requestConsentInfoUpdate(mainActivity, params, new ConsentInformation.OnConsentInfoUpdateSuccessListener()
+				consentInformation.requestConsentInfoUpdate(mainActivity, new ConsentRequestParameters.Builder().setTagForUnderAgeOfConsent(childDirected).build(), new ConsentInformation.OnConsentInfoUpdateSuccessListener()
 				{
 					public void onConsentInfoUpdateSuccess()
 					{
