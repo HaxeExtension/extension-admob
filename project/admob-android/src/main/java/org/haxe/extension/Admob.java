@@ -68,8 +68,8 @@ public class Admob extends Extension
 
 											initMobileAds(testingAds, childDirected, enableRDP);
 										}
-									}
-								});
+									});
+								}
 							});
 						}
 					}, new UserMessagingPlatform.OnConsentFormLoadFailureListener()
