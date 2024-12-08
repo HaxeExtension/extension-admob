@@ -52,18 +52,24 @@ public class Admob extends Extension
 						@Override
 						public void onConsentFormLoadSuccess(ConsentForm consentForm)
 						{
-							consentForm.show(mainActivity, new ConsentForm.OnConsentFormDismissedListener()
+							mainActivity.runOnUiThread(new Runnable()
 							{
-								@Override
-								public void onConsentFormDismissed(FormError formError)
+								public void run()
 								{
-									if (formError == null && callback != null)
-										callback.call("onStatus", new Object[]{ "CONSENT_SUCCESS", "Consent form dismissed successfully." });
-									else if (callback != null)
-										callback.call("onStatus", new Object[]{ "CONSENT_FAIL", formError.getMessage() });
+									consentForm.show(mainActivity, new ConsentForm.OnConsentFormDismissedListener()
+									{
+										@Override
+										public void onConsentFormDismissed(FormError formError)
+										{
+											if (formError == null && callback != null)
+												callback.call("onStatus", new Object[]{ "CONSENT_SUCCESS", "Consent form dismissed successfully." });
+											else if (callback != null)
+												callback.call("onStatus", new Object[]{ "CONSENT_FAIL", formError.getMessage() });
 
-									initMobileAds(testingAds, childDirected, enableRDP);
-								}
+											initMobileAds(testingAds, childDirected, enableRDP);
+										}
+									}
+								});
 							});
 						}
 					}, new UserMessagingPlatform.OnConsentFormLoadFailureListener()
