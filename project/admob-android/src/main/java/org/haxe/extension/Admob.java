@@ -445,7 +445,7 @@ public class Admob extends Extension
 	public static void showAppOpen()
 	{
 		if (appOpen != null)
-			mainActivity.runOnUiThread(mainActivity.runOnUiThread(() -> appOpen.show(mainActivity));
+			mainActivity.runOnUiThread(() -> appOpen.show(mainActivity));
 		else if (callback != null)
 			callback.call("onStatus", new Object[]{ "APP_OPEN_FAILED_TO_SHOW", "You need to load App Open Ad first!" });
 	}
