@@ -84,8 +84,9 @@ class AdmobAndroid
 	 * Loads an interstitial ad.
 	 *
 	 * @param id The interstitial ad ID.
+	 * @param immersiveModeEnabled Optional flag to enable immersive mode when the ad is displayed. Defaults to true.
 	 */
-	public static function loadInterstitial(id:String):Void
+	public static function loadInterstitial(id:String, ?immersiveModeEnabled:Bool = true):Void
 	{
 		if (!initialized)
 		{
@@ -93,10 +94,10 @@ class AdmobAndroid
 			return;
 		}
 
-		final loadInterstitialJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadInterstitial', '(Ljava/lang/String;)V');
+		final loadInterstitialJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadInterstitial', '(Ljava/lang/String;Z)V');
 
 		if (loadInterstitialJNI != null)
-			loadInterstitialJNI(id);
+			loadInterstitialJNI(id, immersiveModeEnabled);
 	}
 
 	/**
@@ -120,8 +121,9 @@ class AdmobAndroid
 	 * Loads a rewarded ad.
 	 *
 	 * @param id The rewarded ad ID.
+	 * @param immersiveModeEnabled Optional flag to enable immersive mode when the ad is displayed. Defaults to true.
 	 */
-	public static function loadRewarded(id:String):Void
+	public static function loadRewarded(id:String, ?immersiveModeEnabled:Bool = true):Void
 	{
 		if (!initialized)
 		{
@@ -129,10 +131,10 @@ class AdmobAndroid
 			return;
 		}
 
-		final loadRewardedJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadRewarded', '(Ljava/lang/String;)V');
+		final loadRewardedJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadRewarded', '(Ljava/lang/String;Z)V');
 
 		if (loadRewardedJNI != null)
-			loadRewardedJNI(id);
+			loadRewardedJNI(id, immersiveModeEnabled);
 	}
 
 	/**
@@ -156,8 +158,9 @@ class AdmobAndroid
 	 * Loads a "app open" ad.
 	 *
 	 * @param id The "app open" ad ID.
+	 * @param immersiveModeEnabled Optional flag to enable immersive mode when the ad is displayed. Defaults to true.
 	 */
-	public static function loadAppOpen(id:String):Void
+	public static function loadAppOpen(id:String, ?immersiveModeEnabled:Bool = true):Void
 	{
 		if (!initialized)
 		{
@@ -165,10 +168,10 @@ class AdmobAndroid
 			return;
 		}
 
-		final loadAppOpenJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadAppOpen', '(Ljava/lang/String;)V');
+		final loadAppOpenJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadAppOpen', '(Ljava/lang/String;Z)V');
 
 		if (loadAppOpenJNI != null)
-			loadAppOpenJNI(id);
+			loadAppOpenJNI(id, immersiveModeEnabled);
 	}
 
 	/**

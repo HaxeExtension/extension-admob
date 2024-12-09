@@ -17,7 +17,7 @@ dependencies
 {
 	implementation project(':deps:extension-api')
 
-	implementation('com.google.android.gms:play-services-ads:23.3.0')
+	implementation('com.google.android.gms:play-services-ads:23.5.0')
 	{
 		exclude group: 'org.jetbrains.kotlin'
 		exclude module: 'kotlin-stdlib'

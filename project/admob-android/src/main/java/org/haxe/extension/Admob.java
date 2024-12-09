@@ -2,8 +2,7 @@ package org.haxe.extension;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.provider.Settings.Secure;
+import android.provider.Settings;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -22,7 +21,6 @@ import org.haxe.extension.Extension;
 import org.haxe.lime.HaxeObject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,7 +118,7 @@ public class Admob extends Extension
 			{
 				StringBuilder hexString = new StringBuilder();
 
-				for (byte b : MessageDigest.getInstance("MD5").digest(Secure.getString(mainActivity.getContentResolver(), Secure.ANDROID_ID).getBytes()))
+				for (byte b : MessageDigest.getInstance("MD5").digest(Settings.Secure.getString(mainActivity.getContentResolver(), Settings.Secure.ANDROID_ID).getBytes()))
 					hexString.append(String.format("%02x", b));
 
 				testDeviceIds.add(hexString.toString().toUpperCase());
@@ -263,7 +261,7 @@ public class Admob extends Extension
 		}
 	}
 
-	public static void loadInterstitial(final String id)
+	public static void loadInterstitial(final String id, final boolean immersiveModeEnabled)
 	{
 		mainActivity.runOnUiThread(new Runnable()
 		{
@@ -275,7 +273,7 @@ public class Admob extends Extension
 					public void onAdLoaded(InterstitialAd interstitialAd)
 					{
 						interstitial = interstitialAd;
-						interstitial.setImmersiveMode((mainActivity.getWindow().getDecorView().getSystemUiVisibility() & (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)) == (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION));
+						interstitial.setImmersiveMode(immersiveModeEnabled);
 						interstitial.setFullScreenContentCallback(new FullScreenContentCallback()
 						{
 							@Override
@@ -338,7 +336,7 @@ public class Admob extends Extension
 		}
 	}
 
-	public static void loadRewarded(final String id)
+	public static void loadRewarded(final String id, final boolean immersiveModeEnabled)
 	{
 		mainActivity.runOnUiThread(new Runnable()
 		{
@@ -350,7 +348,7 @@ public class Admob extends Extension
 					public void onAdLoaded(RewardedAd rewardedAd)
 					{
 						rewarded = rewardedAd;
-						rewarded.setImmersiveMode((mainActivity.getWindow().getDecorView().getSystemUiVisibility() & (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)) == (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION));
+						rewarded.setImmersiveMode(immersiveModeEnabled);
 						rewarded.setFullScreenContentCallback(new FullScreenContentCallback()
 						{
 							@Override
@@ -417,7 +415,7 @@ public class Admob extends Extension
 			callback.call("onStatus", new Object[] { "REWARDED_FAILED_TO_SHOW", "You need to load rewarded ad first!" });
 	}
 
-	public static void loadAppOpen(final String id)
+	public static void loadAppOpen(final String id, final boolean immersiveModeEnabled)
 	{
 		mainActivity.runOnUiThread(new Runnable()
 		{
@@ -430,7 +428,7 @@ public class Admob extends Extension
 					public void onAdLoaded(AppOpenAd ad)
 					{
 						appOpen = ad;
-						appOpen.setImmersiveMode((mainActivity.getWindow().getDecorView().getSystemUiVisibility() & (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)) == (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION));
+						appOpen.setImmersiveMode(immersiveModeEnabled);
 						appOpen.setFullScreenContentCallback(new FullScreenContentCallback()
 						{
 							@Override
@@ -505,7 +503,7 @@ public class Admob extends Extension
 
 	public static String getConsent()
 	{
-		return PreferenceManager.getDefaultSharedPreferences(mainContext).getString("IABTCF_PurposeConsents", "");
+		return mainContext.getSharedPreferences("default_prefs", Context.MODE_PRIVATE).getString("IABTCF_PurposeConsents", "");
 	}
 
 	public static boolean isPrivacyOptionsRequired()
