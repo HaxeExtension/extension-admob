@@ -168,38 +168,34 @@ public class Admob extends Extension
 		{
 			public void run()
 			{
-				adContainer.setGravity(align);
-
-				AdSize adSize;
+				adView = new AdView(mainActivity);
+				adView.setAdUnitId(id);
 
 				switch (size)
 				{
 					case 1:
-						adSize = AdSize.FLUID;
+						adView.setAdSize(AdSize.FLUID);
 						break;
 					case 2:
-						adSize = AdSize.FULL_BANNER;
+						adView.setAdSize(AdSize.FULL_BANNER);
 						break;
 					case 3:
-						adSize = AdSize.LARGE_BANNER;
+						adView.setAdSize(AdSize.LARGE_BANNER);
 						break;
 					case 4:
-						adSize = AdSize.LEADERBOARD;
+						adView.setAdSize(AdSize.LEADERBOARD);
 						break;
 					case 5:
-						adSize = AdSize.MEDIUM_RECTANGLE;
+						adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
 						break;
 					case 6:
-						adSize = AdSize.WIDE_SKYSCRAPER;
+						adView.setAdSize(AdSize.WIDE_SKYSCRAPER);
 						break;
 					default:
-						adSize = AdSize.BANNER;
+						adView.setAdSize(AdSize.BANNER);
 						break;
 				}
 
-				adView = new AdView(mainActivity);
-				adView.setAdUnitId(id);
-				adView.setAdSize(adSize);
 				adView.setAdListener(new AdListener()
 				{
 					@Override
@@ -239,7 +235,10 @@ public class Admob extends Extension
 							callback.call("onStatus", new Object[] { "BANNER_CLOSED", "" });
 					}
 				});
+
+				adContainer.setGravity(align);
 				adContainer.addView(adView);
+
 				adView.loadAd(new AdRequest.Builder().build());
 			}
 		});
