@@ -60,7 +60,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 - (void)bannerViewDidReceiveAd:(GADBannerView *)bannerView
 {
 	if (admobCallback)
-		admobCallback("BANNER_LOADED", "Banner loaded successfully.");
+		admobCallback("BANNER_LOADED", "");
 }
 
 - (void)bannerView:(GADBannerView *)bannerView didFailToReceiveAdWithError:(NSError *)error
@@ -72,19 +72,19 @@ static void alignBanner(GADBannerView *bannerView, int align)
 - (void)bannerViewDidRecordClick:(GADBannerView *)bannerView
 {
 	if (admobCallback)
-		admobCallback("BANNER_CLICKED", "Banner clicked.");
+		admobCallback("BANNER_CLICKED", "");
 }
 
 - (void)bannerViewWillPresentScreen:(GADBannerView *)bannerView
 {
 	if (admobCallback)
-		admobCallback("BANNER_OPENED", "Banner is opening.");
+		admobCallback("BANNER_OPENED", "");
 }
 
 - (void)bannerViewDidDismissScreen:(GADBannerView *)bannerView
 {
 	if (admobCallback)
-		admobCallback("BANNER_CLOSED", "Banner closed.");
+		admobCallback("BANNER_CLOSED", "");
 }
 
 @end
@@ -117,7 +117,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 			self._ad.fullScreenContentDelegate = self;
 
 			if (admobCallback)
-				admobCallback("INTERSTITIAL_LOADED", "Interstitial loaded successfully.");
+				admobCallback("INTERSTITIAL_LOADED", "");
 		}
 	}];
 }
@@ -129,7 +129,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 		[self._ad presentFromRootViewController:[UIApplication.sharedApplication.keyWindow rootViewController]];
 
 		if (admobCallback)
-			admobCallback("INTERSTITIAL_SHOWED", "Interstitial displayed.");
+			admobCallback("INTERSTITIAL_SHOWED", "");
 	}
 	else
 	{
@@ -141,7 +141,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 - (void)adDidDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad
 {
 	if (admobCallback)
-		admobCallback("INTERSTITIAL_DISMISSED", "Interstitial ad dismissed.");
+		admobCallback("INTERSTITIAL_DISMISSED", "");
 }
 
 - (void)ad:(id<GADFullScreenPresentingAd>)ad didFailToPresentFullScreenContentWithError:(NSError *)error
@@ -180,7 +180,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 			self._ad.fullScreenContentDelegate = self;
 
 			if (admobCallback)
-				admobCallback("REWARDED_LOADED", "Rewarded ad loaded successfully.");
+				admobCallback("REWARDED_LOADED", "");
 		}
 	}];
 }
@@ -195,7 +195,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 		}];
 
 		if (admobCallback)
-			admobCallback("REWARDED_SHOWED", "Rewarded ad displayed.");
+			admobCallback("REWARDED_SHOWED", "");
 	}
 	else
 	{
@@ -207,7 +207,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 - (void)adDidDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad
 {
 	if (admobCallback)
-		admobCallback("REWARDED_DISMISSED", "Rewarded ad dismissed.");
+		admobCallback("REWARDED_DISMISSED", "");
 }
 
 - (void)ad:(id<GADFullScreenPresentingAd>)ad didFailToPresentFullScreenContentWithError:(NSError *)error
@@ -246,7 +246,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 			self._ad.fullScreenContentDelegate = self;
 
 			if (admobCallback)
-				admobCallback("APP_OPEN_LOADED", "App Open ad loaded successfully.");
+				admobCallback("APP_OPEN_LOADED", "");
 		}
 	}];
 }
@@ -258,7 +258,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 		[self._ad presentFromRootViewController:[UIApplication.sharedApplication.keyWindow rootViewController]];
 
 		if (admobCallback)
-			admobCallback("APP_OPEN_SHOWED", "App Open ad displayed.");
+			admobCallback("APP_OPEN_SHOWED", "");
 	}
 	else
 	{
@@ -270,7 +270,7 @@ static void alignBanner(GADBannerView *bannerView, int align)
 - (void)adDidDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad
 {
 	if (admobCallback)
-		admobCallback("APP_OPEN_DISMISSED", "App Open ad dismissed.");
+		admobCallback("APP_OPEN_DISMISSED", "");
 }
 
 - (void)ad:(id<GADFullScreenPresentingAd>)ad didFailToPresentFullScreenContentWithError:(NSError *)error
@@ -427,7 +427,12 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 void showAdmobBanner(const char *id, int size, int align)
 {
 	if (bannerView != nil)
+	{
+		if (admobCallback)
+			admobCallback("BANNER_FAILED_TO_LOAD", "Hide previous banner first!");
+
 		return;
+	}
 
 	currentAlign = align;
 
@@ -487,11 +492,7 @@ void hideAdmobBanner()
 		if (bannerView != nil)
 		{
 			[bannerView removeFromSuperview];
-
 			bannerView = nil;
-
-			if (admobCallback)
-				admobCallback("BANNER_CLOSED", "Banner removed.");
 		}
 	});
 }
@@ -510,7 +511,7 @@ void showAdmobInterstitial()
 		if (interstitialDelegate)
 			[interstitialDelegate show];
 		else if (admobCallback)
-			admobCallback("INTERSTITIAL_FAILED_TO_SHOW", "Interstitial Delegate is not initialized.");
+			admobCallback("INTERSTITIAL_FAILED_TO_SHOW", "You need to load interstitial ad first!");
 	});
 }
 
@@ -528,7 +529,7 @@ void showAdmobRewarded()
 		if (rewardedDelegate)
 			[rewardedDelegate show];
 		else if (admobCallback)
-			admobCallback("REWARDED_FAILED_TO_SHOW", "Rewarded Delegate is not initialized.");
+			admobCallback("REWARDED_FAILED_TO_SHOW", "You need to load rewarded ad first!");
 	});
 }
 
@@ -546,7 +547,7 @@ void showAdmobAppOpen()
 		if (appOpenDelegate)
 			[appOpenDelegate show];
 		else if (admobCallback)
-			admobCallback("APP_OPEN_FAILED_TO_SHOW", "Rewarded Delegate is not initialized.");
+			admobCallback("APP_OPEN_FAILED_TO_SHOW", "You need to load App Open Ad first!");
 	});
 }
 
