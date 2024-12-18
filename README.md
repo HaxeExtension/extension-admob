@@ -15,7 +15,7 @@ To install **extension-admob**, follow these steps:
 
 2. **Haxelib Git Installation (for latest updates)**
    ```bash
-   haxelib git extension-admob https://github.com/HaxeExtension/extension-extension.admob.git
+   haxelib git extension-admob https://github.com/HaxeExtension/extension-admob.git
    ```
 
 3. **Project Configuration** (Add the following code to your **project.xml** file)
