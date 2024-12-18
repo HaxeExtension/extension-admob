@@ -1,7 +1,7 @@
 package extension.admob;
 
 #if android
-typedef Admob = admob.android.AdmobAndroid;
+typedef Admob = extension.admob.android.AdmobAndroid;
 #elseif ios
-typedef Admob = admob.ios.AdmobIOS;
+typedef Admob = extension.admob.ios.AdmobIOS;
 #end
