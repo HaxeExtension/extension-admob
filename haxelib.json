@@ -1,10 +1,10 @@
 {
 	"name": "extension-admob",
-	"url": "https://github.com/MAJigsaw77/extension-admob",
+	"url": "https://github.com/HaxeExtension/extension-admob",
 	"license": "MIT",
 	"contributors": [
-		"MAJigsaw77",
 		"pozirk",
+		"MAJigsaw77",
 		"fbricker"
 	],
 	"tags": [
@@ -14,7 +14,7 @@
 		"admob",
 		"objcpp"
 	],
-	"description": "Google AdMob / OpenFL extension for Android + iOS.",
+	"description": "A Haxe/Lime extension for integrating Google AdMob on iOS and Android.",
 	"version": "2.3.1",
 	"releasenote": "Updated to the latest version of Admob SDK",
 	"dependencies": {
