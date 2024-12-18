@@ -1,8 +1,8 @@
 package extension.admob.ios;
 
 #if ios
-import admob.AdmobBannerAlign;
-import admob.AdmobBannerSize;
+import extension.admob.AdmobBannerAlign;
+import extension.admob.AdmobBannerSize;
 import haxe.MainLoop;
 import lime.app.Event;
 import lime.utils.Log;

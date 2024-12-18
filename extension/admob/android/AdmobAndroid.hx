@@ -1,9 +1,9 @@
 package extension.admob.android;
 
 #if android
-import admob.android.util.JNICache;
-import admob.AdmobBannerAlign;
-import admob.AdmobBannerSize;
+import extension.admob.android.util.JNICache;
+import extension.admob.AdmobBannerAlign;
+import extension.admob.AdmobBannerSize;
 import lime.app.Event;
 import lime.utils.Log;
 
