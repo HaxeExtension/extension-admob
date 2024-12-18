@@ -1,6 +1,6 @@
 # extension-admob
 
-![](https://img.shields.io/github/repo-size/MAJigsaw77/extension-admob) ![](https://badgen.net/github/open-issues/MAJigsaw77/extension-admob) ![](https://badgen.net/badge/license/MIT/green)
+![](https://img.shields.io/github/repo-size/HaxeExtension/extension-admob) ![](https://badgen.net/github/open-issues/HaxeExtension/extension-admob) ![](https://badgen.net/badge/license/MIT/green)
 
 A Haxe/[Lime](https://lime.openfl.org) extension for integrating [Google AdMob](https://extension.admob.google.com/home) on iOS and Android.
 
@@ -15,7 +15,7 @@ To install **extension-admob**, follow these steps:
 
 2. **Haxelib Git Installation (for latest updates)**
    ```bash
-   haxelib git extension-admob https://github.com/FunkinDroidTeam/extension-extension.admob.git
+   haxelib git extension-admob https://github.com/HaxeExtension/extension-extension.admob.git
    ```
 
 3. **Project Configuration** (Add the following code to your **project.xml** file)
