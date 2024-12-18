@@ -1,4 +1,4 @@
-package admob;
+package extension.admob;
 
 enum abstract AdmobBannerAlign(Int) from Int to Int
 {

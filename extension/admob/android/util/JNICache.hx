@@ -1,4 +1,4 @@
-package admob.android.util;
+package extension.admob.android.util;
 
 #if android
 import lime.system.JNI;

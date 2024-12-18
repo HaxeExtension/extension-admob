@@ -1,4 +1,4 @@
-package admob;
+package extension.admob;
 
 enum abstract AdmobConsent(String) from String to String
 {

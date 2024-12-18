@@ -1,4 +1,4 @@
-package admob;
+package extension.admob;
 
 #if android
 typedef Admob = admob.android.AdmobAndroid;

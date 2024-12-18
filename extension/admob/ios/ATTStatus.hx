@@ -1,4 +1,4 @@
-package admob;
+package extension.admob.ios;
 
 enum abstract ATTStatus(String) from String to String
 {

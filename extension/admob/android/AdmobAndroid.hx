@@ -1,4 +1,4 @@
-package admob.android;
+package extension.admob.android;
 
 #if android
 import admob.android.util.JNICache;

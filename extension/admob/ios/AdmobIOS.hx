@@ -1,4 +1,4 @@
-package admob.ios;
+package extension.admob.ios;
 
 #if ios
 import admob.AdmobBannerAlign;

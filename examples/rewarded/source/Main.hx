@@ -8,12 +8,12 @@ class Main extends lime.app.Application
 	{
 		super();
 
-		admob.Admob.onStatus.add(function(event:String, message:String):Void
+		extension.admob.extension.admob.onStatus.add(function(event:String, message:String):Void
 		{
-			if (event == admob.AdmobEvent.INIT_OK)
-				admob.Admob.loadRewarded(AD_UNIT_ID);
-			else if (event == admob.AdmobEvent.REWARDED_LOADED)
-				admob.Admob.showRewarded();
+			if (event == extension.admob.AdmobEvent.INIT_OK)
+				extension.admob.extension.admob.loadRewarded(AD_UNIT_ID);
+			else if (event == extension.admob.AdmobEvent.REWARDED_LOADED)
+				extension.admob.extension.admob.showRewarded();
 
 			#if android
 			android.widget.Toast.makeText(message.length > 0 ? '$event:$message' : event, android.widget.Toast.LENGTH_SHORT);
@@ -25,7 +25,7 @@ class Main extends lime.app.Application
 
 	public override function onWindowCreate():Void
 	{
-		admob.Admob.init(true);
+		extension.admob.extension.admob.init(true);
 	}
 
 	public override function render(context:lime.graphics.RenderContext):Void
