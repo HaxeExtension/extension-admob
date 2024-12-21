@@ -25,7 +25,5 @@
 		<dependency name="AppTrackingTransparency.framework" />
 
 		<template path="templates" />
-
-		<config:ios linker-flags="-ObjC" />
 	</section>
 </extension>
