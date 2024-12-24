@@ -502,7 +502,7 @@ public class Admob extends Extension
 
 	public static String getConsent()
 	{
-		return mainContext.getSharedPreferences("default_prefs", Context.MODE_PRIVATE).getString("IABTCF_PurposeConsents", "");
+		return mainContext.getSharedPreferences(packageName + "_preferences", Context.MODE_PRIVATE).getString("IABTCF_PurposeConsents", "");
 	}
 
 	public static boolean isPrivacyOptionsRequired()
