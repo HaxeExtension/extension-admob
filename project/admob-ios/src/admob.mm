@@ -551,6 +551,11 @@ void showAdmobAppOpen()
 	});
 }
 
+bool canAdmobRequestAds()
+{
+	return UMPConsentInformation.sharedInstance.canRequestAds;
+}
+
 void setAdmobVolume(float vol)
 {
 	if (vol > 0)

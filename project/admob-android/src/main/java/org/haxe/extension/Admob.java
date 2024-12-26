@@ -479,6 +479,11 @@ public class Admob extends Extension
 			callback.call("onStatus", new Object[]{ "APP_OPEN_FAILED_TO_SHOW", "You need to load App Open Ad first!" });
 	}
 
+	public static boolean canRequestAds()
+	{
+		return consentInformation != null && consentInformation.canRequestAds();
+	}
+
 	public static void setVolume(final float vol)
 	{
 		if (vol > 0)

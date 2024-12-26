@@ -192,6 +192,24 @@ class AdmobAndroid
 	}
 
 	/**
+	 * Checks if ads can be requested.
+	 *
+	 * @return `true` if ads can be requested, `false` if not or if not initialized.
+	 */
+	public static function canRequestAds():Bool
+	{
+		if (!initialized)
+		{
+			Log.warn('Admob extension isn\'t initialized');
+			return false;
+		}
+
+		final canRequestAdsJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'canRequestAds', '()Z');
+
+		return canRequestAdsJNI != null ? canRequestAdsJNI() : false;
+	}
+
+	/**
 	 * Sets the volume for interstitial and rewarded ads.
 	 *
 	 * @param vol The volume level (0.0 - 1.0, or -1 for muted).
