@@ -171,22 +171,6 @@ class AdmobIOS
 	}
 
 	/**
-	 * Checks if ads can be requested.
-	 *
-	 * @return `true` if ads can be requested, `false` if not or if not initialized.
-	 */
-	public static function canRequestAds():Bool
-	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return false;
-		}
-
-		return canAdmobRequestAds();
-	}
-
-	/**
 	 * Sets the volume for interstitial and rewarded ads.
 	 *
 	 * @param vol The volume level (0.0 - 1.0, or -1 for muted).
@@ -292,9 +276,6 @@ class AdmobIOS
 
 	@:native('showAdmobAppOpen')
 	extern public static function showAdmobAppOpen():Void;
-
-	@:native('canAdmobRequestAds')
-	extern public static function canAdmobRequestAds():Bool;
 
 	@:native('setAdmobVolume')
 	extern public static function setAdmobVolume(vol:Single):Void;

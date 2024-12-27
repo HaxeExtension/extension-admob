@@ -11,7 +11,6 @@ void loadAdmobRewarded(const char *id);
 void showAdmobRewarded();
 void loadAdmobAppOpen(const char *id);
 void showAdmobAppOpen();
-bool canAdmobRequestAds();
 void setAdmobVolume(float vol);
 int hasAdmobConsentForPurpose(int purpose);
 const char *getAdmobConsent();
