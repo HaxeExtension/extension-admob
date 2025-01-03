@@ -338,7 +338,11 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 					}
 
 					if (statusString)
-						admobCallback("ATT_STATUS", [statusString UTF8String]);
+					{
+						dispatch_async(dispatch_get_main_queue(), ^{
+							admobCallback("ATT_STATUS", [statusString UTF8String]);
+						});
+					}
 				}
 
 				[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
