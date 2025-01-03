@@ -311,7 +311,9 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 
 	if (@available(iOS 14, *))
 	{
-		if (hasAdmobConsentForPurpose(0) == 1)
+		int purpose = hasAdmobConsentForPurpose(0);
+
+		if (purpose == 1 || purpose == -1)
 		{
 			[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status)
 			{
@@ -333,12 +335,10 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 					case ATTrackingManagerAuthorizationStatusAuthorized:
 						statusString = @"AUTHORIZED";
 						break;
-					default:
-						statusString = @"UNKNOWN";
-						break;
 					}
 
-					admobCallback("ATT_STATUS", [statusString UTF8String]);
+					if (statusString)
+						admobCallback("ATT_STATUS", [statusString UTF8String]);
 				}
 
 				[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
@@ -566,10 +566,13 @@ int hasAdmobConsentForPurpose(int purpose)
 {
 	NSString *purposeConsents = [NSUserDefaults.standardUserDefaults stringForKey:@"IABTCF_PurposeConsents"];
 
-	if (purposeConsents.length > purpose)
-		return [[purposeConsents substringWithRange:NSMakeRange(purpose, 1)] integerValue];
+	if (purposeConsents == nil || purposeConsents.length == 0)
+		return -1;
 
-	return -1;
+	if (purpose >= purposeConsents.length)
+		return -1;
+
+	return [[purposeConsents substringWithRange:NSMakeRange(purpose, 1)] integerValue];
 }
 
 const char *getAdmobConsent()
