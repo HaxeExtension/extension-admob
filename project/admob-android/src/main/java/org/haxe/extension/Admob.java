@@ -149,7 +149,7 @@ public class Admob extends Extension
 			public void onInitializationComplete(InitializationStatus initializationStatus)
 			{
 				if (callback != null) 
-					callback.call("onStatus", new Object[]{ "INIT_OK", MobileAds.getVersion().toString() });
+					callback.call("onStatus", new Object[]{ "INIT_OK", "" });
 			}
 		});
 	}

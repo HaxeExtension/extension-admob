@@ -348,7 +348,7 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 				[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 				{
 					if (admobCallback)
-						admobCallback("INIT_OK", [[NSString stringWithFormat:@"%zd.%zd.%zd", GADMobileAds.sharedInstance.versionNumber.majorVersion, GADMobileAds.sharedInstance.versionNumber.minorVersion, GADMobileAds.sharedInstance.versionNumber.patchVersion] UTF8String]);
+						admobCallback("INIT_OK", "");
 				}];
 			}];
 		}
@@ -357,7 +357,7 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 			[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 			{
 				if (admobCallback)
-					admobCallback("INIT_OK", [[NSString stringWithFormat:@"%zd.%zd.%zd", GADMobileAds.sharedInstance.versionNumber.majorVersion, GADMobileAds.sharedInstance.versionNumber.minorVersion, GADMobileAds.sharedInstance.versionNumber.patchVersion] UTF8String]);
+					admobCallback("INIT_OK", "");
 			}];
 		}
 	}
@@ -366,7 +366,7 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 		[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 		{
 			if (admobCallback)
-				admobCallback("INIT_OK", [[NSString stringWithFormat:@"%zd.%zd.%zd", GADMobileAds.sharedInstance.versionNumber.majorVersion, GADMobileAds.sharedInstance.versionNumber.minorVersion, GADMobileAds.sharedInstance.versionNumber.patchVersion] UTF8String]);
+				admobCallback("INIT_OK", "");
 		}];
 	}
 }
