@@ -1,39 +1,33 @@
-﻿package extension.admob;
+package extension.admob;
 
-import openfl.events.Event;
-
-/**
- * Admob events
- * @author Pozirk Games (http://www.pozirk.com)
- */
-class AdmobEvent extends Event
+enum abstract AdmobEvent(String) from String to String
 {
-	public static var INIT_OK:String = "INIT_OK"; //you can request ads after this event
-	public static var INIT_FAIL:String = "INIT_FAIL";
-	public static var CONSENT_FAIL:String = "CONSENT_FAIL"; //happens when there is a problem with GDPR consent form, but I initilize Admob anyway, use it at your own risk :)
-	public static var BANNER_LOADED:String = "BANNER_LOADED";
-	public static var BANNER_FAILED_TO_LOAD:String = "BANNER_FAILED_TO_LOAD";
-	public static var BANNER_OPENED:String = "BANNER_OPENED";
-	public static var BANNER_CLICKED:String = "BANNER_CLICKED"; //https://www.youtube.com/watch?v=ETxmCCsMoD0
-	public static var BANNER_CLOSED:String = "BANNER_CLOSED";
-	public static var INTERSTITIAL_LOADED:String = "INTERSTITIAL_LOADED";
-	public static var INTERSTITIAL_FAILED_TO_LOAD:String = "INTERSTITIAL_FAILED_TO_LOAD";
-	public static var INTERSTITIAL_DISMISSED:String = "INTERSTITIAL_DISMISSED";
-	public static var INTERSTITIAL_FAILED_TO_SHOW:String = "INTERSTITIAL_FAILED_TO_SHOW";
-	public static var INTERSTITIAL_SHOWED:String = "INTERSTITIAL_SHOWED";
-	public static var REWARDED_LOADED:String = "REWARDED_LOADED";
-	public static var REWARDED_FAILED_TO_LOAD:String = "REWARDED_FAILED_TO_LOAD";
-	public static var REWARDED_DISMISSED:String = "REWARDED_DISMISSED";
-	public static var REWARDED_FAILED_TO_SHOW:String = "REWARDED_FAILED_TO_SHOW";
-	public static var REWARDED_SHOWED:String = "REWARDED_SHOWED";
-	public static var REWARDED_EARNED:String = "REWARDED_EARNED";
-	public static var WHAT_IS_GOING_ON:String = "WHAT_IS_GOING_ON"; //an event that should never happen
-	
-	public var data(default, null):String; //extra info about event
-	
-	public function new(type:String, sdata:String = null)
-	{
-		super(type, false, false);
-		data = sdata;
-	}
+	final INIT_OK = 'INIT_OK';
+	final CONSENT_FAIL = 'CONSENT_FAIL';
+	final CONSENT_SUCCESS = 'CONSENT_SUCCESS';
+	final CONSENT_NOT_REQUIRED = 'CONSENT_NOT_REQUIRED';
+	#if ios
+	final ATT_STATUS = 'ATT_STATUS';
+	#end
+	final BANNER_LOADED = 'BANNER_LOADED';
+	final BANNER_FAILED_TO_LOAD = 'BANNER_FAILED_TO_LOAD';
+	final BANNER_OPENED = 'BANNER_OPENED';
+	final BANNER_CLICKED = 'BANNER_CLICKED';
+	final BANNER_CLOSED = 'BANNER_CLOSED';
+	final INTERSTITIAL_LOADED = 'INTERSTITIAL_LOADED';
+	final INTERSTITIAL_FAILED_TO_LOAD = 'INTERSTITIAL_FAILED_TO_LOAD';
+	final INTERSTITIAL_DISMISSED = 'INTERSTITIAL_DISMISSED';
+	final INTERSTITIAL_FAILED_TO_SHOW = 'INTERSTITIAL_FAILED_TO_SHOW';
+	final INTERSTITIAL_SHOWED = 'INTERSTITIAL_SHOWED';
+	final REWARDED_LOADED = 'REWARDED_LOADED';
+	final REWARDED_FAILED_TO_LOAD = 'REWARDED_FAILED_TO_LOAD';
+	final REWARDED_DISMISSED = 'REWARDED_DISMISSED';
+	final REWARDED_FAILED_TO_SHOW = 'REWARDED_FAILED_TO_SHOW';
+	final REWARDED_SHOWED = 'REWARDED_SHOWED';
+	final REWARDED_EARNED = 'REWARDED_EARNED';
+	final APP_OPEN_LOADED = 'APP_OPEN_LOADED';
+	final APP_OPEN_FAILED_TO_LOAD = 'APP_OPEN_FAILED_TO_LOAD';
+	final APP_OPEN_DISMISSED = 'APP_OPEN_DISMISSED';
+	final APP_OPEN_FAILED_TO_SHOW = 'APP_OPEN_FAILED_TO_SHOW';
+	final APP_OPEN_SHOWED = 'APP_OPEN_SHOWED';
 }

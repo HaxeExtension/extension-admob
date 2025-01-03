@@ -1,151 +1,127 @@
 # extension-admob
-Google AdMob OpenFL extension for iOS and Android.<br />
-This extension allows you to integrate Google AdMob with your OpenFL application.
 
-### Features
-* iOS Mobile Ads SDK 11.10.0 (Xcode 15.1+, iOS 13+)
-* Android Mobile Ads SDK is always the latest automatically (update with SDK Manager)
-* GDPR for EEA and UK, read how to setup here: https://support.google.com/admob/answer/10113207
-* App Tracking Transparency (if iOS14+, app automatically presents user authorization request on first start)
-* COPPA, CCPA
-* Banners, Interstitial, Rewarded ads
-* Ads sound volume control
-* Events
-* Some bugs :)
+![](https://img.shields.io/github/repo-size/HaxeExtension/extension-admob) ![](https://badgen.net/github/open-issues/HaxeExtension/extension-admob) ![](https://badgen.net/badge/license/MIT/green)
+
+A Haxe/[Lime](https://lime.openfl.org) extension for integrating [Google AdMob](https://extension.admob.google.com/home) on iOS and Android.
 
 ### Installation
-To install this library, you can simply get the library from haxelib like this:<br />
-```bash
-haxelib install extension-admob
-```
 
-Once this is done, you just need to add this to your project.xml
-```xml
-<haxelib name="extension-admob" />
-```
+To install **extension-admob**, follow these steps:
+
+1. **Haxelib Installation**
+   ```bash
+   haxelib install extension-admob
+   ```
+
+2. **Haxelib Git Installation (for latest updates)**
+   ```bash
+   haxelib git extension-admob https://github.com/HaxeExtension/extension-admob.git
+   ```
+
+3. **Project Configuration** (Add the following code to your **project.xml** file)
+   ```xml
+   <section if="cpp">
+   	<haxelib name="extension-admob" if="mobile" />
+   </section>
+   ```
 
 ### Setup
-Set the following in your project.xml, replace value with your app id from Admob:
-```xml
-<setenv name="ADMOB_APPID" value="ca-app-pub-XXXXX123457" if="android"/>
-<setenv name="ADMOB_APPID" value="ca-app-pub-XXXXX123458" if="ios"/>
-```
 
-For Android:<br />
-You need to install the latest version of Android SDK Platfrom (31+), Android SDK Platfrom-Tools, Android SDK Build-Tools and Google Play services.<br />
-Version of Lime (8.2.0) doesn't support (probably?) latest Gradle version.<br />
-More details here: https://github.com/haxelime/lime/issues/1476
+To configure **extension-admob** for your project, follow these steps:
 
-You need to set Gradle version in your project.xml file:
-```xml
-<config:android gradle-version="6.7.1" if="android" />
-<config:android gradle-plugin="4.2.0" if="android" />
-```
+1. **iOS Frameworks Installation**  
+   To set up the required frameworks for iOS compilation, navigate to the directory where the library is installed and execute the following command:
+   ```bash
+   chmod +x setup_admob_ios.sh && ./setup_admob_ios.sh
+   ```
 
-And fix some other problems with Lime, open file "\lib\lime\X,X,X\templates\android\template\gradle.properties" and add the following lines in the end of the file:
-```
-android.useAndroidX=true
-android.enableJetifier=true
-```
+2. **Add AdMob App IDs**  
+   Include your AdMob app IDs in your **project.xml**. Ensure you specify the correct IDs for both Android and iOS platforms.
+   ```xml
+   <setenv name="ADMOB_APPID" value="ca-app-pub-XXXXX123457" if="android"/>
+   <setenv name="ADMOB_APPID" value="ca-app-pub-XXXXX123458" if="ios"/>
+   ```
 
-Also, you may need to set android sdk version to 31 or higher (as some versions of google play services requires that):
-```xml
-<android target-sdk-version="34" if="android" />
-```
+3. **GDPR Consent Management**  
+   Beginning January 16, 2024, Google requires publishers serving ads in the EEA and UK to use a certified consent management platform (CMP). This extension integrates Google's UMP SDK to display a consent dialog during the first app launch. Ads may not function if the user does not provide consent.
 
-### Sample code
-```haxe
-import extension.admob.AdMob;
-import extension.admob.AdmobEvent;
+4. **Checking GDPR Consent Requirements**  
+   You can determine if the GDPR consent dialog is required based on the user's location:
+   ```haxe
+   if (extension.admob.Admob.isPrivacyOptionsRequired())
+       trace("GDPR consent dialog is required.");
+   ```
 
-...
+5. **Verify User Consent**
+   Check if the user has consented to personalized ads:
+   ```haxe
+   if (extension.admob.Admob.getConsent() == extension.admob.AdmobConsent.FULL)
+    trace("User consented to personalized ads.");
+   else
+    trace("User did not consent to personalized ads. Ads may not work.");
+   ```
 
-Admob.status.addEventListener(AdmobEvent.INIT_OK, onInitOk); //you can add more event listeners, if needed
-Admob.init(); //set first param to true to enable testing ads, default is false
+6. **Check Consent for Specific Purposes**
+   Verify if the user has consented to individual purposes, such as purpose 0:
+   ```haxe
+   if (extension.admob.Admob.hasConsentForPurpose(0) == 1)
+    trace("User has consented to purpose 0.");
+   else
+    trace("User has not consented to purpose 0.");
+   ```
 
-...
+7. Reopen Privacy Options Dialog
+   If needed, allow users to manage their consent options again.
+   ```haxe
+   extension.admob.Admob.showPrivacyOptionsForm();
+   ```
 
-private function onInitOk(ae:AdmobEvent):Void
-{
-	trace(ae.type, ae.data);
-	Admob.setVolume(0.5); //set sound volume to 0.5 for interstitial and rewarded ads
-	Admob.setVolume(-1); //mute
-	//you can start showing/loading ads after successful initialization
-}
+8. Load and Show Ads
+   Add the following snippets to display ads in your app:
 
-...
+   - **Banner Ad**
+     ```haxe
+     extension.admob.Admob.showBanner("ca-app-pub-XXXX/XXXXXXXXXX");
+     ```
 
-Admob.showBanner("[BANNER_ID]", Admob.BANNER_SIZE_BANNER, Admob.BANNER_ALIGN_TOP);
+   - **Interstitial Ad**
+     ```haxe
+     extension.admob.Admob.onStatus.add(function(event:String, message:String):Void
+     {
+     	if (event == extension.admob.AdmobEvent.INTERSTITIAL_LOADED)
+     		extension.admob.Admob.showInterstitial();
+     });
+     extension.admob.Admob.loadInterstitial("ca-app-pub-XXXX/XXXXXXXXXX");
+     ```
 
-...
+   - **Rewarded Ad**
+     ```haxe
+     extension.admob.Admob.onStatus.add(function(event:String, message:String):Void
+     {
+     	if (event == extension.admob.AdmobEvent.REWARDED_LOADED)
+     		extension.admob.Admob.showRewarded();
+     });
+     extension.admob.Admob.loadRewarded("ca-app-pub-XXXX/XXXXXXXXXX");
+     ```
 
-Admob.hideBanner();
-
-...
-
-Admob.status.addEventListener(AdmobEvent.INTERSTITIAL_LOADED, onLoadInterstitial);
-Admob.loadInterstitial([INTERSTITIAL_ID]);
-
-...
-
-
-private function onLoadInterstitial(ae:AdmobEvent):Void
-{
-	Admob.showInterstitial();
-}
-```
-
-Beginning 16 January 2024, Google will require all publishers serving ads to EEA and UK users to use a Google-certified consent management platform (CMP).
-This extension uses Google's UMP SDK and shows a consent dialog on the first app start.
-If the user does not consent, there is a high probability that ads will not work.
-
-After the user makes the choice, the dialog is not shown anymore unless consent has expired.
-You can check if the GDPR dialog is required and show it manually.
-
-How to know, if GDPR dialog is required (ie user is from UK or EEA):
-```haxe
-if( Admob.isPrivacyOptionsRequired() == 1)
-	//required
-```
-
-How to know, if user consented to personalized ads:
-```haxe
-if(Admob.getConsent() == Admob.CONSENT_FULL)
-	//constented, ads should work fine
-```
-You can also check consent to each purpose individually:
-```haxe
-if(Admob.hasConsentForPuprpose(0) == 1)
-	//consented to purpose 1, you should check all the purposes, there are like 10 of them (0-9)
-```
-More details about purposes and how users' consent influences ads:
-https://support.google.com/admob/answer/9760862#consent-policies
-From my experience, unless the user consents to everything ("Consent" at the initial dialog or "Accept all" at the Manage options dialog), ads will not work!
-
-How to show privacy dialog to user again:
-```haxe
-Admob.showPrivacyOptionsForm();
-```
-
-
-### Not working, eh?
-While I was working on this extension I came across lots of problems/bugs, so those links might help you, please go through them before contacting me:
-1. https://community.openfl.org/t/extension-admob/13242/12
-2. https://github.com/native-toolkit/lime/issues/1476
-
-### Games with Admob extension
-Google Play: https://play.google.com/store/apps/details?id=air.com.pozirk.allinonesolitaire<br />
-App Store: https://itunes.apple.com/app/all-in-one-solitaire-free/id660577037<br />
-Win/lose/restart any game to see interstitial ad.
+   - **App Open Ad**
+     ```haxe
+     extension.admob.Admob.onStatus.add(function(event:String, message:String):Void
+     {
+     	if (event == extension.admob.AdmobEvent.APP_OPEN_LOADED)
+     		extension.admob.Admob.showAppOpen();
+     });
+     extension.admob.Admob.loadAppOpen("ca-app-pub-XXXX/XXXXXXXXXX");
+     ```
 
 ### Disclaimer
-Google is a registered trademark of Google Inc.
-http://unibrander.com/united-states/140279US/google.html
 
-AdMob is a registrered trademark of Google Inc.
-http://unibrander.com/united-states/479956US/admob.html
+[Google](http://unibrander.com/united-states/140279US/google.html) is a registered trademark of Google Inc.
+
+[AdMob](http://unibrander.com/united-states/479956US/extension.admob.html) is a registrered trademark of Google Inc.
 
 ### License
+
 The MIT License (MIT) - [LICENSE.md](LICENSE.md)
 
-Copyright (c) 2024 OpenFL contributors
+Copyright (c) 2023 Pozirk Games contributors

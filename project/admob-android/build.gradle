@@ -1,0 +1,21 @@
+apply plugin: 'com.android.library'
+
+repositories
+{
+	mavenCentral()
+	google()
+}
+
+android
+{
+	namespace 'org.haxe.extension.admob'
+	compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
+	buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
+}
+
+dependencies
+{
+	implementation project(':deps:extension-api')
+	implementation('com.google.android.gms:play-services-ads:+')
+	implementation('com.google.android.ump:user-messaging-platform:+')
+}
