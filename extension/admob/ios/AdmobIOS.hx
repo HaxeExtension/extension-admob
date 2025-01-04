@@ -8,6 +8,7 @@ import haxe.MainLoop;
 import lime.app.Event;
 import lime.utils.Log;
 #end
+
 /**
  * A class to manage AdMob advertisements on iOS devices.
  */
