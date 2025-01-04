@@ -4,9 +4,10 @@ package extension.admob.ios;
 import extension.admob.AdmobBannerAlign;
 import extension.admob.AdmobBannerSize;
 import haxe.MainLoop;
+#if lime
 import lime.app.Event;
 import lime.utils.Log;
-
+#end
 /**
  * A class to manage AdMob advertisements on iOS devices.
  */
@@ -59,7 +60,14 @@ class AdmobIOS
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return;
 		}
 
@@ -73,7 +81,14 @@ class AdmobIOS
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return;
 		}
 
