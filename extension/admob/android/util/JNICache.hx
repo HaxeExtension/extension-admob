@@ -23,8 +23,10 @@ class JNICache
 	@:noCompletion
 	private static var staticFieldCache:Map<String, JNIStaticField> = [];
 
+	#if !nme
 	@:noCompletion
 	private static var memberFieldCache:Map<String, JNIMemberField> = [];
+	#end
 
 	/**
 	 * Retrieves or creates a cached static method reference.
@@ -89,6 +91,7 @@ class JNICache
 		return staticFieldCache.get(key);
 	}
 
+	#if !nme
 	/**
 	 * Retrieves or creates a cached member field reference.
 	 *
@@ -109,5 +112,6 @@ class JNICache
 
 		return memberFieldCache.get(key);
 	}
+	#end
 }
 #end
