@@ -1,7 +1,11 @@
 package extension.admob.android.util;
 
 #if android
+#if lime
 import lime.system.JNI;
+#elseif nme
+import nme.JNI;
+#end
 
 /**
  * A utility class for caching JNI method and field references.
