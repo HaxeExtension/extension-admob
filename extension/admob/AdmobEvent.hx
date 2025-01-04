@@ -30,4 +30,5 @@ enum abstract AdmobEvent(String) from String to String
 	final APP_OPEN_DISMISSED = "APP_OPEN_DISMISSED";
 	final APP_OPEN_FAILED_TO_SHOW = "APP_OPEN_FAILED_TO_SHOW";
 	final APP_OPEN_SHOWED = "APP_OPEN_SHOWED";
+	final FAIL = "FAIL";
 }
