@@ -4,8 +4,10 @@ package extension.admob.android;
 import extension.admob.android.util.JNICache;
 import extension.admob.AdmobBannerAlign;
 import extension.admob.AdmobBannerSize;
+#if lime
 import lime.app.Event;
 import lime.utils.Log;
+#end
 
 /**
  * A class to manage AdMob advertisements on Android devices.
@@ -53,7 +55,14 @@ class AdmobAndroid
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return;
 		}
 
@@ -70,7 +79,14 @@ class AdmobAndroid
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return;
 		}
 
@@ -90,7 +106,14 @@ class AdmobAndroid
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return;
 		}
 
@@ -107,7 +130,14 @@ class AdmobAndroid
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return;
 		}
 
@@ -127,7 +157,14 @@ class AdmobAndroid
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return;
 		}
 
@@ -144,7 +181,14 @@ class AdmobAndroid
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return;
 		}
 
@@ -164,7 +208,14 @@ class AdmobAndroid
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return;
 		}
 
@@ -181,7 +232,14 @@ class AdmobAndroid
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return;
 		}
 
@@ -200,7 +258,14 @@ class AdmobAndroid
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return;
 		}
 
@@ -220,7 +285,14 @@ class AdmobAndroid
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return -1;
 		}
 
@@ -238,7 +310,14 @@ class AdmobAndroid
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return '';
 		}
 
@@ -256,7 +335,14 @@ class AdmobAndroid
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return false;
 		}
 
@@ -272,7 +358,14 @@ class AdmobAndroid
 	{
 		if (!initialized)
 		{
-			Log.warn('Admob extension isn\'t initialized');
+			final message:String = 'Admob extension isn\'t initialized';
+
+			#if lime
+			Log.warn(message);
+			#else
+			Sys.println('Warning: $message');
+			#end
+
 			return;
 		}
 
