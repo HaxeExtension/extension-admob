@@ -8,7 +8,7 @@ class Main extends lime.app.Application
 	{
 		super();
 
-		extension.admob.Admob.onStatus.add(function(event:String, message:String):Void
+		extension.admob.Admob.listenEvents(function(event:String, message:String):Void
 		{
 			if (event == extension.admob.AdmobEvent.INIT_OK)
 				extension.admob.Admob.loadInterstitial(AD_UNIT_ID);
