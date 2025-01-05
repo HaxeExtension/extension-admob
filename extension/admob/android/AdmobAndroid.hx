@@ -1,7 +1,11 @@
 package extension.admob.android;
 
 #if android
+#if lime
 import lime.system.JNI;
+#elseif nme
+import nme.JNI;
+#end
 import extension.admob.AdmobEvent;
 import extension.admob.AdmobBannerAlign;
 import extension.admob.AdmobBannerSize;
