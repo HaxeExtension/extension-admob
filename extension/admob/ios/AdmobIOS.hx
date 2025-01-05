@@ -228,14 +228,14 @@ class AdmobIOS
 	 */
 	public static function dispatchEvent(status:String, data:String):Void
 	{
-		if(_onStatus)
+		if(_onStatus != null)
 			_onStatus(status, data);
 	}
 	
 	/**
 	 * I don't how to describe this
 	 */
-	private static function dispatchFrustration(status:String):Void
+	private static function dispatchFrustration():Void
 	{
 		dispatchEvent(status, "Admob extension is not initialized");
 	}
