@@ -237,7 +237,7 @@ class AdmobIOS
 	 */
 	private static function dispatchFrustration():Void
 	{
-		dispatchEvent(status, "Admob extension is not initialized");
+		dispatchEvent(AdmobEvent.FAIL, "Admob extension is not initialized");
 	}
 
 	@:native("initAdmob")
