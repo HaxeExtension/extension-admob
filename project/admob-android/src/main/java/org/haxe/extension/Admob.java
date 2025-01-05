@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowMetrics;
 import android.widget.RelativeLayout;
 import com.google.android.gms.ads.appopen.*;
 import com.google.android.gms.ads.initialization.*;
@@ -24,6 +27,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+//https://developers.google.com/admob/android/quick-start?hl=en
+
 public class Admob extends Extension
 {
 	private static AdView adView;
@@ -37,10 +42,22 @@ public class Admob extends Extension
 	public static void init(final boolean testingAds, final boolean childDirected, final boolean enableRDP, HaxeObject callback)
 	{
 		Admob.callback = callback;
+		
+		//> use this to debug GDPR
+		/*ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(mainContext)
+			.setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+			.addTestDeviceHashedId("[TEST_DEVICE_ID]")
+			.build();
+
+		ConsentRequestParameters params = new ConsentRequestParameters
+			.Builder()
+			.setConsentDebugSettings(debugSettings)
+			.build();*/
+		//<
 
 		consentInformation = UserMessagingPlatform.getConsentInformation(mainContext);
 
-		consentInformation.requestConsentInfoUpdate(mainActivity, new ConsentRequestParameters.Builder().setTagForUnderAgeOfConsent(childDirected).build(), new ConsentInformation.OnConsentInfoUpdateSuccessListener()
+		consentInformation.requestConsentInfoUpdate(mainActivity, new ConsentRequestParameters.Builder().setTagForUnderAgeOfConsent(childDirected).build() /*params*/, new ConsentInformation.OnConsentInfoUpdateSuccessListener()
 		{
 			public void onConsentInfoUpdateSuccess()
 			{
@@ -149,7 +166,7 @@ public class Admob extends Extension
 			public void onInitializationComplete(InitializationStatus initializationStatus)
 			{
 				if (callback != null) 
-					callback.call("onStatus", new Object[]{ "INIT_OK", "" });
+					callback.call("onStatus", new Object[]{ "INIT_OK", MobileAds.getVersion().toString() });
 			}
 		});
 	}
@@ -174,7 +191,7 @@ public class Admob extends Extension
 				switch (size)
 				{
 					case 1:
-						adView.setAdSize(AdSize.FLUID);
+						adView.setAdSize(AdSize.BANNER);
 						break;
 					case 2:
 						adView.setAdSize(AdSize.FULL_BANNER);
@@ -189,10 +206,10 @@ public class Admob extends Extension
 						adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
 						break;
 					case 6:
-						adView.setAdSize(AdSize.WIDE_SKYSCRAPER);
+						adView.setAdSize(AdSize.FLUID);
 						break;
 					default:
-						adView.setAdSize(AdSize.BANNER);
+						adView.setAdSize(getAdSize());
 						break;
 				}
 
@@ -204,7 +221,7 @@ public class Admob extends Extension
 						if (callback != null)
 							callback.call("onStatus", new Object[] { "BANNER_LOADED", "" });
 
-						adView.setVisibility(View.VISIBLE);
+						adView.setVisibility(View.VISIBLE); //to fix this problem, if it is still valid: https://groups.google.com/forum/#!topic/google-admob-ads-sdk/avwVXvBt_sM
 					}
 
 					@Override
@@ -275,6 +292,13 @@ public class Admob extends Extension
 						interstitial.setImmersiveMode(immersiveModeEnabled);
 						interstitial.setFullScreenContentCallback(new FullScreenContentCallback()
 						{
+							@Override
+							public void onAdClicked()
+							{
+								if (callback != null)
+									callback.call("onStatus", new Object[] { "INTERSTITIAL_CLICKED", "" });
+							}
+							
 							@Override
 							public void onAdDismissedFullScreenContent()
 							{
@@ -350,6 +374,13 @@ public class Admob extends Extension
 						rewarded.setImmersiveMode(immersiveModeEnabled);
 						rewarded.setFullScreenContentCallback(new FullScreenContentCallback()
 						{
+							@Override
+							public void onAdClicked()
+							{
+								if (callback != null)
+									callback.call("onStatus", new Object[] { "REWARDED_CLICKED", "" });
+							}
+							
 							@Override
 							public void onAdDismissedFullScreenContent()
 							{
@@ -431,6 +462,13 @@ public class Admob extends Extension
 						appOpen.setFullScreenContentCallback(new FullScreenContentCallback()
 						{
 							@Override
+							public void onAdClicked()
+							{
+								if (callback != null)
+									callback.call("onStatus", new Object[] { "APP_OPEN_CLICKED", "" });
+							}
+							
+							@Override
 							public void onAdDismissedFullScreenContent()
 							{
 								if (callback != null)
@@ -490,6 +528,8 @@ public class Admob extends Extension
 			MobileAds.setAppMuted(true);
 	}
 
+	//https://support.google.com/admob/answer/9760862
+	//https://iabeurope.eu/iab-europe-transparency-consent-framework-policies/#A_Purposes
 	public static int hasConsentForPurpose(final int purpose)
 	{
 		String purposeConsents = getConsent();
@@ -523,6 +563,25 @@ public class Admob extends Extension
 			}
 		});
 	}
+	
+	//> copy/paste from https://developers.google.com/admob/android/banner/anchored-adaptive
+	private static AdSize getAdSize()
+	{
+		DisplayMetrics displayMetrics = mainActivity.getResources().getDisplayMetrics();
+		int adWidthPixels = displayMetrics.widthPixels;
+
+		if (VERSION.SDK_INT >= VERSION_CODES.R)
+		{
+			WindowMetrics windowMetrics = mainActivity.getWindowManager().getCurrentWindowMetrics();
+			adWidthPixels = windowMetrics.getBounds().width();
+		}
+
+		float density = displayMetrics.density;
+		int adWidth = (int) (adWidthPixels / density);
+		
+		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mainActivity, adWidth);
+	}
+	//<
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
