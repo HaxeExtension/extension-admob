@@ -283,7 +283,7 @@ class AdmobAndroid
 		if (!_initialized)
 			dispatchEvent(event, "Admob extension is not initialized");
 		else
-			dispatchEvent(event, "JNI call failed");
+			dispatchEvent(event, "JNI call failed"); //should never happen
 	}
 }
 
