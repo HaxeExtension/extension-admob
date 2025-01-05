@@ -15,7 +15,7 @@ class AdmobIOS
 	/**
 	 * Event triggered for status updates from AdMob.
 	 */
-	private static var _onStatus:Null<String->String->Void> = null;
+	private static var _callback:Null<String->String->Void> = null;
 
 	@:noCompletion
 	private static var _initialized:Bool = false;
@@ -31,8 +31,8 @@ class AdmobIOS
 	{
 		if (!_initialized)
 		{
-			initAdmob(testingAds, childDirected, enableRDP, cpp.Callable.fromStaticFunction(onAdmobStatus));	
 			_initialized = true;
+			initAdmob(testingAds, childDirected, enableRDP, cpp.Callable.fromStaticFunction(onAdmobStatus));	
 		}
 		else
 			dispatchEvent(AdmobEvent.FAIL, "Admob extension has been already initialized");
@@ -218,18 +218,18 @@ class AdmobIOS
 	/**
 	 * Add events' listener
 	 */
-	public static function listenEvents(onStatus:String->String->Void):Void
+	public static function setCallback(callback:String->String->Void):Void
 	{
-		_onStatus = onStatus;
+		_callback = callback;
 	}
 	
 	/**
 	 * Dispatcjh and event, if there is a listener
 	 */
-	public static function dispatchEvent(status:String, data:String):Void
+	public static function dispatchEvent(event:String, data:String):Void
 	{
-		if(_onStatus != null)
-			_onStatus(status, data);
+		if(_callback != null)
+			_callback(event, data);
 	}
 	
 	/**

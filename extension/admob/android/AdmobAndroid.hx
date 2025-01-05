@@ -38,7 +38,7 @@ class AdmobAndroid
 	/**
 	 * Event triggered for status updates from AdMob.
 	 */
-	private static var _onStatus:Null<String->String->Void> = null;
+	private static var _callback:Null<String->String->Void> = null;
 
 	/**
 	 * Initializes the AdMob extension.
@@ -51,6 +51,8 @@ class AdmobAndroid
 	{
 		if (!_initialized)
 		{
+			_initialized = true;
+			
 			_init = JNI.createStaticMethod("org/haxe/extension/Admob", "init", "(ZZZLorg/haxe/lime/HaxeObject;)V");
 			
 			_showBanner = JNI.createStaticMethod("org/haxe/extension/Admob", "showBanner", "(Ljava/lang/String;II)V");
@@ -75,9 +77,7 @@ class AdmobAndroid
 			if (_init != null)
 				_init(testingAds, childDirected, enableRDP, new CallBackHandler());
 			else
-				dispatchEvent(AdmobEvent.FAIL, "JNI call failed"); //should never happen
-			
-			_initialized = true;
+				dispatchFrustration(AdmobEvent.FAIL); //should never happen
 		}
 		else
 			dispatchEvent(AdmobEvent.FAIL, "Admob extension has been already initialized");
@@ -257,29 +257,29 @@ class AdmobAndroid
 	/**
 	 * Add events' listener
 	 */
-	public static function listenEvents(onStatus:String->String->Void):Void
+	public static function setCallback(callback:String->String->Void):Void
 	{
-		_onStatus = onStatus;
+		_callback = callback;
 	}
 	
 	/**
 	 * Dispatcjh and event, if there is a listener
 	 */
-	public static function dispatchEvent(status:String, data:String):Void
+	public static function dispatchEvent(event:String, data:String):Void
 	{
-		if(_onStatus != null)
-			_onStatus(status, data);
+		if(_callback != null)
+			_callback(event, data);
 	}
 	
 	/**
 	 * I don't how to describe this
 	 */
-	private static function dispatchFrustration(status:String):Void
+	private static function dispatchFrustration(event:String):Void
 	{
 		if (!_initialized)
-			dispatchEvent(status, "Admob extension is not initialized");
+			dispatchEvent(event, "Admob extension is not initialized");
 		else
-			dispatchEvent(status, "JNI call failed");
+			dispatchEvent(event, "JNI call failed");
 	}
 }
 
@@ -295,9 +295,9 @@ private class CallBackHandler #if (lime >= "8.0.0") implements lime.system.JNI.J
 	#if (lime >= "8.0.0")
 	@:runOnMainThread
 	#end
-	public function onStatus(status:String, data:String):Void
+	public function onStatus(event:String, data:String):Void
 	{
-		AdmobAndroid.dispatchEvent(status, data);
+		AdmobAndroid.dispatchEvent(event, data);
 	}
 }
 #end
