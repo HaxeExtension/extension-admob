@@ -1,24 +1,48 @@
 package extension.admob.android;
 
 #if android
-import extension.admob.android.util.JNICache;
+#if lime
+import lime.system.JNI;
+#elseif nme
+import nme.JNI;
+#end
+import extension.admob.AdmobEvent;
 import extension.admob.AdmobBannerAlign;
 import extension.admob.AdmobBannerSize;
-import lime.app.Event;
-import lime.utils.Log;
 
 /**
  * A class to manage AdMob advertisements on Android devices.
  */
 class AdmobAndroid
 {
+	@:noCompletion
+	private static var _initialized:Bool = false;
+	
+	private static var _init:Null<Dynamic> = null;
+	
+	private static var _showBanner:Null<Dynamic> = null;
+	private static var _hideBanner:Null<Dynamic> = null;
+	
+	private static var _loadInterstitial:Null<Dynamic> = null;
+	private static var _showInterstitial:Null<Dynamic> = null;
+	
+	private static var _loadRewarded:Null<Dynamic> = null;
+	private static var _showRewarded:Null<Dynamic> = null;
+	
+	private static var _loadAppOpen:Null<Dynamic> = null;
+	private static var _showAppOpen:Null<Dynamic> = null;
+	
+	private static var _setVolume:Null<Dynamic> = null;
+	
+	private static var _hasConsentForPurpose:Null<Dynamic> = null;
+	private static var _getConsent:Null<Dynamic> = null;
+	private static var _isPrivacyOptionsRequired:Null<Dynamic> = null;
+	private static var _showPrivacyOptionsForm:Null<Dynamic> = null;
+	
 	/**
 	 * Event triggered for status updates from AdMob.
 	 */
-	public static var onStatus:Event<String->String->Void> = new Event<String->String->Void>();
-
-	@:noCompletion
-	private static var initialized:Bool = false;
+	private static var _callback:Null<String->String->Void> = null;
 
 	/**
 	 * Initializes the AdMob extension.
@@ -29,38 +53,53 @@ class AdmobAndroid
 	 */
 	public static function init(testingAds:Bool = false, childDirected:Bool = false, enableRDP:Bool = false):Void
 	{
-		if (initialized)
-			return;
-
-		final initJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'init', '(ZZZLorg/haxe/lime/HaxeObject;)V');
-
-		if (initJNI != null)
+		if (!_initialized)
 		{
-			initJNI(testingAds, childDirected, enableRDP, new CallBackHandler());
+			_initialized = true;
+			
+			_init = JNI.createStaticMethod("org/haxe/extension/Admob", "init", "(ZZZLorg/haxe/lime/HaxeObject;)V");
+			
+			_showBanner = JNI.createStaticMethod("org/haxe/extension/Admob", "showBanner", "(Ljava/lang/String;II)V");
+			_hideBanner = JNI.createStaticMethod("org/haxe/extension/Admob", "hideBanner", "()V");
+			
+			_loadInterstitial = JNI.createStaticMethod("org/haxe/extension/Admob", "loadInterstitial", "(Ljava/lang/String;Z)V");
+			_showInterstitial = JNI.createStaticMethod("org/haxe/extension/Admob", "showInterstitial", "()V");
+			
+			_loadRewarded = JNI.createStaticMethod("org/haxe/extension/Admob", "loadRewarded", "(Ljava/lang/String;Z)V");
+			_showRewarded = JNI.createStaticMethod("org/haxe/extension/Admob", "showRewarded", "()V");
+			
+			_loadAppOpen = JNI.createStaticMethod("org/haxe/extension/Admob", "loadAppOpen", "(Ljava/lang/String;Z)V");
+			_showAppOpen = JNI.createStaticMethod("org/haxe/extension/Admob", "showAppOpen", "()V");
+			
+			_setVolume = JNI.createStaticMethod("org/haxe/extension/Admob", "setVolume", "(F)V");
+			
+			_hasConsentForPurpose = JNI.createStaticMethod("org/haxe/extension/Admob", "hasConsentForPurpose", "(I)I");
+			_getConsent = JNI.createStaticMethod("org/haxe/extension/Admob", "getConsent", "()Ljava/lang/String;");
+			_isPrivacyOptionsRequired = JNI.createStaticMethod("org/haxe/extension/Admob", "isPrivacyOptionsRequired", "()Z");
+			_showPrivacyOptionsForm = JNI.createStaticMethod("org/haxe/extension/Admob", "showPrivacyOptionsForm", "()V");
 
-			initialized = true;
+			if (_init != null)
+				_init(testingAds, childDirected, enableRDP, new CallBackHandler());
+			else
+				dispatchFrustration(AdmobEvent.FAIL); //should never happen
 		}
+		else
+			dispatchEvent(AdmobEvent.FAIL, "Admob extension has been already initialized");
 	}
 
 	/**
 	 * Shows a banner ad.
 	 *
 	 * @param id The banner ad ID.
-	 * @param size The banner size (default: banner).
-	 * @param align The banner alignment (default: top).
+	 * @param size The banner size (default: adaptive).
+	 * @param align The banner alignment (default: bottom).
 	 */
-	public static function showBanner(id:String, size:Int = AdmobBannerSize.BANNER, align:Int = AdmobBannerAlign.TOP):Void
+	public static function showBanner(id:String, size:Int = AdmobBannerSize.ADAPTIVE, align:Int = AdmobBannerAlign.BOTTOM):Void
 	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return;
-		}
-
-		final showBannerJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'showBanner', '(Ljava/lang/String;II)V');
-
-		if (showBannerJNI != null)
-			showBannerJNI(id, size, align);
+		if (_showBanner != null)
+			_showBanner(id, size, align);
+		else
+			dispatchFrustration(AdmobEvent.BANNER_FAILED_TO_LOAD);
 	}
 
 	/**
@@ -68,16 +107,10 @@ class AdmobAndroid
 	 */
 	public static function hideBanner():Void
 	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return;
-		}
-
-		final hideBannerJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'hideBanner', '()V');
-
-		if (hideBannerJNI != null)
-			hideBannerJNI();
+		if (_hideBanner != null)
+			_hideBanner();
+		else
+			dispatchFrustration(AdmobEvent.FAIL);
 	}
 
 	/**
@@ -86,18 +119,12 @@ class AdmobAndroid
 	 * @param id The interstitial ad ID.
 	 * @param immersiveModeEnabled Optional flag to enable immersive mode when the ad is displayed. Defaults to true.
 	 */
-	public static function loadInterstitial(id:String, ?immersiveModeEnabled:Bool = true):Void
+	public static function loadInterstitial(id:String, immersiveModeEnabled:Bool = true):Void
 	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return;
-		}
-
-		final loadInterstitialJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadInterstitial', '(Ljava/lang/String;Z)V');
-
-		if (loadInterstitialJNI != null)
-			loadInterstitialJNI(id, immersiveModeEnabled);
+		if (_loadInterstitial != null)
+			_loadInterstitial(id, immersiveModeEnabled);
+		else
+			dispatchFrustration(AdmobEvent.INTERSTITIAL_FAILED_TO_LOAD);			
 	}
 
 	/**
@@ -105,16 +132,10 @@ class AdmobAndroid
 	 */
 	public static function showInterstitial():Void
 	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return;
-		}
-
-		final showInterstitialJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'showInterstitial', '()V');
-
-		if (showInterstitialJNI != null)
-			showInterstitialJNI();
+		if (_showInterstitial != null)
+			_showInterstitial();
+		else
+			dispatchFrustration(AdmobEvent.INTERSTITIAL_FAILED_TO_SHOW);
 	}
 
 	/**
@@ -123,18 +144,12 @@ class AdmobAndroid
 	 * @param id The rewarded ad ID.
 	 * @param immersiveModeEnabled Optional flag to enable immersive mode when the ad is displayed. Defaults to true.
 	 */
-	public static function loadRewarded(id:String, ?immersiveModeEnabled:Bool = true):Void
+	public static function loadRewarded(id:String, immersiveModeEnabled:Bool = true):Void
 	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return;
-		}
-
-		final loadRewardedJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadRewarded', '(Ljava/lang/String;Z)V');
-
-		if (loadRewardedJNI != null)
-			loadRewardedJNI(id, immersiveModeEnabled);
+		if (_loadRewarded != null)
+			_loadRewarded(id, immersiveModeEnabled);
+		else
+			dispatchFrustration(AdmobEvent.REWARDED_FAILED_TO_LOAD);
 	}
 
 	/**
@@ -142,16 +157,10 @@ class AdmobAndroid
 	 */
 	public static function showRewarded():Void
 	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return;
-		}
-
-		final showRewardedJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'showRewarded', '()V');
-
-		if (showRewardedJNI != null)
-			showRewardedJNI();
+		if (_showRewarded != null)
+			_showRewarded();
+		else
+			dispatchFrustration(AdmobEvent.REWARDED_FAILED_TO_SHOW);
 	}
 
 	/**
@@ -160,18 +169,12 @@ class AdmobAndroid
 	 * @param id The "app open" ad ID.
 	 * @param immersiveModeEnabled Optional flag to enable immersive mode when the ad is displayed. Defaults to true.
 	 */
-	public static function loadAppOpen(id:String, ?immersiveModeEnabled:Bool = true):Void
+	public static function loadAppOpen(id:String, immersiveModeEnabled:Bool = true):Void
 	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return;
-		}
-
-		final loadAppOpenJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'loadAppOpen', '(Ljava/lang/String;Z)V');
-
-		if (loadAppOpenJNI != null)
-			loadAppOpenJNI(id, immersiveModeEnabled);
+		if (_loadAppOpen != null)
+			_loadAppOpen(id, immersiveModeEnabled);
+		else
+			dispatchFrustration(AdmobEvent.APP_OPEN_FAILED_TO_LOAD);
 	}
 
 	/**
@@ -179,16 +182,10 @@ class AdmobAndroid
 	 */
 	public static function showAppOpen():Void
 	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return;
-		}
-
-		final showAppOpenJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'showAppOpen', '()V');
-
-		if (showAppOpenJNI != null)
-			showAppOpenJNI();
+		if (_showAppOpen != null)
+			_showAppOpen();
+		else
+			dispatchFrustration(AdmobEvent.APP_OPEN_FAILED_TO_SHOW);
 	}
 
 	/**
@@ -198,16 +195,10 @@ class AdmobAndroid
 	 */
 	public static function setVolume(vol:Float):Void
 	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return;
-		}
-
-		final setVolumeJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'setVolume', '(F)V');
-
-		if (setVolumeJNI != null)
-			setVolumeJNI(vol);
+		if (_setVolume != null)
+			_setVolume(vol);
+		else
+			dispatchFrustration(AdmobEvent.FAIL);
 	}
 
 	/**
@@ -218,15 +209,12 @@ class AdmobAndroid
 	 */
 	public static function hasConsentForPurpose(purpose:Int = 0):Int
 	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return -1;
-		}
+		if (_hasConsentForPurpose != null)
+			return _hasConsentForPurpose(purpose);
+		else
+			dispatchFrustration(AdmobEvent.FAIL);
 
-		final hasConsentJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'hasConsentForPurpose', '(I)I');
-
-		return hasConsentJNI != null ? hasConsentJNI(purpose) : -1;
+		return -1;
 	}
 
 	/**
@@ -236,15 +224,12 @@ class AdmobAndroid
 	 */
 	public static function getConsent():String
 	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return '';
-		}
+		if (_getConsent != null)
+			return _getConsent();
+		else
+			dispatchFrustration(AdmobEvent.FAIL);
 
-		final getConsentJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'getConsent', '()Ljava/lang/String;');
-
-		return getConsentJNI != null ? getConsentJNI() : '';
+		return "";
 	}
 
 	/**
@@ -254,15 +239,12 @@ class AdmobAndroid
 	 */
 	public static function isPrivacyOptionsRequired():Bool
 	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return false;
-		}
+		if (_isPrivacyOptionsRequired != null)
+			return _isPrivacyOptionsRequired();
+		else
+			dispatchFrustration(AdmobEvent.FAIL);
 
-		final isPrivacyOptionsRequiredJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'isPrivacyOptionsRequired', '()Z');
-
-		return isPrivacyOptionsRequiredJNI != null ? isPrivacyOptionsRequiredJNI() : false;
+		return false;
 	}
 
 	/**
@@ -270,16 +252,38 @@ class AdmobAndroid
 	 */
 	public static function showPrivacyOptionsForm():Void
 	{
-		if (!initialized)
-		{
-			Log.warn('Admob extension isn\'t initialized');
-			return;
-		}
-
-		final showPrivacyOptionsFormJNI:Null<Dynamic> = JNICache.createStaticMethod('org/haxe/extension/Admob', 'showPrivacyOptionsForm', '()V');
-
-		if (showPrivacyOptionsFormJNI != null)
-			showPrivacyOptionsFormJNI();
+		if (_showPrivacyOptionsForm != null)
+			showPrivacyOptionsForm();
+		else
+			dispatchFrustration(AdmobEvent.FAIL);
+	}
+	
+	/**
+	 * Add events' listener
+	 */
+	public static function setCallback(callback:String->String->Void):Void
+	{
+		_callback = callback;
+	}
+	
+	/**
+	 * Dispatcjh and event, if there is a listener
+	 */
+	public static function dispatchEvent(event:String, data:String):Void
+	{
+		if(_callback != null)
+			_callback(event, data);
+	}
+	
+	/**
+	 * I don't how to describe this
+	 */
+	private static function dispatchFrustration(event:String):Void
+	{
+		if (!_initialized)
+			dispatchEvent(event, "Admob extension is not initialized");
+		else
+			dispatchEvent(event, "JNI call failed"); //should never happen
 	}
 }
 
@@ -295,10 +299,9 @@ private class CallBackHandler #if (lime >= "8.0.0") implements lime.system.JNI.J
 	#if (lime >= "8.0.0")
 	@:runOnMainThread
 	#end
-	public function onStatus(status:String, data:String):Void
+	public function onStatus(event:String, data:String):Void
 	{
-		if (AdmobAndroid.onStatus != null)
-			AdmobAndroid.onStatus.dispatch(status, data);
+		AdmobAndroid.dispatchEvent(event, data);
 	}
 }
 #end

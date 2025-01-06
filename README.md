@@ -21,7 +21,7 @@ To install **extension-admob**, follow these steps:
 3. **Project Configuration** (Add the following code to your **project.xml** file)
    ```xml
    <section if="cpp">
-   	<haxelib name="extension-admob" if="mobile" />
+     <haxelib name="extension-admob" if="mobile" />
    </section>
    ```
 
@@ -44,74 +44,89 @@ To configure **extension-admob** for your project, follow these steps:
 
 3. **GDPR Consent Management**  
    Beginning January 16, 2024, Google requires publishers serving ads in the EEA and UK to use a certified consent management platform (CMP). This extension integrates Google's UMP SDK to display a consent dialog during the first app launch. Ads may not function if the user does not provide consent.
+   
+3. **Initializing Admob extension**  
+   If GDPR consent dialog and/or iOS 14+ tracking authorization dialog are required, they are should automatically upon Admob initialization.
+   ```haxe
+   import extension.admob.*;
+   ...
+   Admob.setCallback(function(event:String, message:String):Void
+   {
+      if (event == AdmobEvent.INIT_OK)
+        //you can load your ads here
+   });
+   Admob.init();
+   ```
 
 4. **Checking GDPR Consent Requirements**  
-   You can determine if the GDPR consent dialog is required based on the user's location:
+   After consenting (or not) to show ads, user must have an option to change his choice.
+   To give this choice an access to GDPR consent dialog should be provided somewhere in the app.
+   You can determine if the GDPR consent dialog is required (ie user is from EEA or UK):
    ```haxe
-   if (extension.admob.Admob.isPrivacyOptionsRequired())
+   if (Admob.isPrivacyOptionsRequired())
        trace("GDPR consent dialog is required.");
    ```
-
-5. **Verify User Consent**
-   Check if the user has consented to personalized ads:
+   
+5. **Reopen Privacy Options Dialog**  
+   If needed, allow users to manage their GDPR consent options again.
    ```haxe
-   if (extension.admob.Admob.getConsent() == extension.admob.AdmobConsent.FULL)
-    trace("User consented to personalized ads.");
-   else
-    trace("User did not consent to personalized ads. Ads may not work.");
+   Admob.showPrivacyOptionsForm();
    ```
 
-6. **Check Consent for Specific Purposes**
+6. **Verify User Consent**  
+   Check if the user has consented to personalized ads:
+   ```haxe
+   if (Admob.getConsent() == AdmobConsent.FULL)
+    trace("User consented to personalized ads.");
+   else
+    trace("User did not consent to personalized ads.");
+   ```
+
+7. **Check Consent for Specific Purposes**  
    Verify if the user has consented to individual purposes, such as purpose 0:
    ```haxe
-   if (extension.admob.Admob.hasConsentForPurpose(0) == 1)
+   if (Admob.hasConsentForPurpose(0) == 1)
     trace("User has consented to purpose 0.");
    else
     trace("User has not consented to purpose 0.");
    ```
 
-7. Reopen Privacy Options Dialog
-   If needed, allow users to manage their consent options again.
-   ```haxe
-   extension.admob.Admob.showPrivacyOptionsForm();
-   ```
-
-8. Load and Show Ads
+8. **Load and Show Ads**  
    Add the following snippets to display ads in your app:
 
    - **Banner Ad**
      ```haxe
-     extension.admob.Admob.showBanner("ca-app-pub-XXXX/XXXXXXXXXX");
+     Admob.showBanner("ca-app-pub-XXXX/XXXXXXXXXX");
      ```
 
    - **Interstitial Ad**
      ```haxe
-     extension.admob.Admob.onStatus.add(function(event:String, message:String):Void
+     Admob.setCallback(function(event:String, message:String):Void
      {
-     	if (event == extension.admob.AdmobEvent.INTERSTITIAL_LOADED)
-     		extension.admob.Admob.showInterstitial();
+       if (event == AdmobEvent.INTERSTITIAL_LOADED)
+         Admob.showInterstitial();
      });
-     extension.admob.Admob.loadInterstitial("ca-app-pub-XXXX/XXXXXXXXXX");
+     Admob.loadInterstitial("ca-app-pub-XXXX/XXXXXXXXXX");
      ```
 
    - **Rewarded Ad**
      ```haxe
-     extension.admob.Admob.onStatus.add(function(event:String, message:String):Void
+     Admob.setCallback(function(event:String, message:String):Void
      {
-     	if (event == extension.admob.AdmobEvent.REWARDED_LOADED)
-     		extension.admob.Admob.showRewarded();
+       if (event == AdmobEvent.REWARDED_LOADED)
+         Admob.showRewarded();
      });
-     extension.admob.Admob.loadRewarded("ca-app-pub-XXXX/XXXXXXXXXX");
+     Admob.loadRewarded("ca-app-pub-XXXX/XXXXXXXXXX");
      ```
 
    - **App Open Ad**
      ```haxe
-     extension.admob.Admob.onStatus.add(function(event:String, message:String):Void
+     Admob.setCallback(function(event:String, message:String):Void
      {
-     	if (event == extension.admob.AdmobEvent.APP_OPEN_LOADED)
-     		extension.admob.Admob.showAppOpen();
+       if (event == AdmobEvent.APP_OPEN_LOADED)
+         Admob.showAppOpen();
      });
-     extension.admob.Admob.loadAppOpen("ca-app-pub-XXXX/XXXXXXXXXX");
+     Admob.loadAppOpen("ca-app-pub-XXXX/XXXXXXXXXX");
      ```
 
 ### Disclaimer
@@ -124,4 +139,4 @@ To configure **extension-admob** for your project, follow these steps:
 
 The MIT License (MIT) - [LICENSE.md](LICENSE.md)
 
-Copyright (c) 2023 Pozirk Games contributors
+Copyright (c) 2025 Haxe/Lime/NME/OpenFL contributors
