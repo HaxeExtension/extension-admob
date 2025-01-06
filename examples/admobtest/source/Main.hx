@@ -63,7 +63,7 @@ class Main extends lime.app.Application
 	public override function onWindowCreate():Void
 	{
 		Admob.setCallback(onCallback);
-		Admob.init();
+		Admob.init(true); //It feels like in iOS, you still need to set test mode even with test ids for all the ads variants to work
 	}
 
 	public override function render(context:lime.graphics.RenderContext):Void
