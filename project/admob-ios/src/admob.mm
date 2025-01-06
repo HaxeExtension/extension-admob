@@ -5,9 +5,12 @@
 #import <GoogleMobileAds/GoogleMobileAds.h>
 #import <UserMessagingPlatform/UserMessagingPlatform.h>
 
-static AdmobCallback admobCallback = nullptr;
-static GADBannerView *bannerView = nil;
-static int currentAlign = 0;
+//need to update admob-Info.plist from time to time from here: https://developers.google.com/admob/ios/ios14?hl=en
+
+static AdmobCallback _admobCallback = nullptr;
+static GADBannerView *_bannerView = nil;
+static int _currentAlign = 0;
+static char _message[128] = "";//need this to pass message from ios to haxe, local variable gets lost in transition
 
 static void alignBanner(GADBannerView *bannerView, int align)
 {
@@ -43,10 +46,10 @@ static void alignBanner(GADBannerView *bannerView, int align)
 @implementation BannerHelper
 + (void)handleOrientationChange
 {
-	if (bannerView)
+	if (_bannerView)
 	{
 		dispatch_async(dispatch_get_main_queue(), ^{
-  			alignBanner(bannerView, currentAlign);
+  			alignBanner(_bannerView, _currentAlign);
 		});
 	}
 }
@@ -57,34 +60,37 @@ static void alignBanner(GADBannerView *bannerView, int align)
 
 @implementation BannerViewDelegate
 
-- (void)bannerViewDidReceiveAd:(GADBannerView *)bannerView
+- (void)bannerViewDidReceiveAd:(GADBannerView *)_bannerView
 {
-	if (admobCallback)
-		admobCallback("BANNER_LOADED", "");
+	if (_admobCallback)
+		_admobCallback("BANNER_LOADED", "");
 }
 
-- (void)bannerView:(GADBannerView *)bannerView didFailToReceiveAdWithError:(NSError *)error
+- (void)bannerView:(GADBannerView *)_bannerView didFailToReceiveAdWithError:(NSError *)error
 {
-	if (admobCallback)
-		admobCallback("BANNER_FAILED_TO_LOAD", [[NSString stringWithFormat:@"Error Code: %ld, Description: %@", (long)error.code, error.localizedDescription] UTF8String]);
+	if (_admobCallback)
+	{
+		[[NSString stringWithFormat:@"Error Code: %zd, Description: %@", error.code, error.localizedDescription] getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+		_admobCallback("BANNER_FAILED_TO_LOAD", _message);
+	}
 }
 
-- (void)bannerViewDidRecordClick:(GADBannerView *)bannerView
+- (void)bannerViewDidRecordClick:(GADBannerView *)_bannerView
 {
-	if (admobCallback)
-		admobCallback("BANNER_CLICKED", "");
+	if (_admobCallback)
+		_admobCallback("BANNER_CLICKED", "");
 }
 
-- (void)bannerViewWillPresentScreen:(GADBannerView *)bannerView
+- (void)bannerViewWillPresentScreen:(GADBannerView *)_bannerView
 {
-	if (admobCallback)
-		admobCallback("BANNER_OPENED", "");
+	if (_admobCallback)
+		_admobCallback("BANNER_OPENED", "");
 }
 
-- (void)bannerViewDidDismissScreen:(GADBannerView *)bannerView
+- (void)bannerViewDidDismissScreen:(GADBannerView *)_bannerView
 {
-	if (admobCallback)
-		admobCallback("BANNER_CLOSED", "");
+	if (_admobCallback)
+		_admobCallback("BANNER_CLOSED", "");
 }
 
 @end
@@ -108,16 +114,19 @@ static void alignBanner(GADBannerView *bannerView, int align)
 	{
 		if (error)
 		{
-			if (admobCallback)
-				admobCallback("INTERSTITIAL_FAILED_TO_LOAD", [[error localizedDescription] UTF8String]);
+			if (_admobCallback)
+			{
+				[[NSString stringWithFormat:@"Error Code: %zd, Description: %@", error.code, error.localizedDescription] getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+				_admobCallback("INTERSTITIAL_FAILED_TO_LOAD", _message);
+			}
 		}
 		else
 		{
 			self._ad = ad;
 			self._ad.fullScreenContentDelegate = self;
 
-			if (admobCallback)
-				admobCallback("INTERSTITIAL_LOADED", "");
+			if (_admobCallback)
+				_admobCallback("INTERSTITIAL_LOADED", "");
 		}
 	}];
 }
@@ -128,26 +137,35 @@ static void alignBanner(GADBannerView *bannerView, int align)
 	{
 		[self._ad presentFromRootViewController:[UIApplication.sharedApplication.keyWindow rootViewController]];
 
-		if (admobCallback)
-			admobCallback("INTERSTITIAL_SHOWED", "");
+		if (_admobCallback)
+			_admobCallback("INTERSTITIAL_SHOWED", "");
 	}
 	else
 	{
-		if (admobCallback)
-			admobCallback("INTERSTITIAL_FAILED_TO_SHOW", "Interstitial ad not ready.");
+		if (_admobCallback)
+			_admobCallback("INTERSTITIAL_FAILED_TO_SHOW", "Interstitial ad not ready.");
 	}
+}
+
+- (void)adDidRecordClick:(id<GADFullScreenPresentingAd>)ad
+{
+	if (_admobCallback)
+		_admobCallback("INTERSTITIAL_CLICKED", "");
 }
 
 - (void)adDidDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad
 {
-	if (admobCallback)
-		admobCallback("INTERSTITIAL_DISMISSED", "");
+	if (_admobCallback)
+		_admobCallback("INTERSTITIAL_DISMISSED", "");
 }
 
 - (void)ad:(id<GADFullScreenPresentingAd>)ad didFailToPresentFullScreenContentWithError:(NSError *)error
 {
-	if (admobCallback)
-		admobCallback("INTERSTITIAL_FAILED_TO_SHOW", [[error localizedDescription] UTF8String]);
+	if (_admobCallback)
+	{
+		[[NSString stringWithFormat:@"Error Code: %zd, Description: %@", error.code, error.localizedDescription] getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+		_admobCallback("INTERSTITIAL_FAILED_TO_SHOW", _message);
+	}
 }
 
 @end
@@ -171,16 +189,19 @@ static void alignBanner(GADBannerView *bannerView, int align)
 	{
 		if (error)
 		{
-			if (admobCallback)
-				admobCallback("REWARDED_FAILED_TO_LOAD", [[error localizedDescription] UTF8String]);
+			if (_admobCallback)
+			{
+				[[NSString stringWithFormat:@"Error Code: %zd, Description: %@", error.code, error.localizedDescription] getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+				_admobCallback("REWARDED_FAILED_TO_LOAD", _message);
+			}
 		}
 		else
 		{
 			self._ad = ad;
 			self._ad.fullScreenContentDelegate = self;
 
-			if (admobCallback)
-				admobCallback("REWARDED_LOADED", "");
+			if (_admobCallback)
+				_admobCallback("REWARDED_LOADED", "");
 		}
 	}];
 }
@@ -190,30 +211,42 @@ static void alignBanner(GADBannerView *bannerView, int align)
 	if (self._ad != nil && [self._ad canPresentFromRootViewController:[UIApplication.sharedApplication.keyWindow rootViewController] error:nil])
 	{
 		[self._ad presentFromRootViewController:[UIApplication.sharedApplication.keyWindow rootViewController] userDidEarnRewardHandler:^{
-			if (admobCallback)
-				admobCallback("REWARDED_EARNED", [[NSString stringWithFormat:@"%@:%@", self._ad.adReward.type, self._ad.adReward.amount] UTF8String]);
+			if (_admobCallback)
+			{
+				[[NSString stringWithFormat:@"%@:%d", self._ad.adReward.type, self._ad.adReward.amount.intValue] getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+				_admobCallback("REWARDED_EARNED", _message);
+			}
 		}];
 
-		if (admobCallback)
-			admobCallback("REWARDED_SHOWED", "");
+		if (_admobCallback)
+			_admobCallback("REWARDED_SHOWED", "");
 	}
 	else
 	{
-		if (admobCallback)
-			admobCallback("REWARDED_FAILED_TO_SHOW", "Rewarded ad not ready.");
+		if (_admobCallback)
+			_admobCallback("REWARDED_FAILED_TO_SHOW", "Rewarded ad not ready.");
 	}
+}
+
+- (void)adDidRecordClick:(id<GADFullScreenPresentingAd>)ad
+{
+	if (_admobCallback)
+		_admobCallback("REWARDED_CLICKED", "");
 }
 
 - (void)adDidDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad
 {
-	if (admobCallback)
-		admobCallback("REWARDED_DISMISSED", "");
+	if (_admobCallback)
+		_admobCallback("REWARDED_DISMISSED", "");
 }
 
 - (void)ad:(id<GADFullScreenPresentingAd>)ad didFailToPresentFullScreenContentWithError:(NSError *)error
 {
-	if (admobCallback)
-		admobCallback("REWARDED_FAILED_TO_SHOW", [[error localizedDescription] UTF8String]);
+	if (_admobCallback)
+	{
+		[[NSString stringWithFormat:@"Error Code: %zd, Description: %@", error.code, error.localizedDescription] getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+		_admobCallback("REWARDED_FAILED_TO_SHOW", _message);
+	}
 }
 
 @end
@@ -237,16 +270,19 @@ static void alignBanner(GADBannerView *bannerView, int align)
 	{
 		if (error)
 		{
-			if (admobCallback)
-				admobCallback("APP_OPEN_FAILED_TO_LOAD", [[error localizedDescription] UTF8String]);
+			if (_admobCallback)
+			{
+				[[NSString stringWithFormat:@"Error Code: %zd, Description: %@", error.code, error.localizedDescription] getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+				_admobCallback("APP_OPEN_FAILED_TO_LOAD", _message);
+			}
 		}
 		else
 		{
 			self._ad = ad;
 			self._ad.fullScreenContentDelegate = self;
 
-			if (admobCallback)
-				admobCallback("APP_OPEN_LOADED", "");
+			if (_admobCallback)
+				_admobCallback("APP_OPEN_LOADED", "");
 		}
 	}];
 }
@@ -257,26 +293,35 @@ static void alignBanner(GADBannerView *bannerView, int align)
 	{
 		[self._ad presentFromRootViewController:[UIApplication.sharedApplication.keyWindow rootViewController]];
 
-		if (admobCallback)
-			admobCallback("APP_OPEN_SHOWED", "");
+		if (_admobCallback)
+			_admobCallback("APP_OPEN_SHOWED", "");
 	}
 	else
 	{
-		if (admobCallback)
-			admobCallback("APP_OPEN_FAILED_TO_SHOW", "App Open ad not ready.");
+		if (_admobCallback)
+			_admobCallback("APP_OPEN_FAILED_TO_SHOW", "App Open ad not ready.");
 	}
+}
+
+- (void)adDidRecordClick:(id<GADFullScreenPresentingAd>)ad
+{
+	if (_admobCallback)
+		_admobCallback("APP_OPEN_CLICKED", "");
 }
 
 - (void)adDidDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad
 {
-	if (admobCallback)
-		admobCallback("APP_OPEN_DISMISSED", "");
+	if (_admobCallback)
+		_admobCallback("APP_OPEN_DISMISSED", "");
 }
 
 - (void)ad:(id<GADFullScreenPresentingAd>)ad didFailToPresentFullScreenContentWithError:(NSError *)error
 {
-	if (admobCallback)
-		admobCallback("APP_OPEN_FAILED_TO_SHOW", [[error localizedDescription] UTF8String]);
+	if (_admobCallback)
+	{
+		[[NSString stringWithFormat:@"Error Code: %zd, Description: %@", error.code, error.localizedDescription] getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+		_admobCallback("APP_OPEN_FAILED_TO_SHOW", _message);
+	}
 }
 
 @end
@@ -309,7 +354,11 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 	if (enableRDP)
 		[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"gad_rdp"];
 
-	if (@available(iOS 14, *))
+	[[NSString stringWithFormat:@"%zd.%zd.%zd",
+							GADMobileAds.sharedInstance.versionNumber.majorVersion,
+							GADMobileAds.sharedInstance.versionNumber.minorVersion,
+							GADMobileAds.sharedInstance.versionNumber.patchVersion] getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+	if (@available(iOS 14.0, *))
 	{
 		int purpose = hasAdmobConsentForPurpose(0);
 
@@ -317,38 +366,29 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 		{
 			[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status)
 			{
-				if (admobCallback)
+				if (_admobCallback)
 				{
-					NSString *statusString;
-				
 					switch (status)
 					{
 					case ATTrackingManagerAuthorizationStatusNotDetermined:
-						statusString = @"NOT_DETERMINED";
+						_admobCallback("ATT_STATUS", "NOT_DETERMINED");
 						break;
 					case ATTrackingManagerAuthorizationStatusRestricted:
-						statusString = @"RESTRICTED";
+						_admobCallback("ATT_STATUS", "RESTRICTED");
 						break;
 					case ATTrackingManagerAuthorizationStatusDenied:
-						statusString = @"DENIED";
+						_admobCallback("ATT_STATUS", "DENIED");
 						break;
 					case ATTrackingManagerAuthorizationStatusAuthorized:
-						statusString = @"AUTHORIZED";
+						_admobCallback("ATT_STATUS", "AUTHORIZED");
 						break;
-					}
-
-					if (statusString)
-					{
-						dispatch_async(dispatch_get_main_queue(), ^{
-							admobCallback("ATT_STATUS", [statusString UTF8String]);
-						});
 					}
 				}
 
 				[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
-				{
-					if (admobCallback)
-						admobCallback("INIT_OK", "");
+				{					
+					if (_admobCallback)
+						_admobCallback("INIT_OK", _message);
 				}];
 			}];
 		}
@@ -356,8 +396,8 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 		{
 			[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 			{
-				if (admobCallback)
-					admobCallback("INIT_OK", "");
+				if (_admobCallback)
+					_admobCallback("INIT_OK", _message);
 			}];
 		}
 	}
@@ -365,26 +405,38 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 	{
 		[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
 		{
-			if (admobCallback)
-				admobCallback("INIT_OK", "");
+			if (_admobCallback)
+				_admobCallback("INIT_OK", _message);
 		}];
 	}
 }
 
+//https://support.google.com/admob/answer/10115027?hl=en&sjid=6409788409933810109-AP
 void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallback callback)
 {
-	admobCallback = callback;
+	_admobCallback = callback;
 
 	UMPRequestParameters *params = [[UMPRequestParameters alloc] init];
 
 	params.tagForUnderAgeOfConsent = childDirected;
+	
+	//>> use this to debug GDPR
+	/*[UMPConsentInformation.sharedInstance reset];
+	UMPDebugSettings *debugSettings = [[UMPDebugSettings alloc] init];
+	debugSettings.testDeviceIdentifiers = @[ @"[TEST_DEVICE_ID]" ];
+	debugSettings.geography = UMPDebugGeographyEEA;
+	params.debugSettings = debugSettings;*/
+	//<<
 
 	[UMPConsentInformation.sharedInstance requestConsentInfoUpdateWithParameters:params completionHandler:^(NSError *_Nullable error)
 	{
 		if (error)
 		{
-			if (admobCallback)
-				admobCallback("CONSENT_FAIL", [[NSString stringWithFormat:@"Consent Info Error: %@ (Code: %ld)", error.localizedDescription, (long)error.code] UTF8String]);
+			if (_admobCallback)
+			{
+				[[NSString stringWithFormat:@"Consent Info Error: %@ (Code: %zd)", error.localizedDescription, error.code] getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+				_admobCallback("CONSENT_FAIL", _message);
+			}
 
 			initMobileAds(testingAds, childDirected, enableRDP);
 		}
@@ -396,8 +448,11 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 				{
 					if (loadError)
 					{
-						if (admobCallback)
-							admobCallback("CONSENT_FAIL", [[NSString stringWithFormat:@"Consent Form Load Error: %@ (Code: %ld)", loadError.localizedDescription, (long)loadError.code] UTF8String]);
+						if (_admobCallback)
+						{
+							[[NSString stringWithFormat:@"Consent Form Load Error: %@ (Code: %zd)", loadError.localizedDescription, loadError.code] getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+							_admobCallback("CONSENT_FAIL", _message);
+						}
 
 						initMobileAds(testingAds, childDirected, enableRDP);
 					}
@@ -406,10 +461,13 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 						dispatch_async(dispatch_get_main_queue(), ^{
 							[form presentFromViewController:UIApplication.sharedApplication.keyWindow.rootViewController completionHandler:^(NSError *_Nullable error)
 							{
-								if (admobCallback && loadError)
-									admobCallback("CONSENT_FAIL", [[NSString stringWithFormat:@"Consent Form Load Error: %@ (Code: %ld)", loadError.localizedDescription, (long)loadError.code] UTF8String]);
-								else if (admobCallback)
-									admobCallback("CONSENT_SUCCESS", "Consent form dismissed successfully.");
+								if (_admobCallback && loadError)
+								{
+									[[NSString stringWithFormat:@"Consent Form Load Error: %@ (Code: %zd)", loadError.localizedDescription, loadError.code] getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+									_admobCallback("CONSENT_FAIL", _message);
+								}
+								else if (_admobCallback)
+									_admobCallback("CONSENT_SUCCESS", "Consent form dismissed successfully.");
 
 								initMobileAds(testingAds, childDirected, enableRDP);
 							}];
@@ -419,8 +477,8 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 			}
 			else
 			{
-				if (admobCallback)
-					admobCallback("CONSENT_NOT_REQUIRED", "Consent form not required or available.");
+				if (_admobCallback)
+					_admobCallback("CONSENT_NOT_REQUIRED", "Consent form not required or available.");
 
 				initMobileAds(testingAds, childDirected, enableRDP);
 			}
@@ -430,15 +488,15 @@ void initAdmob(bool testingAds, bool childDirected, bool enableRDP, AdmobCallbac
 
 void showAdmobBanner(const char *id, int size, int align)
 {
-	if (bannerView != nil)
+	if (_bannerView != nil)
 	{
-		if (admobCallback)
-			admobCallback("BANNER_FAILED_TO_LOAD", "Hide previous banner first!");
+		if (_admobCallback)
+			_admobCallback("BANNER_FAILED_TO_LOAD", "Hide previous banner first!");
 
 		return;
 	}
 
-	currentAlign = align;
+	_currentAlign = align;
 
 	dispatch_async(dispatch_get_main_queue(), ^{
 		UIViewController *rootVC = UIApplication.sharedApplication.keyWindow.rootViewController;
@@ -448,7 +506,7 @@ void showAdmobBanner(const char *id, int size, int align)
 		switch (size)
 		{
 		case 1:
-			adSize = GADAdSizeFluid;
+			adSize = GADAdSizeBanner;
 			break;
 		case 2:
 			adSize = GADAdSizeFullBanner;
@@ -462,41 +520,48 @@ void showAdmobBanner(const char *id, int size, int align)
 		case 5:
 			adSize = GADAdSizeMediumRectangle;
 			break;
+		case 6:
+			adSize = GADAdSizeFluid;
 		default:
-			adSize = GADAdSizeBanner;
+			CGRect frame = rootVC.view.frame;
+			if (@available(iOS 11.0, *))
+				frame = UIEdgeInsetsInsetRect(rootVC.view.frame, rootVC.view.safeAreaInsets);
+			CGFloat viewWidth = frame.size.width;
+			adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth);
+			
 			break;
 		}
 
-		bannerView = [[GADBannerView alloc] initWithAdSize:adSize];
-		bannerView.adUnitID = [NSString stringWithUTF8String:id];
-		bannerView.rootViewController = rootVC;
+		_bannerView = [[GADBannerView alloc] initWithAdSize:adSize];
+		_bannerView.adUnitID = [NSString stringWithUTF8String:id];
+		_bannerView.rootViewController = rootVC;
 
 		if (bannerDelegate == nil)
 			bannerDelegate = [[BannerViewDelegate alloc] init];
 
-		bannerView.backgroundColor = UIColor.clearColor;
-		bannerView.delegate = bannerDelegate;
+		_bannerView.backgroundColor = UIColor.clearColor;
+		_bannerView.delegate = bannerDelegate;
 
-		[rootVC.view addSubview:bannerView];
+		[rootVC.view addSubview:_bannerView];
 
-		alignBanner(bannerView, align);
+		alignBanner(_bannerView, align);
 
 		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidChangeStatusBarOrientationNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification)
 		{
 			[BannerHelper handleOrientationChange];
 		}];
 
-		[bannerView loadRequest:[GADRequest request]];
+		[_bannerView loadRequest:[GADRequest request]];
 	});
 }
 
 void hideAdmobBanner()
 {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		if (bannerView != nil)
+		if (_bannerView != nil)
 		{
-			[bannerView removeFromSuperview];
-			bannerView = nil;
+			[_bannerView removeFromSuperview];
+			_bannerView = nil;
 		}
 	});
 }
@@ -514,8 +579,8 @@ void showAdmobInterstitial()
 	dispatch_async(dispatch_get_main_queue(), ^{
 		if (interstitialDelegate)
 			[interstitialDelegate show];
-		else if (admobCallback)
-			admobCallback("INTERSTITIAL_FAILED_TO_SHOW", "You need to load interstitial ad first!");
+		else if (_admobCallback)
+			_admobCallback("INTERSTITIAL_FAILED_TO_SHOW", "You need to load interstitial ad first!");
 	});
 }
 
@@ -532,8 +597,8 @@ void showAdmobRewarded()
 	dispatch_async(dispatch_get_main_queue(), ^{
 		if (rewardedDelegate)
 			[rewardedDelegate show];
-		else if (admobCallback)
-			admobCallback("REWARDED_FAILED_TO_SHOW", "You need to load rewarded ad first!");
+		else if (_admobCallback)
+			_admobCallback("REWARDED_FAILED_TO_SHOW", "You need to load rewarded ad first!");
 	});
 }
 
@@ -550,8 +615,8 @@ void showAdmobAppOpen()
 	dispatch_async(dispatch_get_main_queue(), ^{
 		if (appOpenDelegate)
 			[appOpenDelegate show];
-		else if (admobCallback)
-			admobCallback("APP_OPEN_FAILED_TO_SHOW", "You need to load App Open Ad first!");
+		else if (_admobCallback)
+			_admobCallback("APP_OPEN_FAILED_TO_SHOW", "You need to load App Open Ad first!");
 	});
 }
 
@@ -584,7 +649,10 @@ const char *getAdmobConsent()
 	NSString *purposeConsents = [NSUserDefaults.standardUserDefaults stringForKey:@"IABTCF_PurposeConsents"];
 
 	if (purposeConsents.length > 0)
-		return [purposeConsents UTF8String];
+	{
+		[purposeConsents getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+		return _message;
+	}
 
 	return "";
 }
@@ -599,8 +667,12 @@ void showAdmobPrivacyOptionsForm()
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[UMPConsentForm presentPrivacyOptionsFormFromViewController:UIApplication.sharedApplication.keyWindow.rootViewController completionHandler:^(NSError *_Nullable formError)
 		{
-			 if (formError && admobCallback)
-				 admobCallback("CONSENT_FAIL", [[formError localizedDescription] UTF8String]);
+			 if (formError && _admobCallback)
+			 {
+				 
+				 [[NSString stringWithFormat:@"Consent Form Error: %@ (Code: %zd)", formError.localizedDescription, formError.code] getCString:_message maxLength:sizeof(_message) encoding:NSUTF8StringEncoding];
+				 _admobCallback("CONSENT_FAIL", _message);
+			 }
 		}];
 	});
 }
