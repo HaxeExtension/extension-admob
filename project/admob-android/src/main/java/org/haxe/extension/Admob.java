@@ -31,17 +31,17 @@ import java.util.List;
 
 public class Admob extends Extension
 {
-	private static AdView adView;
-	private static RelativeLayout adContainer;
-	private static InterstitialAd interstitial;
-	private static RewardedAd rewarded;
-	private static AppOpenAd appOpen;
-	private static ConsentInformation consentInformation;
-	private static HaxeObject callback;
+	private static AdView _adView;
+	private static RelativeLayout _adContainer;
+	private static InterstitialAd _interstitial;
+	private static RewardedAd _rewarded;
+	private static AppOpenAd _appOpen;
+	private static ConsentInformation _consentInformation;
+	private static HaxeObject _callback;
 
 	public static void init(final boolean testingAds, final boolean childDirected, final boolean enableRDP, HaxeObject callback)
 	{
-		Admob.callback = callback;
+		_callback = callback;
 		
 		//> use this to debug GDPR
 		/*ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(mainContext)
@@ -55,13 +55,13 @@ public class Admob extends Extension
 			.build();*/
 		//<
 
-		consentInformation = UserMessagingPlatform.getConsentInformation(mainContext);
+		_consentInformation = UserMessagingPlatform.getConsentInformation(mainContext);
 
-		consentInformation.requestConsentInfoUpdate(mainActivity, new ConsentRequestParameters.Builder().setTagForUnderAgeOfConsent(childDirected).build() /*params*/, new ConsentInformation.OnConsentInfoUpdateSuccessListener()
+		_consentInformation.requestConsentInfoUpdate(mainActivity, new ConsentRequestParameters.Builder().setTagForUnderAgeOfConsent(childDirected).build() /*params*/, new ConsentInformation.OnConsentInfoUpdateSuccessListener()
 		{
 			public void onConsentInfoUpdateSuccess()
 			{
-				if (consentInformation.isConsentFormAvailable() && consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.REQUIRED)
+				if (_consentInformation.isConsentFormAvailable() && _consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.REQUIRED)
 				{
 					UserMessagingPlatform.loadConsentForm(mainActivity, new UserMessagingPlatform.OnConsentFormLoadSuccessListener()
 					{
@@ -77,10 +77,10 @@ public class Admob extends Extension
 										@Override
 										public void onConsentFormDismissed(FormError formError)
 										{
-											if (formError == null && callback != null)
-												callback.call("onStatus", new Object[]{ "CONSENT_SUCCESS", "Consent form dismissed successfully." });
-											else if (callback != null)
-												callback.call("onStatus", new Object[]{ "CONSENT_FAIL", formError.getMessage() });
+											if (formError == null && _callback != null)
+												_callback.call("onStatus", new Object[]{ "CONSENT_SUCCESS", "Consent form dismissed successfully." });
+											else if (_callback != null)
+												_callback.call("onStatus", new Object[]{ "CONSENT_FAIL", formError.getMessage() });
 
 											initMobileAds(testingAds, childDirected, enableRDP);
 										}
@@ -93,8 +93,8 @@ public class Admob extends Extension
 						@Override
 						public void onConsentFormLoadFailure(FormError loadError)
 						{
-							if (callback != null)
-								callback.call("onStatus", new Object[]{ "CONSENT_FAIL", loadError.getMessage() });
+							if (_callback != null)
+								_callback.call("onStatus", new Object[]{ "CONSENT_FAIL", loadError.getMessage() });
 
 							initMobileAds(testingAds, childDirected, enableRDP);
 						}
@@ -102,8 +102,8 @@ public class Admob extends Extension
 				}
 				else
 				{
-					if (callback != null)
-						callback.call("onStatus", new Object[]{ "CONSENT_NOT_REQUIRED", "Consent form not required or available." });
+					if (_callback != null)
+						_callback.call("onStatus", new Object[]{ "CONSENT_NOT_REQUIRED", "Consent form not required or available." });
 
 					initMobileAds(testingAds, childDirected, enableRDP);
 				}
@@ -112,8 +112,8 @@ public class Admob extends Extension
 		{
 			public void onConsentInfoUpdateFailure(FormError requestError)
 			{
-				if (callback != null)
-					callback.call("onStatus", new Object[]{ "CONSENT_FAIL", requestError.getMessage() });
+				if (_callback != null)
+					_callback.call("onStatus", new Object[]{ "CONSENT_FAIL", requestError.getMessage() });
 
 				initMobileAds(testingAds, childDirected, enableRDP);
 			}
@@ -165,18 +165,18 @@ public class Admob extends Extension
 			@Override
 			public void onInitializationComplete(InitializationStatus initializationStatus)
 			{
-				if (callback != null) 
-					callback.call("onStatus", new Object[]{ "INIT_OK", MobileAds.getVersion().toString() });
+				if (_callback != null) 
+					_callback.call("onStatus", new Object[]{ "INIT_OK", MobileAds.getVersion().toString() });
 			}
 		});
 	}
 
 	public static void showBanner(final String id, final int size, final int align)
 	{
-		if (adView != null)
+		if (_adView != null)
 		{
-			if (callback != null)
-				callback.call("onStatus", new Object[] { "BANNER_FAILED_TO_LOAD", "Hide previous banner first!" });
+			if (_callback != null)
+				_callback.call("onStatus", new Object[] { "BANNER_FAILED_TO_LOAD", "Hide previous banner first!" });
 
 			return;
 		}
@@ -185,93 +185,93 @@ public class Admob extends Extension
 		{
 			public void run()
 			{
-				adView = new AdView(mainActivity);
-				adView.setAdUnitId(id);
+				_adView = new AdView(mainActivity);
+				_adView.setAdUnitId(id);
 
 				switch (size)
 				{
 					case 1:
-						adView.setAdSize(AdSize.BANNER);
+						_adView.setAdSize(AdSize.BANNER);
 						break;
 					case 2:
-						adView.setAdSize(AdSize.FULL_BANNER);
+						_adView.setAdSize(AdSize.FULL_BANNER);
 						break;
 					case 3:
-						adView.setAdSize(AdSize.LARGE_BANNER);
+						_adView.setAdSize(AdSize.LARGE_BANNER);
 						break;
 					case 4:
-						adView.setAdSize(AdSize.LEADERBOARD);
+						_adView.setAdSize(AdSize.LEADERBOARD);
 						break;
 					case 5:
-						adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
+						_adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
 						break;
 					case 6:
-						adView.setAdSize(AdSize.FLUID);
+						_adView.setAdSize(AdSize.FLUID);
 						break;
 					default:
-						adView.setAdSize(getAdSize());
+						_adView.setAdSize(getAdSize());
 						break;
 				}
 
-				adView.setAdListener(new AdListener()
+				_adView.setAdListener(new AdListener()
 				{
 					@Override
 					public void onAdLoaded()
 					{
-						if (callback != null)
-							callback.call("onStatus", new Object[] { "BANNER_LOADED", "" });
+						if (_callback != null)
+							_callback.call("onStatus", new Object[] { "BANNER_LOADED", "" });
 
-						adView.setVisibility(View.VISIBLE); //to fix this problem, if it is still valid: https://groups.google.com/forum/#!topic/google-admob-ads-sdk/avwVXvBt_sM
+						_adView.setVisibility(View.VISIBLE); //to fix this problem, if it is still valid: https://groups.google.com/forum/#!topic/google-admob-ads-sdk/avwVXvBt_sM
 					}
 
 					@Override
 					public void onAdFailedToLoad(LoadAdError adError)
 					{
-						if (callback != null)
-							callback.call("onStatus", new Object[] { "BANNER_FAILED_TO_LOAD", adError.toString() });
+						if (_callback != null)
+							_callback.call("onStatus", new Object[] { "BANNER_FAILED_TO_LOAD", adError.toString() });
 					}
 
 					@Override
 					public void onAdOpened()
 					{
-						if (callback != null)
-							callback.call("onStatus", new Object[] { "BANNER_OPENED", "" });
+						if (_callback != null)
+							_callback.call("onStatus", new Object[] { "BANNER_OPENED", "" });
 					}
 
 					@Override
 					public void onAdClicked()
 					{
-						if (callback != null)
-							callback.call("onStatus", new Object[] { "BANNER_CLICKED", "" });
+						if (_callback != null)
+							_callback.call("onStatus", new Object[] { "BANNER_CLICKED", "" });
 					}
 
 					@Override
 					public void onAdClosed()
 					{
-						if (callback != null)
-							callback.call("onStatus", new Object[] { "BANNER_CLOSED", "" });
+						if (_callback != null)
+							_callback.call("onStatus", new Object[] { "BANNER_CLOSED", "" });
 					}
 				});
 
-				adContainer.setGravity(align);
-				adContainer.addView(adView);
+				_adContainer.setGravity(align);
+				_adContainer.addView(_adView);
 
-				adView.loadAd(new AdRequest.Builder().build());
+				_adView.loadAd(new AdRequest.Builder().build());
 			}
 		});
 	}
 
 	public static void hideBanner()
 	{
-		if (adView != null)
+		if (_adView != null)
 		{
 			mainActivity.runOnUiThread(new Runnable()
 			{
 				public void run()
 				{
-					adContainer.removeView(adView);
-					adView.destroy();
-					adView = null;
+					_adContainer.removeView(_adView);
+					_adView.destroy();
+					_adView = null;
 				}
 			});
 		}
@@ -288,52 +288,52 @@ public class Admob extends Extension
 					@Override
 					public void onAdLoaded(InterstitialAd interstitialAd)
 					{
-						interstitial = interstitialAd;
-						interstitial.setImmersiveMode(immersiveModeEnabled);
-						interstitial.setFullScreenContentCallback(new FullScreenContentCallback()
+						_interstitial = interstitialAd;
+						_interstitial.setImmersiveMode(immersiveModeEnabled);
+						_interstitial.setFullScreenContentCallback(new FullScreenContentCallback()
 						{
 							@Override
 							public void onAdClicked()
 							{
-								if (callback != null)
-									callback.call("onStatus", new Object[] { "INTERSTITIAL_CLICKED", "" });
+								if (_callback != null)
+									_callback.call("onStatus", new Object[] { "INTERSTITIAL_CLICKED", "" });
 							}
 							
 							@Override
 							public void onAdDismissedFullScreenContent()
 							{
-								if (callback != null)
-									callback.call("onStatus", new Object[] { "INTERSTITIAL_DISMISSED", "" });
+								if (_callback != null)
+									_callback.call("onStatus", new Object[] { "INTERSTITIAL_DISMISSED", "" });
 							}
 
 							@Override
 							public void onAdFailedToShowFullScreenContent(AdError adError)
 							{
-								if (callback != null)
-									callback.call("onStatus", new Object[] { "INTERSTITIAL_FAILED_TO_SHOW", adError.toString() });
+								if (_callback != null)
+									_callback.call("onStatus", new Object[] { "INTERSTITIAL_FAILED_TO_SHOW", adError.toString() });
 							}
 
 							@Override
 							public void onAdShowedFullScreenContent()
 							{
-								if (callback != null)
-									callback.call("onStatus", new Object[] { "INTERSTITIAL_SHOWED", "" });
+								if (_callback != null)
+									_callback.call("onStatus", new Object[] { "INTERSTITIAL_SHOWED", "" });
 
-								interstitial = null;
+								_interstitial = null;
 							}
 						});
 
-						if (callback != null)
-							callback.call("onStatus", new Object[] { "INTERSTITIAL_LOADED", "" });
+						if (_callback != null)
+							_callback.call("onStatus", new Object[] { "INTERSTITIAL_LOADED", "" });
 					}
 
 					@Override
 					public void onAdFailedToLoad(LoadAdError loadAdError)
 					{
-						if (callback != null)
-							callback.call("onStatus", new Object[] { "INTERSTITIAL_FAILED_TO_LOAD", loadAdError.getMessage() });
+						if (_callback != null)
+							_callback.call("onStatus", new Object[] { "INTERSTITIAL_FAILED_TO_LOAD", loadAdError.getMessage() });
 
-						interstitial = null;
+						_interstitial = null;
 					}
 				});
 			}
@@ -342,20 +342,20 @@ public class Admob extends Extension
 
 	public static void showInterstitial()
 	{
-		if (interstitial != null)
+		if (_interstitial != null)
 		{
 			mainActivity.runOnUiThread(new Runnable()
 			{
 				public void run()
 				{
-					interstitial.show(mainActivity);
+					_interstitial.show(mainActivity);
 				}
 			});
 		}
 		else
 		{
-			if (callback != null)
-				callback.call("onStatus", new Object[] { "INTERSTITIAL_FAILED_TO_SHOW", "You need to load interstitial ad first!" });
+			if (_callback != null)
+				_callback.call("onStatus", new Object[] { "INTERSTITIAL_FAILED_TO_SHOW", "You need to load interstitial ad first!" });
 		}
 	}
 
@@ -370,51 +370,51 @@ public class Admob extends Extension
 					@Override
 					public void onAdLoaded(RewardedAd rewardedAd)
 					{
-						rewarded = rewardedAd;
-						rewarded.setImmersiveMode(immersiveModeEnabled);
-						rewarded.setFullScreenContentCallback(new FullScreenContentCallback()
+						_rewarded = rewardedAd;
+						_rewarded.setImmersiveMode(immersiveModeEnabled);
+						_rewarded.setFullScreenContentCallback(new FullScreenContentCallback()
 						{
 							@Override
 							public void onAdClicked()
 							{
-								if (callback != null)
-									callback.call("onStatus", new Object[] { "REWARDED_CLICKED", "" });
+								if (_callback != null)
+									_callback.call("onStatus", new Object[] { "REWARDED_CLICKED", "" });
 							}
 							
 							@Override
 							public void onAdDismissedFullScreenContent()
 							{
-								if (callback != null)
-									callback.call("onStatus", new Object[] { "REWARDED_DISMISSED", "" });
+								if (_callback != null)
+									_callback.call("onStatus", new Object[] { "REWARDED_DISMISSED", "" });
 							}
 
 							@Override
 							public void onAdFailedToShowFullScreenContent(AdError adError)
 							{
-								if (callback != null)
-									callback.call("onStatus", new Object[] { "REWARDED_FAILED_TO_SHOW", adError.toString() });
+								if (_callback != null)
+									_callback.call("onStatus", new Object[] { "REWARDED_FAILED_TO_SHOW", adError.toString() });
 							}
 
 							@Override
 							public void onAdShowedFullScreenContent()
 							{
-								if (callback != null)
-									callback.call("onStatus", new Object[] { "REWARDED_SHOWED", "" });
+								if (_callback != null)
+									_callback.call("onStatus", new Object[] { "REWARDED_SHOWED", "" });
 
-								rewarded = null;
+								_rewarded = null;
 							}
 						});
 
-						callback.call("onStatus", new Object[] { "REWARDED_LOADED", "" });
+						_callback.call("onStatus", new Object[] { "REWARDED_LOADED", "" });
 					}
 
 					@Override
 					public void onAdFailedToLoad(LoadAdError loadAdError)
 					{
-						if (callback != null)
-							callback.call("onStatus", new Object[] { "REWARDED_FAILED_TO_LOAD", loadAdError.getMessage() });
+						if (_callback != null)
+							_callback.call("onStatus", new Object[] { "REWARDED_FAILED_TO_LOAD", loadAdError.getMessage() });
 
-						rewarded = null;
+						_rewarded = null;
 					}
 				});
 			}
@@ -423,26 +423,26 @@ public class Admob extends Extension
 
 	public static void showRewarded()
 	{
-		if (rewarded != null)
+		if (_rewarded != null)
 		{
 			mainActivity.runOnUiThread(new Runnable()
 			{
 				public void run()
 				{
-					rewarded.show(mainActivity, new OnUserEarnedRewardListener()
+					_rewarded.show(mainActivity, new OnUserEarnedRewardListener()
 					{
 						@Override
 						public void onUserEarnedReward(RewardItem rewardItem)
 						{
-							if (callback != null)
-								callback.call("onStatus", new Object[] { "REWARDED_EARNED", rewardItem.getType() + ":" + String.valueOf(rewardItem.getAmount())});
+							if (_callback != null)
+								_callback.call("onStatus", new Object[] { "REWARDED_EARNED", rewardItem.getType() + ":" + String.valueOf(rewardItem.getAmount())});
 						}
 					});
 				}
 			});
 		}
-		else if (callback != null)
-			callback.call("onStatus", new Object[] { "REWARDED_FAILED_TO_SHOW", "You need to load rewarded ad first!" });
+		else if (_callback != null)
+			_callback.call("onStatus", new Object[] { "REWARDED_FAILED_TO_SHOW", "You need to load rewarded ad first!" });
 	}
 
 	public static void loadAppOpen(final String id, final boolean immersiveModeEnabled)
@@ -457,52 +457,52 @@ public class Admob extends Extension
 					@Override
 					public void onAdLoaded(AppOpenAd ad)
 					{
-						appOpen = ad;
-						appOpen.setImmersiveMode(immersiveModeEnabled);
-						appOpen.setFullScreenContentCallback(new FullScreenContentCallback()
+						_appOpen = ad;
+						_appOpen.setImmersiveMode(immersiveModeEnabled);
+						_appOpen.setFullScreenContentCallback(new FullScreenContentCallback()
 						{
 							@Override
 							public void onAdClicked()
 							{
-								if (callback != null)
-									callback.call("onStatus", new Object[] { "APP_OPEN_CLICKED", "" });
+								if (_callback != null)
+									_callback.call("onStatus", new Object[] { "APP_OPEN_CLICKED", "" });
 							}
 							
 							@Override
 							public void onAdDismissedFullScreenContent()
 							{
-								if (callback != null)
-									callback.call("onStatus", new Object[]{ "APP_OPEN_DISMISSED", "" });
+								if (_callback != null)
+									_callback.call("onStatus", new Object[]{ "APP_OPEN_DISMISSED", "" });
 							}
 
 							@Override
 							public void onAdFailedToShowFullScreenContent(AdError adError)
 							{
-								if (callback != null)
-									callback.call("onStatus", new Object[]{ "APP_OPEN_FAILED_TO_SHOW", adError.toString() });
+								if (_callback != null)
+									_callback.call("onStatus", new Object[]{ "APP_OPEN_FAILED_TO_SHOW", adError.toString() });
 							}
 
 							@Override
 							public void onAdShowedFullScreenContent()
 							{
-								if (callback != null)
-									callback.call("onStatus", new Object[]{"APP_OPEN_SHOWED", ""});
+								if (_callback != null)
+									_callback.call("onStatus", new Object[]{"APP_OPEN_SHOWED", ""});
 
-								appOpen = null;
+								_appOpen = null;
 							}
 						});
 
-						if (callback != null)
-							callback.call("onStatus", new Object[]{ "APP_OPEN_LOADED", "" });
+						if (_callback != null)
+							_callback.call("onStatus", new Object[]{ "APP_OPEN_LOADED", "" });
 					}
 
 					@Override
 					public void onAdFailedToLoad(LoadAdError loadAdError)
 					{
-						if (callback != null)
-							callback.call("onStatus", new Object[]{ "APP_OPEN_FAILED_TO_LOAD", loadAdError.getMessage() });
+						if (_callback != null)
+							_callback.call("onStatus", new Object[]{ "APP_OPEN_FAILED_TO_LOAD", loadAdError.getMessage() });
 
-						appOpen = null;
+						_appOpen = null;
 					}
 				});
 			}
@@ -511,10 +511,10 @@ public class Admob extends Extension
 
 	public static void showAppOpen()
 	{
-		if (appOpen != null)
-			mainActivity.runOnUiThread(() -> appOpen.show(mainActivity));
-		else if (callback != null)
-			callback.call("onStatus", new Object[]{ "APP_OPEN_FAILED_TO_SHOW", "You need to load App Open Ad first!" });
+		if (_appOpen != null)
+			mainActivity.runOnUiThread(() -> _appOpen.show(mainActivity));
+		else if (_callback != null)
+			_callback.call("onStatus", new Object[]{ "APP_OPEN_FAILED_TO_SHOW", "You need to load App Open Ad first!" });
 	}
 
 	public static void setVolume(final float vol)
@@ -547,7 +547,7 @@ public class Admob extends Extension
 
 	public static boolean isPrivacyOptionsRequired()
 	{
-		return consentInformation != null && consentInformation.getPrivacyOptionsRequirementStatus() == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED;
+		return _consentInformation != null && _consentInformation.getPrivacyOptionsRequirementStatus() == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED;
 	}
 
 	public static void showPrivacyOptionsForm()
@@ -557,8 +557,8 @@ public class Admob extends Extension
 			public void run()
 			{
 				UserMessagingPlatform.showPrivacyOptionsForm(mainActivity, formError -> {
-					if (formError != null && callback != null)
-						callback.call("onStatus", new Object[] { "CONSENT_FAIL", String.format("%s: %s", formError.getErrorCode(), formError.getMessage())});
+					if (formError != null && _callback != null)
+						_callback.call("onStatus", new Object[] { "CONSENT_FAIL", String.format("%s: %s", formError.getErrorCode(), formError.getMessage())});
 				});
 			}
 		});
@@ -588,19 +588,19 @@ public class Admob extends Extension
 	{
 		super.onCreate(savedInstanceState);
 
-		if (adContainer == null)
+		if (_adContainer == null)
 		{
-			adContainer = new RelativeLayout(mainActivity);
+			_adContainer = new RelativeLayout(mainActivity);
 
-			mainActivity.addContentView(adContainer, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+			mainActivity.addContentView(_adContainer, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 		}
 	}
 
 	@Override
 	public void onPause()
 	{
-		if (adView != null)
-			adView.pause();
+		if (_adView != null)
+			_adView.pause();
 
 		super.onPause();
 	}
@@ -610,7 +610,7 @@ public class Admob extends Extension
 	{
 		super.onResume();
 
-		if (adView != null)
-			adView.resume();
+		if (_adView != null)
+			_adView.resume();
 	}
 }
