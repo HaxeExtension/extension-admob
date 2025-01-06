@@ -9,7 +9,7 @@ rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 mkdir -p "$TEMP_DIR"
 
-echo "Downloading AdMob SDK..."
+echo "Downloading AdMob SDK...."
 
 curl -o "$ZIP_FILE" "$URL"
 
