@@ -1,7 +1,5 @@
 package;
 
-import extension.admob.*;
-
 class Main extends lime.app.Application
 {
 #if android
@@ -25,30 +23,30 @@ class Main extends lime.app.Application
 		switch(event)
 		{
 			case AdmobEvent.INIT_OK:
-				Admob.setVolume(0.5);
-				trace("isPrivacyOptionsRequired", Admob.isPrivacyOptionsRequired());
-				trace("getConsent", Admob.getConsent());
-				trace("hasConsentForPurpose", Admob.hasConsentForPurpose(0));
-				Admob.loadAppOpen(APP_OPEN_ID);
+				extension.admob.Admob.setVolume(0.5);
+				trace("isPrivacyOptionsRequired", extension.admob.Admob.isPrivacyOptionsRequired());
+				trace("getConsent", extension.admob.Admob.getConsent());
+				trace("hasConsentForPurpose", extension.admob.Admob.hasConsentForPurpose(0));
+				extension.admob.Admob.loadAppOpen(APP_OPEN_ID);
 				
 			case AdmobEvent.APP_OPEN_LOADED:
-				Admob.showAppOpen();
+				extension.admob.Admob.showAppOpen();
 				
 			case AdmobEvent.APP_OPEN_DISMISSED, AdmobEvent.APP_OPEN_FAILED_TO_LOAD, AdmobEvent.APP_OPEN_FAILED_TO_SHOW:
-				Admob.loadRewarded(REWARDED_ID);
+				extension.admob.Admob.loadRewarded(REWARDED_ID);
 
 			case AdmobEvent.REWARDED_LOADED:
-				Admob.showRewarded();
+				extension.admob.Admob.showRewarded();
 
 			case AdmobEvent.REWARDED_DISMISSED, AdmobEvent.REWARDED_FAILED_TO_LOAD, AdmobEvent.REWARDED_FAILED_TO_SHOW:
-				Admob.loadInterstitial(INTERSTITIAL_ID);
+				extension.admob.Admob.loadInterstitial(INTERSTITIAL_ID);
 
 			case AdmobEvent.INTERSTITIAL_LOADED:
-				Admob.showInterstitial();
+				extension.admob.Admob.showInterstitial();
 
 			case AdmobEvent.INTERSTITIAL_DISMISSED, AdmobEvent.INTERSTITIAL_FAILED_TO_LOAD, AdmobEvent.INTERSTITIAL_FAILED_TO_SHOW:
-				Admob.showBanner(ADAPTIVE_BANNER_ID);
-				//Admob.showBanner(BANNER_ID, AdmobBannerSize.BANNER, AdmobBannerAlign.TOP);
+				extension.admob.Admob.showBanner(ADAPTIVE_BANNER_ID);
+				//extension.admob.Admob.showBanner(BANNER_ID, AdmobBannerSize.BANNER, AdmobBannerAlign.TOP);
 
 			case AdmobEvent.APP_OPEN_CLICKED, AdmobEvent.INTERSTITIAL_CLICKED, AdmobEvent.REWARDED_CLICKED, AdmobEvent.BANNER_CLICKED:
 				trace("DINHEIRO!");
@@ -62,8 +60,8 @@ class Main extends lime.app.Application
 
 	public override function onWindowCreate():Void
 	{
-		Admob.setCallback(onCallback);
-		Admob.init(true); //It feels like in iOS, you still need to set test mode even with test ids for all the ads variants to work
+		extension.admob.Admob.setCallback(onCallback);
+		extension.admob.Admob.init(true); //It feels like in iOS, you still need to set test mode even with test ids for all the ads variants to work
 	}
 
 	public override function render(context:lime.graphics.RenderContext):Void
