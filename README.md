@@ -68,13 +68,13 @@ To configure **extension-admob** for your project, follow these steps:
    ```
    
 5. **Reopen Privacy Options Dialog**  
-   If needed, allow users to manage their GDPR consent options again.
+   If needed, allow users to manage their GDPR consent options again:
    ```haxe
    Admob.showPrivacyOptionsForm();
    ```
 
 6. **Verify User Consent**  
-   Check if the user has consented to personalized ads:
+   Check if user has consented to personalized ads:
    ```haxe
    if (Admob.getConsent() == AdmobConsent.FULL)
     trace("User consented to personalized ads.");
@@ -83,7 +83,7 @@ To configure **extension-admob** for your project, follow these steps:
    ```
 
 7. **Check Consent for Specific Purposes**  
-   Verify if the user has consented to individual purposes, such as purpose 0:
+   Verify if user has consented to individual purposes, such as purpose 0:
    ```haxe
    if (Admob.hasConsentForPurpose(0) == 1)
     trace("User has consented to purpose 0.");
@@ -91,7 +91,7 @@ To configure **extension-admob** for your project, follow these steps:
     trace("User has not consented to purpose 0.");
    ```
 
-8. **Load and Show Ads**  
+9. **Load and Show Ads**  
    Add the following snippets to display ads in your app:
 
    - **Banner Ad**
