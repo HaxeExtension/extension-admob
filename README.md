@@ -43,17 +43,17 @@ To configure **extension-admob** for your project, follow these steps:
    ```
 
 3. **GDPR Consent Management**  
-   Beginning January 16, 2024, Google requires publishers serving ads in the EEA and UK to use a certified consent management platform (CMP). This extension integrates Google's UMP SDK to display a consent dialog during the first app launch. Ads may not function if the user does not provide consent.
+   Beginning January 16, 2024, Google requires publishers serving ads in the EEA and UK to use a certified consent management platform (CMP). This extension integrates Google's UMP SDK to display a consent dialog during the first app launch. Ads may not function if user does not provide consent.
    
 3. **Initializing Admob extension**  
-   If GDPR consent dialog and/or iOS 14+ tracking authorization dialog are required, they are should automatically upon Admob initialization.
+   If GDPR consent dialog and/or iOS 14+ tracking authorization dialog are required, they are shown automatically upon Admob initialization.
    ```haxe
    import extension.admob.*;
    ...
    Admob.setCallback(function(event:String, message:String):Void
    {
       if (event == AdmobEvent.INIT_OK)
-        //you can load your ads here
+        //you can load/show your ads here
    });
    Admob.init();
    ```
