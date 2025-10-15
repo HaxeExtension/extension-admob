@@ -21,8 +21,8 @@
 		"ios"
 	],
 	"description": "A Haxe/Lime/NME extension for integrating Google AdMob on iOS and Android.",
-	"version": "3.0.0",
-	"releasenote": "Updated to support both Lime and NME and lots of other cool features.",
+	"version": "3.0.1",
+	"releasenote": "Updated to work with the latest OpenFL 9.4.2 and Lime 8.2.3",
 	"dependencies": {
 		"hxcpp": "",
 		"lime": ""
