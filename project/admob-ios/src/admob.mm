@@ -366,7 +366,7 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 		{
 			[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status)
 			{
-				if (_admobCallback)
+				/*if (_admobCallback)
 				{
 					switch (status)
 					{
@@ -383,12 +383,30 @@ static void initMobileAds(bool testingAds, bool childDirected, bool enableRDP)
 						_admobCallback("ATT_STATUS", "AUTHORIZED");
 						break;
 					}
-				}
+				}*/
 
-				[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status)
+				[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *status2)
 				{					
 					if (_admobCallback)
+					{
+						switch (status)
+						{
+						case ATTrackingManagerAuthorizationStatusNotDetermined:
+							_admobCallback("ATT_STATUS", "NOT_DETERMINED");
+							break;
+						case ATTrackingManagerAuthorizationStatusRestricted:
+							_admobCallback("ATT_STATUS", "RESTRICTED");
+							break;
+						case ATTrackingManagerAuthorizationStatusDenied:
+							_admobCallback("ATT_STATUS", "DENIED");
+							break;
+						case ATTrackingManagerAuthorizationStatusAuthorized:
+							_admobCallback("ATT_STATUS", "AUTHORIZED");
+							break;
+						}
+						
 						_admobCallback("INIT_OK", _message);
+					}
 				}];
 			}];
 		}
