@@ -18,7 +18,7 @@
 		</section>
 
 		<section if="iphonesim || simulator">
-			<compilerflag value="-F${haxelib:extension-admob}/project/admob-ios/frameworks/arm64_x86_64-simulator" if="HXCPP_ARM64 || HXCPP_X86_64" />
+			<compilerflag value="-F${haxelib:extension-admob}/project/admob-ios/frameworks/arm64_x86_64-simulator" if="HXCPP_ARM64 || HXCPP_X86_64 || HXCPP_M64" />
 		</section>
 
 		<file name="${haxelib:extension-admob}/project/admob-ios/src/admob.mm" />
